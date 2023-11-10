@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { Appbar, List, IconButton, FAB, Portal } from 'react-native-paper';
 import ListItem from '../componets/ListItem';
 
@@ -52,7 +52,7 @@ const HomePage = () => {
 			<Appbar.Header elevated style={{ backgroundColor: '#38526c' }}>
 				<Appbar.Content title="Proyectos" color='#F5F7FA' />
 			</Appbar.Header>
-			<View style={styles.main}>
+			<ScrollView style={styles.main}>
 				{
 					projectsList.projects.map((project) => {
 						return (
@@ -60,7 +60,7 @@ const HomePage = () => {
 						);
 					})
 				}
-			</View>
+			</ScrollView>
 			<Portal>
 				<FAB.Group
 					open={open}
@@ -98,12 +98,11 @@ const HomePage = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#1e2833',
+		backgroundColor: '#1e2833'
 	},
 	main: {
 		flex: 1,
 		flexDirection: "column",
-		rowGap: 8,
 		padding: 16
 	},
 });

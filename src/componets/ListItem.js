@@ -11,7 +11,7 @@ const ListItem = (props) => {
 	return (
 		<List.Item
 			title={projectTitle}
-			listId={listId}
+			key={listId}
 			right={props => (
 				<>
 					<IconButton {...props} icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
@@ -28,7 +28,8 @@ const ListItem = (props) => {
 const styles = StyleSheet.create({
 	listItem: {
 		backgroundColor: '#446585',
-		borderRadius: 4
+		borderRadius: 4,
+		marginVertical: 8
 	}
 })
 
