@@ -11,6 +11,41 @@ const HomePage = () => {
 
 	const { open } = state;
 
+	const projectsList = {
+		projects: [
+			{
+				"id": "cff8abf2-fae4-46ed-938b-14c295bbfef3",
+				"project_name": "Izumi"
+			}, {
+				"id": "41836bd8-1317-4b0f-a8e3-b18185459329",
+				"project_name": "Shaogongzhuang"
+			}, {
+				"id": "1da87b91-6d49-4b38-897c-b9df27f82eb7",
+				"project_name": "Dinghuo"
+			}, {
+				"id": "7d529ad9-0d0b-4b35-ac02-0c402b2a3c48",
+				"project_name": "Xiaochi"
+			}, {
+				"id": "15c09604-73e2-4c52-b4d7-0fc65a6bf0b2",
+				"project_name": "Batulawang"
+			}, {
+				"id": "30410aec-50a3-47ab-b521-aeda7b509e52",
+				"project_name": "Santa Rita"
+			}, {
+				"id": "6b98ba96-a7b7-4709-98a8-e131d201a4c7",
+				"project_name": "Sena Madureira"
+			}, {
+				"id": "41f41139-c8f2-4b12-8559-e1ead7b51249",
+				"project_name": "Kalasin"
+			}, {
+				"id": "ec776784-8135-4a14-a5b1-3d4118fa1565",
+				"project_name": "Chicoana"
+			}, {
+				"id": "1f8395e2-bd7c-4193-9ddb-41bc7b4d8ab1",
+				"project_name": "Berlin"
+			}
+		]
+	}
 
 	return (
 		<View style={styles.container}>
@@ -18,8 +53,13 @@ const HomePage = () => {
 				<Appbar.Content title="Proyectos" color='#F5F7FA' />
 			</Appbar.Header>
 			<View style={styles.main}>
-				<ListItem projectTitle={"Proyecto 1"} listId={1}/>
-				<ListItem projectTitle={"Proyecto 2"} listId={2}/>
+				{
+					projectsList.projects.map((project) => {
+						return (
+							<ListItem projectTitle={project.project_name} listId={project.id}/>
+						);
+					})
+				}
 			</View>
 			<Portal>
 				<FAB.Group
