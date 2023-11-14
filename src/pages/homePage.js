@@ -1,11 +1,11 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Appbar, List, IconButton, FAB, Portal } from 'react-native-paper';
+import { Appbar,FAB, Portal } from 'react-native-paper';
 import ListItem from '../componets/ListItem';
 
 const HomePage = () => {
 
-	const [state, setState] = React.useState({ open: false });
+	const [state, setState] = useState({ open: false });
 
 	const onStateChange = ({ open }) => setState({ open });
 
@@ -56,7 +56,7 @@ const HomePage = () => {
 				{
 					projectsList.projects.map((project) => {
 						return (
-							<ListItem projectTitle={project.project_name} listId={project.id}/>
+							<ListItem title={project.project_name} listId={project.id}/>
 						);
 					})
 				}

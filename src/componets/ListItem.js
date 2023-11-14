@@ -4,13 +4,13 @@ import { List, IconButton } from 'react-native-paper';
 const ListItem = (props) => {
 
 	const {
-		projectTitle,
+		title,
 		listId
 	} = props
 
 	return (
 		<List.Item
-			title={projectTitle}
+			title={title}
 			key={listId}
 			right={props => (
 				<>
