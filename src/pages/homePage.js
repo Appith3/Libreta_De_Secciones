@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Appbar,FAB, Portal } from 'react-native-paper';
+import { Appbar, FAB, Portal } from 'react-native-paper';
 import ListItem from '../componets/ListItem';
 
 const HomePage = () => {
