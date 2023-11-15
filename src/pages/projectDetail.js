@@ -28,27 +28,27 @@ const ProjectDetail = () => {
 				/>
 				<View style={styles.chips}>
 					<ScrollView horizontal>
-						<Chip mode="outlined" style={styles.chip} onPress={() => console.log("Todo")}>Todo</Chip>
-						<Chip mode="outlined" style={styles.chip} onPress={() => console.log("Secciones completas")}>Secciones completas</Chip>
-						<Chip mode="outlined" style={styles.chip} onPress={() => console.log("Secciones vacías")}>Secciones vacías</Chip>
+						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" selected onPress={() => console.log("Todo")}>Todo</Chip>
+						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6"  onPress={() => console.log("Secciones completas")}>Secciones completas</Chip>
+						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6"  onPress={() => console.log("Secciones vacías")}>Secciones vacías</Chip>
 					</ScrollView>
 				</View>
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
-					<ListItem title="0+000" />
-					<ListItem title="0+020" />
-					<ListItem title="0+040" />
-					<ListItem title="0+080" />
-					<ListItem title="0+100" />
-					<ListItem title="0+120" />
-					<ListItem title="0+140" />
-					<ListItem title="0+160" />
-					<ListItem title="0+180" />
-					<ListItem title="0+200" />
-					<ListItem title="0+220" />
-					<ListItem title="0+240" />
-					<ListItem title="0+260" />
+					<ListItem title="0+000" listId="0+000"/>
+					<ListItem title="0+020" listId="0+020"/>
+					<ListItem title="0+040" listId="0+040"/>
+					<ListItem title="0+080" listId="0+080"/>
+					<ListItem title="0+100" listId="0+100"/>
+					<ListItem title="0+120" listId="0+120"/>
+					<ListItem title="0+140" listId="0+140"/>
+					<ListItem title="0+160" listId="0+160"/>
+					<ListItem title="0+180" listId="0+180"/>
+					<ListItem title="0+200" listId="0+200"/>
+					<ListItem title="0+220" listId="0+220"/>
+					<ListItem title="0+240" listId="0+240"/>
+					<ListItem title="0+260" listId="0+260"/>
 				</ScrollView>
 			</View>
 			<Portal>
@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
 	},
 	chip: {
 		marginRight: 12,
+		borderRadius: 24,
+		backgroundColor: "#F5F7FA"
 	},
 	sectionsList:{
 		paddingHorizontal: 16,

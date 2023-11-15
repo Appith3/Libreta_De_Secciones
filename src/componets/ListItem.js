@@ -1,11 +1,12 @@
 import { StyleSheet } from 'react-native';
-import { List, IconButton } from 'react-native-paper';
+import { List, IconButton, Chip } from 'react-native-paper';
 
 const ListItem = (props) => {
 
 	const {
 		title,
-		listId
+		listId,
+		isComplete = false
 	} = props
 
 	return (
@@ -18,7 +19,7 @@ const ListItem = (props) => {
 					<IconButton {...props} icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
 				</>
 			)}
-			style={styles.listItem}
+			style={[styles.listItem, styles.completed]}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => console.log(`List item ${listId}`)}
 		/>
@@ -30,6 +31,11 @@ const styles = StyleSheet.create({
 		backgroundColor: '#446585',
 		borderRadius: 4,
 		marginVertical: 8
+	},
+	completed: {
+		borderColor: "#369361",
+		borderStyle: "solid",
+		borderWidth: 2
 	}
 })
 
