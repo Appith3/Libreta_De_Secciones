@@ -6,20 +6,22 @@ const ListItem = (props) => {
 	const {
 		title,
 		listId,
-		isComplete = false
+		isComplete = false,
+		isSection = false
 	} = props
 
 	return (
 		<List.Item
 			title={title}
 			key={listId}
-			right={props => (
+			right={() => (
 				<>
-					<IconButton {...props} icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-					<IconButton {...props} icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
+					{isComplete ? <Chip mode="outlined" style={styles.chip} textStyle={{color: "#F5F7FA", alignSelf: "center"}}>Completa</Chip> : <></>}
+					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
+					{isSection ? <IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => console.log("chevron-right")} /> : <IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />}
 				</>
 			)}
-			style={[styles.listItem, styles.completed]}
+			style={isComplete ? [styles.listItem, styles.completed] : styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => console.log(`List item ${listId}`)}
 		/>
@@ -36,7 +38,13 @@ const styles = StyleSheet.create({
 		borderColor: "#369361",
 		borderStyle: "solid",
 		borderWidth: 2
-	}
+	},
+	chip: {
+		borderRadius: 24,
+		backgroundColor: "#369361",
+		height: 32,
+		alignSelf: "center"
+	},
 })
 
 export default ListItem;

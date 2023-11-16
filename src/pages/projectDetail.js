@@ -36,19 +36,19 @@ const ProjectDetail = () => {
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
-					<ListItem title="0+000" listId="0+000"/>
-					<ListItem title="0+020" listId="0+020"/>
-					<ListItem title="0+040" listId="0+040"/>
-					<ListItem title="0+080" listId="0+080"/>
-					<ListItem title="0+100" listId="0+100"/>
-					<ListItem title="0+120" listId="0+120"/>
-					<ListItem title="0+140" listId="0+140"/>
-					<ListItem title="0+160" listId="0+160"/>
-					<ListItem title="0+180" listId="0+180"/>
-					<ListItem title="0+200" listId="0+200"/>
-					<ListItem title="0+220" listId="0+220"/>
-					<ListItem title="0+240" listId="0+240"/>
-					<ListItem title="0+260" listId="0+260"/>
+					<ListItem title="0+000" listId="0+000" isSection isComplete/>
+					<ListItem title="0+020" listId="0+020" isSection isComplete/>
+					<ListItem title="0+040" listId="0+040" isSection isComplete/>
+					<ListItem title="0+080" listId="0+080" isSection isComplete/>
+					<ListItem title="0+100" listId="0+100" isSection isComplete/>
+					<ListItem title="0+120" listId="0+120" isSection/>
+					<ListItem title="0+140" listId="0+140" isSection/>
+					<ListItem title="0+160" listId="0+160" isSection/>
+					<ListItem title="0+180" listId="0+180" isSection/>
+					<ListItem title="0+200" listId="0+200" isSection/>
+					<ListItem title="0+220" listId="0+220" isSection/>
+					<ListItem title="0+240" listId="0+240" isSection/>
+					<ListItem title="0+260" listId="0+260" isSection/>
 				</ScrollView>
 			</View>
 			<Portal>
