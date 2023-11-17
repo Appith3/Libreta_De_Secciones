@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { Appbar, HelperText, TextInput } from "react-native-paper";
+import FileInput from "../componets/FileInput";
 
 const CreateProjectForm = () => {
 
 	const [text, setText] = useState("");
+	const [currentDate, setCurrentDate] = useState("");
+	
+	useEffect(() => {
+		var date = new Date().getDate();
+		var month = new Date().getMonth() + 1;
+		var year = new Date().getFullYear();
+
+		setCurrentDate(date + '/' + month + '/' + year)
+	}, [])
 
 	return (
 		<View style={styles.container}>
@@ -31,11 +41,12 @@ const CreateProjectForm = () => {
 					</View>
 					<TextInput
 						mode="outlined"
-						value={Date.now().toString()}
+						value={currentDate}
 						onChangeText={text => setText(text)}
 						editable={false}
 						right={<TextInput.Icon icon="calendar" />}
 					/>
+					<FileInput/>
 				</View>
 			</View>
 		</View>
@@ -50,6 +61,7 @@ const styles = StyleSheet.create({
 	main: {
 		flex: 1,
 		flexDirection: "column",
+		gap: 32, 
 		padding: 16
 	},
 	image: {
@@ -58,7 +70,9 @@ const styles = StyleSheet.create({
 		alignSelf: 'center'
 	},
 	form: {
-		flex: 1
+		flex: 1,
+		flexDirection: "column",
+		gap: 16
 	},
 	helperText: {
 		color: '#A8BED1'
