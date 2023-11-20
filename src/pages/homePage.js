@@ -6,6 +6,7 @@ import ListItem from '../componets/ListItem';
 const HomePage = () => {
 
 	const [state, setState] = useState({ open: false });
+	// TODO: Make function to read projects from DB/projects.json
 
 	const onStateChange = ({ open }) => setState({ open });
 
@@ -45,7 +46,7 @@ const HomePage = () => {
 				"project_name": "Berlin"
 			}
 		]
-	}
+	};
 
 	return (
 		<View style={styles.container}>
