@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { Appbar, HelperText, TextInput } from "react-native-paper";
+import { Appbar, Button, HelperText, TextInput } from "react-native-paper";
 import FileInput from "../componets/FileInput";
 
 const CreateProjectForm = () => {
@@ -47,6 +47,7 @@ const CreateProjectForm = () => {
 						right={<TextInput.Icon icon="calendar" />}
 					/>
 					<FileInput/>
+				<Button icon="plus" mode="contained" style={{marginTop: 32}} onPress={() => console.log("Crear Trabajo")}>Crear trabajo</Button>
 				</View>
 			</View>
 		</View>

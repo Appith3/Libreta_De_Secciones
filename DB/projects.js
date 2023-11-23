@@ -1,4 +1,4 @@
-{
+export const projects = {
   "projects": [
     {
       "_id": "project_id",
