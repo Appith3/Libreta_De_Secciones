@@ -13,12 +13,7 @@ const HomePage = () => {
 
 	const { open } = state;
 
-	const projectsList = projects
-
-	useEffect(() => {
-		console.log("projects: ",projects)
-		console.log("projectsList: ",projectsList)
-	}, [])
+	const projectsList = projects.projects
 
 	return (
 		<View style={styles.container}>
@@ -27,13 +22,13 @@ const HomePage = () => {
 			</Appbar.Header>
 			{/* TODO: add input search */}
 			<ScrollView style={styles.main}>
-				{/* {
-					projectsList.projects.map((project) => {
+				{
+					projectsList.map((project) => {
 						return (
-							<ListItem title={project.project_name} listId={project.id}/>
+							<ListItem title={project.nombre} listId={project._id}/>
 						);
 					}) 
-				} */}
+				}
 			</ScrollView>
 			<Portal>
 				<FAB.Group

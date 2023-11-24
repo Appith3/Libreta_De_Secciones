@@ -1,4 +1,4 @@
-export const projects = {
+const projects = {
   "projects": [
     {
       "_id": "project_id",
@@ -310,3 +310,5 @@ export const projects = {
     }
   ]
 }
+
+export default projects;
