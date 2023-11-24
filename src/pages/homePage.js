@@ -8,8 +8,14 @@ import projects from '../../DB/projects';
 const HomePage = ({ navigation }) => {
 
 	const [open, setOpen] = useState(false);
+	const [fabVisible, setFabVisible] = useState(true);
 
 	const projectsList = projects.projects;
+
+	const goToCreateProjectForm = () => {
+		navigation.navigate('CreateProject');
+		setFabVisible(false);
+	}
 
 	return (
 		<View style={styles.container}>
@@ -26,7 +32,7 @@ const HomePage = ({ navigation }) => {
 			<Portal>
 				<FAB.Group
 					open={open}
-					visible
+					visible={fabVisible}
 					icon={open ? 'close' : 'plus'}
 					backdropColor='#fff0'
 					color='#F5F7FA'
@@ -39,7 +45,7 @@ const HomePage = ({ navigation }) => {
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
 							style: {backgroundColor: "#799AB7", borderRadius: 32},
-							onPress: () => navigation.navigate('CreateProject'),
+							onPress: goToCreateProjectForm(),
 							//! TODO: FIX when navigate to CreateProjectForm the FAB it remains
 						},
 						{
