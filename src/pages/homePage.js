@@ -17,9 +17,6 @@ const HomePage = () => {
 
 	return (
 		<View style={styles.container}>
-			<Appbar.Header elevated style={{ backgroundColor: '#38526c' }}>
-				<Appbar.Content title="Proyectos" color='#F5F7FA' />
-			</Appbar.Header>
 			{/* TODO: add input search */}
 			<ScrollView style={styles.main}>
 				{
