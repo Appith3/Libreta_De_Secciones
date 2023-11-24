@@ -5,15 +5,11 @@ import ListItem from '../componets/ListItem';
 
 import projects from '../../DB/projects';
 
-const HomePage = () => {
+const HomePage = ({ navigation }) => {
 
-	const [state, setState] = useState({ open: false });
+	const [open, setOpen] = useState(false);
 
-	const onStateChange = ({ open }) => setState({ open });
-
-	const { open } = state;
-
-	const projectsList = projects.projects
+	const projectsList = projects.projects;
 
 	return (
 		<View style={styles.container}>
@@ -22,7 +18,7 @@ const HomePage = () => {
 				{
 					projectsList.map((project) => {
 						return (
-							<ListItem title={project.nombre} listId={project._id}/>
+							<ListItem title={project.nombre} listId={project._id} details={project} navigation={navigation}/>
 						);
 					}) 
 				}
@@ -54,7 +50,7 @@ const HomePage = () => {
 							onPress: () => console.log('Importar proyecto'),
 						},
 					]}
-					onStateChange={onStateChange}
+					onStateChange={(open) => setOpen(open)}
 				/>
 			</Portal>
 		</View>

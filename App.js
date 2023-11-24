@@ -19,26 +19,24 @@ export default function App() {
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
-        <Stack.Navigator 
-        initialRouteName='HomePage'
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#38526c'
-          },
-          headerTintColor: '#F5F7FA',
-          headerTitleStyle: {
-            fontFamily: 'sans-serif',
-            fontWeight: '400',
-            fontSize: '200'
-          }
-        }}
+        <Stack.Navigator
+          initialRouteName='HomePage'
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#38526c'
+            },
+            headerTintColor: '#F5F7FA'
+          }}
         >
-          <Stack.Screen 
-          name="HomePage" 
-          component={HomePage} 
-          options={{title: 'Proyectos'}}
+          <Stack.Screen
+            name="HomePage"
+            component={HomePage}
+            options={{ title: 'Proyectos' }}
           />
-          <Stack.Screen name="ProjectDetail" component={ProjectDetail} />
+          <Stack.Screen
+            name="ProjectDetail"
+            component={ProjectDetail}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

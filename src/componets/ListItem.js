@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { List, IconButton, Chip } from 'react-native-paper';
 
@@ -7,7 +8,9 @@ const ListItem = (props) => {
 		title,
 		listId,
 		isComplete = false,
-		isSection = false
+		isSection = false,
+		details,
+		navigation
 	} = props
 
 	return (
@@ -23,7 +26,9 @@ const ListItem = (props) => {
 			)}
 			style={isComplete ? [styles.listItem, styles.completed] : styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
-			onPress={() => console.log(`List item ${listId}`)}
+			onPress={() => {
+				navigation.navigate('ProjectDetail', {project: details});
+			}}
 		/>
 	)
 }

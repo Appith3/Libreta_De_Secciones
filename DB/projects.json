@@ -1,4 +1,4 @@
-const projects = {
+{
   "projects": [
     {
       "_id": "project_id",
@@ -52,7 +52,7 @@ const projects = {
         {
           "_id": "nuevo_cadenamiento_id",
           "nombre": "0+005.00",
-          "status": "",
+          "status": "complete",
           "codigo": "",
           "lectura_central": 1.62,
           "detalles_izquierda": [
@@ -310,5 +310,3 @@ const projects = {
     }
   ]
 }
-
-export default projects;

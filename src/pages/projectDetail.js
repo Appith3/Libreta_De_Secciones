@@ -1,9 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Chip, TextInput,  Portal, FAB } from "react-native-paper"
 import ListItem from "../componets/ListItem";
 
-const ProjectDetail = () => {
+const ProjectDetail = (props) => {
+
+	const {
+		navigation,
+		route
+	} = props;
+
+	const { project } = route.params
 
 	const [searchText, setSearchText] = useState("");
 
@@ -13,12 +20,12 @@ const ProjectDetail = () => {
 
 	const { open } = state;
 
+	useEffect(() => {
+		navigation.setOptions({ title: project.nombre })
+	}, [])
+
 	return (
 		<View style={styles.container}>
-			<Appbar.Header elevated style={{ backgroundColor: '#38526c' }}>
-				<Appbar.BackAction onPress={() => { console.log('back') }} color="#F5F7FA" />
-				<Appbar.Content title="Proyectos" color='#F5F7FA' />
-			</Appbar.Header>
 			<View style={styles.header}>
 				<TextInput
 					placeholder="Buscar sección"
@@ -36,19 +43,13 @@ const ProjectDetail = () => {
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
-					<ListItem title="0+000" listId="0+000" isSection isComplete/>
-					<ListItem title="0+020" listId="0+020" isSection isComplete/>
-					<ListItem title="0+040" listId="0+040" isSection isComplete/>
-					<ListItem title="0+080" listId="0+080" isSection isComplete/>
-					<ListItem title="0+100" listId="0+100" isSection isComplete/>
-					<ListItem title="0+120" listId="0+120" isSection/>
-					<ListItem title="0+140" listId="0+140" isSection/>
-					<ListItem title="0+160" listId="0+160" isSection/>
-					<ListItem title="0+180" listId="0+180" isSection/>
-					<ListItem title="0+200" listId="0+200" isSection/>
-					<ListItem title="0+220" listId="0+220" isSection/>
-					<ListItem title="0+240" listId="0+240" isSection/>
-					<ListItem title="0+260" listId="0+260" isSection/>
+					{
+						project.cadenamientos.map((cadenamiento) => {
+							console.log(cadenamiento)
+							
+							return cadenamiento.status === "complete" ? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete/> : <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection />
+						})
+					}
 				</ScrollView>
 			</View>
 			<Portal>
