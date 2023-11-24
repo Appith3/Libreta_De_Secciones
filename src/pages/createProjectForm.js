@@ -18,9 +18,6 @@ const CreateProjectForm = () => {
 
 	return (
 		<View style={styles.container}>
-			<Appbar.Header elevated style={{ backgroundColor: '#38526c' }}>
-				<Appbar.Content title="Proyectos" color='#F5F7FA' />
-			</Appbar.Header>
 			<View style={styles.main}>
 				<Image
 					source={require('../../assets/illustrations/bridge-construction.png')}

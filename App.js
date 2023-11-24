@@ -37,6 +37,11 @@ export default function App() {
             name="ProjectDetail"
             component={ProjectDetail}
           />
+          <Stack.Screen 
+            name='CreateProject'
+            component={CreateProjectForm}
+            options={{ title: 'Crear Proyecto'}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
