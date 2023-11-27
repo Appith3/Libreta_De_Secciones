@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Appbar, Chip, TextInput,  Portal, FAB } from "react-native-paper"
+import { Appbar, Chip, TextInput,  Portal, FAB, Text, Button } from "react-native-paper"
 import ListItem from "../componets/ListItem";
 
 const ProjectDetail = (props) => {
@@ -21,8 +21,12 @@ const ProjectDetail = (props) => {
 	const { open } = state;
 
 	useEffect(() => {
-		navigation.setOptions({ title: project.nombre })
+		navigation.setOptions({ title: project.nombre.projectName || project.nombre})
 	}, [])
+
+	const renderList = project.cadenamientos.map((cadenamiento) => {
+		return cadenamiento.status === "complete" ? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete navigation={navigation}/> : <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection navigation={navigation}/>
+	})
 
 	return (
 		<View style={styles.container}>
@@ -35,20 +39,16 @@ const ProjectDetail = (props) => {
 				/>
 				<View style={styles.chips}>
 					<ScrollView horizontal>
-						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" selected onPress={() => console.log("Todo")}>Todo</Chip>
-						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6"  onPress={() => console.log("Secciones completas")}>Secciones completas</Chip>
-						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6"  onPress={() => console.log("Secciones vacías")}>Secciones vacías</Chip>
+						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" onPress={() => console.log("Todo")}>Todo</Chip>
+						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" onPress={() => console.log("Secciones completas")}>Secciones completas</Chip>
+						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" onPress={() => console.log("Secciones vacías")}>Secciones vacías</Chip>
 					</ScrollView>
 				</View>
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
 					{
-						project.cadenamientos.map((cadenamiento) => {
-							console.log(cadenamiento)
-							
-							return cadenamiento.status === "complete" ? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete/> : <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection />
-						})
+						renderList
 					}
 				</ScrollView>
 			</View>

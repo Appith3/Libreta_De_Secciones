@@ -2,6 +2,9 @@ import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper
 import HomePage from './src/pages/homePage';
 import ProjectDetail from './src/pages/projectDetail';
 import CreateProjectForm from './src/pages/createProjectForm';
+import CaptureSection from './src/pages/captureSection';
+import CaptureSectionSides from './src/pages/captureSectionSides';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -41,6 +44,14 @@ export default function App() {
             name='CreateProject'
             component={CreateProjectForm}
             options={{ title: 'Crear Proyecto'}}
+          />
+          <Stack.Screen 
+            name='captureCentral'
+            component={CaptureSection}
+          />
+          <Stack.Screen 
+            name='captureSectionSides'
+            component={CaptureSectionSides}
           />
         </Stack.Navigator>
       </NavigationContainer>

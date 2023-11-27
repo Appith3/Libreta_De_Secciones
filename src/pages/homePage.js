@@ -6,16 +6,19 @@ import ListItem from '../componets/ListItem';
 import projects from '../../DB/projects';
 
 const HomePage = ({ navigation }) => {
+	const [fabVisible, setFabVisible] = useState(false);
 
-	const [open, setOpen] = useState(false);
-	const [fabVisible, setFabVisible] = useState(true);
+	const [state, setState] = useState({ open: false });
+
+	const onStateChange = ({ open }) => setState({ open });
+
+	const { open } = state;
 
 	const projectsList = projects.projects;
 
-	const goToCreateProjectForm = () => {
-		navigation.navigate('CreateProject');
-		setFabVisible(false);
-	}
+	useEffect(() => {
+		setFabVisible(true)
+	}, [])
 
 	return (
 		<View style={styles.container}>
@@ -24,9 +27,9 @@ const HomePage = ({ navigation }) => {
 				{
 					projectsList.map((project) => {
 						return (
-							<ListItem title={project.nombre} listId={project._id} details={project} navigation={navigation}/>
+							<ListItem title={project.nombre} listId={project._id} details={project} navigation={navigation} />
 						);
-					}) 
+					})
 				}
 			</ScrollView>
 			<Portal>
@@ -36,28 +39,31 @@ const HomePage = ({ navigation }) => {
 					icon={open ? 'close' : 'plus'}
 					backdropColor='#fff0'
 					color='#F5F7FA'
-					fabStyle={{backgroundColor: "#446585", borderRadius: 32}}
-					style={{marginBottom: 46}}
+					fabStyle={{ backgroundColor: "#446585", borderRadius: 32 }}
+					style={{ marginBottom: 46 }}
 					actions={[
 						{
 							icon: 'plus',
 							label: 'Crear proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: {backgroundColor: "#799AB7", borderRadius: 32},
-							onPress: goToCreateProjectForm(),
-							//! TODO: FIX when navigate to CreateProjectForm the FAB it remains
+							style: { backgroundColor: "#799AB7", borderRadius: 32 },
+							onPress: () => {
+								navigation.navigate('CreateProject');
+								setFabVisible(false);
+							},
+							//! TODO: FIX when go back from createProjectForm screen the FAB not appear
 						},
 						{
 							icon: 'upload',
 							label: 'Importar proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: {backgroundColor: "#799AB7", borderRadius: 32},
+							style: { backgroundColor: "#799AB7", borderRadius: 32 },
 							onPress: () => console.log('Importar proyecto'),
 						},
 					]}
-					onStateChange={(open) => setOpen(open)}
+					onStateChange={onStateChange}
 				/>
 			</Portal>
 		</View>

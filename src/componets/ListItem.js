@@ -27,7 +27,7 @@ const ListItem = (props) => {
 			style={isComplete ? [styles.listItem, styles.completed] : styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				navigation.navigate('ProjectDetail', {project: details});
+				isSection ? navigation.navigate('captureCentral') : navigation.navigate('ProjectDetail', {project: details});
 			}}
 		/>
 	)

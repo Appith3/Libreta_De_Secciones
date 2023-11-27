@@ -3,11 +3,28 @@ import { Image, StyleSheet, View } from "react-native";
 import { Appbar, Button, HelperText, TextInput } from "react-native-paper";
 import FileInput from "../componets/FileInput";
 
-const CreateProjectForm = () => {
+const CreateProjectForm = ( props ) => {
 
-	const [text, setText] = useState("");
+	const {
+		navigation
+	} = props;
+
+	const [projectName, setProjectName] = useState("");
 	const [currentDate, setCurrentDate] = useState("");
-	
+
+	const createProject = () => {
+		console.log(projectName)
+		navigation.navigate("ProjectDetail", {
+			project: {
+				"_id": "project_id_1000",
+				"nombre": {projectName},
+				"fecha_creacion": "27/11/2023",
+				"archivo_texto": "ruta/al/archivo.txt",
+				"cadenamientos": []
+			}
+		})
+	};
+
 	useEffect(() => {
 		var date = new Date().getDate();
 		var month = new Date().getMonth() + 1;
@@ -28,8 +45,8 @@ const CreateProjectForm = () => {
 						<TextInput
 							mode="outlined"
 							placeholder="Nombre del proyecto"
-							value={text}
-							onChangeText={text => setText(text)}
+							value={projectName}
+							onChangeText={projectName => setProjectName(projectName)}
 							right={<TextInput.Icon icon="map" />}
 						/>
 						<HelperText type="info" style={styles.helperText}>
@@ -39,12 +56,12 @@ const CreateProjectForm = () => {
 					<TextInput
 						mode="outlined"
 						value={currentDate}
-						onChangeText={text => setText(text)}
+						onChangeText={text => setProjectName(text)}
 						editable={false}
 						right={<TextInput.Icon icon="calendar" />}
 					/>
 					<FileInput/>
-				<Button icon="plus" mode="contained" style={{marginTop: 32}} onPress={() => console.log("Crear Trabajo")}>Crear trabajo</Button>
+				<Button icon="plus" mode="contained" style={{marginTop: 32}} onPress={ createProject }>Crear trabajo</Button>
 				</View>
 			</View>
 		</View>
