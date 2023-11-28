@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Appbar, Chip, TextInput,  Portal, FAB, Text, Button } from "react-native-paper"
+import { Appbar, Chip, TextInput, Portal, FAB, Text, Button } from "react-native-paper"
 import ListItem from "../componets/ListItem";
 
 const ProjectDetail = (props) => {
@@ -21,11 +21,13 @@ const ProjectDetail = (props) => {
 	const { open } = state;
 
 	useEffect(() => {
-		navigation.setOptions({ title: project.nombre.projectName || project.nombre})
+		navigation.setOptions({ title: project.nombre.projectName || project.nombre })
 	}, [])
 
 	const renderList = project.cadenamientos.map((cadenamiento) => {
-		return cadenamiento.status === "complete" ? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete navigation={navigation}/> : <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection navigation={navigation}/>
+		return cadenamiento.status === "complete"
+			? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete navigation={navigation} />
+			: <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection navigation={navigation} />
 	})
 
 	return (
@@ -59,15 +61,15 @@ const ProjectDetail = (props) => {
 					icon={open ? 'close' : 'plus'}
 					backdropColor='#fff0'
 					color='#F5F7FA'
-					fabStyle={{backgroundColor: "#446585", borderRadius: 32}}
-					style={{marginBottom: 46}}
+					fabStyle={{ backgroundColor: "#446585", borderRadius: 32 }}
+					style={{ marginBottom: 46 }}
 					actions={[
 						{
 							icon: 'plus',
 							label: 'Nueva sección',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: {backgroundColor: "#799AB7", borderRadius: 32},
+							style: { backgroundColor: "#799AB7", borderRadius: 32 },
 							onPress: () => console.log('Nueva sección'),
 						},
 						{
@@ -75,7 +77,7 @@ const ProjectDetail = (props) => {
 							label: 'Exportar proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: {backgroundColor: "#799AB7", borderRadius: 32},
+							style: { backgroundColor: "#799AB7", borderRadius: 32 },
 							onPress: () => console.log('Exportar proyecto'),
 						},
 						{
@@ -83,7 +85,7 @@ const ProjectDetail = (props) => {
 							label: 'Borrar proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: {backgroundColor: "#E54343", borderRadius: 32},
+							style: { backgroundColor: "#E54343", borderRadius: 32 },
 							onPress: () => console.log('Borrar proyecto'),
 						},
 					]}
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
 		borderRadius: 24,
 		backgroundColor: "#F5F7FA"
 	},
-	sectionsList:{
+	sectionsList: {
 		paddingHorizontal: 16,
 		height: "70%"
 	}

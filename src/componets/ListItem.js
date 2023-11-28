@@ -19,15 +19,29 @@ const ListItem = (props) => {
 			key={listId}
 			right={() => (
 				<>
-					{isComplete ? <Chip mode="outlined" style={styles.chip} textStyle={{color: "#F5F7FA", alignSelf: "center"}}>Completa</Chip> : <></>}
+					{
+						isComplete ?
+							<Chip mode="outlined" style={styles.chip} textStyle={{ color: "#F5F7FA", alignSelf: "center" }}>Completa</Chip>
+							: <></>
+					}
+
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-					{isSection ? <IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => console.log("chevron-right")} /> : <IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />}
+
+					{
+						isSection ?
+							<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => console.log("chevron-right")} />
+							: <IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
+					}
 				</>
 			)}
-			style={isComplete ? [styles.listItem, styles.completed] : styles.listItem}
+			style={isComplete ?
+				[styles.listItem, styles.completed]
+				: styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				isSection ? navigation.navigate('captureCentral') : navigation.navigate('ProjectDetail', {project: details});
+				isSection ?
+					navigation.navigate('captureCentral', { cadenamiento: details })
+					: navigation.navigate('ProjectDetail', { project: details });
 			}}
 		/>
 	)
