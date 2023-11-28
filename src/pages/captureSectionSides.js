@@ -1,10 +1,22 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 
-const CaptureSectionSides = () => {
+const CaptureSectionSides = ({ navigation, route}) => {
+
+	const { _side } = route.params;
+
+	const [ side, setSide ] = useState();
+
+	useEffect(() => {
+		navigation.setOptions({ title: `Capturando ${_side}`})
+	}, [])
+
+	
+
 	return(
 		<View style={styles.container}>
-			<Text>IZQUIERDA</Text>
+			<Text>LADO</Text>
 			<Button mode="contained" onPress={()=> console.log("capturar izq")}>TERMINAR LADO</Button>
 			<Button mode="contained">SIGUIENTE SECCIÓN</Button>
 			<Button mode="contained" onPress={()=> console.log("capturar der")}>SIGUIENTE DETALLE</Button>
