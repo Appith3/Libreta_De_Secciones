@@ -3,10 +3,12 @@ import { StyleSheet, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 
 const CaptureSection = ({ navigation, route }) => {
+
+	const { cadenamiento } = route.params
 	
 	useEffect(() => {
-		// TODO: set title depending the cadenamiento 
-		// navigation.setOptions({ title: project.cadenamiento})
+		navigation.setOptions({ title: cadenamiento.nombre})
+		console.log(cadenamiento)
 	}, [])
 
 	const onPressLeft = () => {

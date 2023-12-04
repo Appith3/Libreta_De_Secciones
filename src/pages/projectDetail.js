@@ -22,12 +22,13 @@ const ProjectDetail = (props) => {
 
 	useEffect(() => {
 		navigation.setOptions({ title: project.nombre.projectName || project.nombre })
+		console.log("ProjectDetail", project)
 	}, [])
 
 	const renderList = project.cadenamientos.map((cadenamiento) => {
 		return cadenamiento.status === "complete"
-			? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete navigation={navigation} />
-			: <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection navigation={navigation} />
+			? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete navigation={navigation} details={cadenamiento} />
+			: <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection navigation={navigation} details={cadenamiento} />
 	})
 
 	return (
