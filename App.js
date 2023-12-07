@@ -7,6 +7,7 @@ import CaptureSectionSides from './src/pages/captureSectionSides';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SectionDetail from './src/pages/sectionDetail';
 
 const theme = {
   ...DefaultTheme,
@@ -52,6 +53,10 @@ export default function App() {
           <Stack.Screen 
             name='captureSectionSides'
             component={CaptureSectionSides}
+          />
+          <Stack.Screen 
+            name='sectionDetail'
+            component={SectionDetail}
           />
         </Stack.Navigator>
       </NavigationContainer>

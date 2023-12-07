@@ -29,7 +29,7 @@ const ListItem = (props) => {
 
 					{
 						isSection ?
-							<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => console.log("chevron-right")} />
+							<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => navigation.navigate("sectionDetail", {cadenamiento: details})} />
 							: <IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
 					}
 				</>
