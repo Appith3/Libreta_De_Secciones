@@ -22,7 +22,6 @@ const ProjectDetail = (props) => {
 
 	useEffect(() => {
 		navigation.setOptions({ title: project.nombre.projectName || project.nombre })
-		console.log("ProjectDetail", project)
 	}, [])
 
 	const renderList = project.cadenamientos.map((cadenamiento) => {

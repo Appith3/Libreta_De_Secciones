@@ -8,7 +8,6 @@ const CaptureSection = ({ navigation, route }) => {
 	
 	useEffect(() => {
 		navigation.setOptions({ title: cadenamiento.nombre})
-		console.log(cadenamiento)
 	}, [])
 
 	const onPressLeft = () => {

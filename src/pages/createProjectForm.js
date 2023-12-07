@@ -13,7 +13,6 @@ const CreateProjectForm = ( props ) => {
 	const [currentDate, setCurrentDate] = useState("");
 
 	const createProject = () => {
-		console.log(projectName)
 		navigation.navigate("ProjectDetail", {
 			project: {
 				"_id": "project_id_1000",
