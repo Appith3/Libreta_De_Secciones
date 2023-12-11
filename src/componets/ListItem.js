@@ -41,7 +41,7 @@ const ListItem = (props) => {
 			onPress={() => {
 				isSection ?
 					navigation.navigate('captureCentral', { cadenamiento: details })
-					: navigation.navigate('ProjectDetail', { project: details });
+					: navigation.navigate('projectDetail', { project: details });
 			}}
 		/>
 	)

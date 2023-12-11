@@ -49,7 +49,7 @@ const HomePage = ({ navigation }) => {
 							color: '#F5F7FA',
 							style: { backgroundColor: "#799AB7", borderRadius: 32 },
 							onPress: () => {
-								navigation.navigate('CreateProject');
+								navigation.navigate('createProject');
 								setFabVisible(false);
 							},
 							//! TODO: FIX when go back from createProjectForm screen the FAB not appear
@@ -60,7 +60,10 @@ const HomePage = ({ navigation }) => {
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
 							style: { backgroundColor: "#799AB7", borderRadius: 32 },
-							onPress: () => console.log('Importar proyecto'),
+							onPress: () => {
+								navigation.navigate('importProject')
+								setFabVisible(false);
+							},
 						},
 					]}
 					onStateChange={onStateChange}

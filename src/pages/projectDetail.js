@@ -70,7 +70,9 @@ const ProjectDetail = (props) => {
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
 							style: { backgroundColor: "#799AB7", borderRadius: 32 },
-							onPress: () => console.log('Nueva sección'),
+							onPress: () => navigation.navigate('captureCentral'),
+							//! TODO: FIX TypeError: Cannot read property 'cadenamiento' of undefined
+							// when press Nueva sección the title will be Nueva sección if the property cadenamiento is undefined or is empty
 						},
 						{
 							icon: 'upload',
@@ -78,7 +80,7 @@ const ProjectDetail = (props) => {
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
 							style: { backgroundColor: "#799AB7", borderRadius: 32 },
-							onPress: () => console.log('Exportar proyecto'),
+							onPress: () => navigation.navigate('exportProject', { project }),
 						},
 						{
 							icon: 'delete',
