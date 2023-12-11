@@ -1,4 +1,4 @@
-{
+const projects = {
   "projects": [
     {
       "_id": "project_id",
@@ -52,7 +52,7 @@
         {
           "_id": "nuevo_cadenamiento_id",
           "nombre": "0+005.00",
-          "status": "complete",
+          "status": "",
           "codigo": "",
           "lectura_central": 1.62,
           "detalles_izquierda": [
@@ -310,3 +310,5 @@
     }
   ]
 }
+
+export default projects;
