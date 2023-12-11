@@ -9,6 +9,7 @@ const HomePage = ({ navigation }) => {
 	const [fabVisible, setFabVisible] = useState(false);
 
 	const [state, setState] = useState({ open: false });
+	// TODO: Make function to read projects from DB/projects.json
 
 	const onStateChange = ({ open }) => setState({ open });
 
