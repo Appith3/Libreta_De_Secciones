@@ -54,6 +54,7 @@ const HomePage = ({ navigation }) => {
 								setFabVisible(false);
 							},
 							//! TODO: FIX when go back from createProjectForm screen the FAB not appear
+							//! TODO: FIX FAB persist in others screen
 						},
 						{
 							icon: 'upload',
