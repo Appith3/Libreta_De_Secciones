@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Chip, TextInput, Portal, FAB, Text, Button } from "react-native-paper"
 import ListItem from "../componets/ListItem";
 
+// TODO: Separar lógica de ListItem de proyecto y ListItem de sección
+
 const ProjectDetail = (props) => {
 
 	const {
