@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { List, IconButton, Chip } from 'react-native-paper';
+import { List, IconButton, Chip, Text } from 'react-native-paper';
 
 const SectionItem = (props) => {
 
@@ -14,14 +14,19 @@ const SectionItem = (props) => {
 	return (
 		<List.Item
 			title={title}
+			description={
+				isComplete
+					?	"Completa"
+					: null
+			}
 			key={listId}
 			right={() => (
 				<>
-					{
+					{/* {
 						isComplete
 							? <Chip mode="outlined" style={styles.chip} textStyle={{ color: "#F5F7FA", alignSelf: "center" }}>Completa</Chip>
 							: <></>
-					}
+					} */}
 
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
 					<IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
@@ -29,10 +34,11 @@ const SectionItem = (props) => {
 			)}
 			style={
 				isComplete
-					? [styles.listItem, styles.completed]
+					? [styles.listItem, styles.borderCompleted]
 					: styles.listItem
 			}
-			titleStyle={{ color: '#F5F7FA' }}
+			titleStyle={ styles.title }
+			descriptionStyle={ styles.description}
 			onPress={() => {
 				navigation.navigate('captureCentral', { cadenamiento: details })
 			}}
@@ -46,7 +52,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		marginVertical: 8
 	},
-	completed: {
+	borderCompleted: {
 		borderColor: "#369361",
 		borderStyle: "solid",
 		borderWidth: 2
@@ -57,6 +63,13 @@ const styles = StyleSheet.create({
 		height: 32,
 		alignSelf: "center"
 	},
+	title: {
+		color: '#F5F7FA'
+	},
+	description: {
+		color: "#DAF1E0",
+		textDecorationLine: "underline"
+	}
 })
 
 export default SectionItem;
