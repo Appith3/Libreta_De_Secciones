@@ -1,14 +1,12 @@
-import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { List, IconButton, Chip } from 'react-native-paper';
 
-const ListItem = (props) => {
+const SectionItem = (props) => {
 
 	const {
 		title,
 		listId,
 		isComplete = false,
-		isSection = false,
 		details,
 		navigation
 	} = props
@@ -20,28 +18,23 @@ const ListItem = (props) => {
 			right={() => (
 				<>
 					{
-						isComplete ?
-							<Chip mode="outlined" style={styles.chip} textStyle={{ color: "#F5F7FA", alignSelf: "center" }}>Completa</Chip>
+						isComplete
+							? <Chip mode="outlined" style={styles.chip} textStyle={{ color: "#F5F7FA", alignSelf: "center" }}>Completa</Chip>
 							: <></>
 					}
 
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-
-					{
-						isSection ?
-							<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => navigation.navigate("sectionDetail", {cadenamiento: details})} />
-							: <IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
-					}
+					<IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
 				</>
 			)}
-			style={isComplete ?
-				[styles.listItem, styles.completed]
-				: styles.listItem}
+			style={
+				isComplete
+					? [styles.listItem, styles.completed]
+					: styles.listItem
+			}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				isSection ?
-					navigation.navigate('captureCentral', { cadenamiento: details })
-					: navigation.navigate('projectDetail', { project: details });
+				navigation.navigate('captureCentral', { cadenamiento: details })
 			}}
 		/>
 	)
@@ -66,4 +59,4 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default ListItem;
+export default SectionItem;
