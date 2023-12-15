@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Chip, TextInput, Portal, FAB, Text, Button } from "react-native-paper"
-import ListItem from "../componets/ListItem";
-
-// TODO: Separar lógica de ListItem de proyecto y ListItem de sección
+import SectionItem from "../componets/SectionItem";
 
 const ProjectDetail = (props) => {
 
@@ -28,8 +26,8 @@ const ProjectDetail = (props) => {
 
 	const renderList = project.cadenamientos.map((cadenamiento) => {
 		return cadenamiento.status === "complete"
-			? <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection isComplete navigation={navigation} details={cadenamiento} />
-			: <ListItem title={cadenamiento.nombre} listId={cadenamiento._id} isSection navigation={navigation} details={cadenamiento} />
+			? <SectionItem title={cadenamiento.nombre} listId={cadenamiento._id} isComplete navigation={navigation} details={cadenamiento} />
+			: <SectionItem title={cadenamiento.nombre} listId={cadenamiento._id} navigation={navigation} details={cadenamiento} />
 	})
 
 	return (

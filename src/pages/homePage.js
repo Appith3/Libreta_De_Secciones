@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Appbar, FAB, Portal } from 'react-native-paper';
-import ListItem from '../componets/ListItem';
+import ProjectItem from '../componets/ProjectItem';
 
 import projects from '../../DB/projects';
 
@@ -28,7 +28,7 @@ const HomePage = ({ navigation }) => {
 				{
 					projectsList.map((project) => {
 						return (
-							<ListItem title={project.nombre} listId={project._id} details={project} navigation={navigation} />
+							<ProjectItem title={project.nombre} listId={project._id} details={project} navigation={navigation} />
 						);
 					})
 				}
