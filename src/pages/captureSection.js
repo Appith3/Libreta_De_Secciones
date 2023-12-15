@@ -19,11 +19,11 @@ const CaptureSection = ({ navigation, route }) => {
 	}, [])
 
 	const onPressLeft = () => {
-		navigation.navigate("captureSectionSides", { _side: "left" })
+		navigation.navigate("captureSectionSides", { _side: "Izq", cadenamiento })
 	}
 
 	const onPressRight = () => {
-		navigation.navigate("captureSectionSides", { _side: "right" })
+		navigation.navigate("captureSectionSides", { _side: "Der", cadenamiento })
 	}
 
 	// formateamos el valor del cadenamiento de 0000 a 0+000.00
