@@ -22,12 +22,6 @@ const SectionItem = (props) => {
 			key={listId}
 			right={() => (
 				<>
-					{/* {
-						isComplete
-							? <Chip mode="outlined" style={styles.chip} textStyle={{ color: "#F5F7FA", alignSelf: "center" }}>Completa</Chip>
-							: <></>
-					} */}
-
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
 					<IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
 				</>
