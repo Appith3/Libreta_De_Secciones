@@ -14,16 +14,21 @@ const SectionItem = (props) => {
 	return (
 		<List.Item
 			title={title}
+			// TODO: add if exist section code add it on title prop
 			description={
 				isComplete
-					?	"Completa"
+					? "Completa"
 					: null
 			}
 			key={listId}
 			right={() => (
 				<>
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-					<IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
+					<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => {
+						isComplete
+							? navigation.navigate('sectionDetail', { cadenamiento: details })
+							: navigation.navigate('captureCentral', { cadenamiento: details })
+					}} />
 				</>
 			)}
 			style={
@@ -31,10 +36,12 @@ const SectionItem = (props) => {
 					? [styles.listItem, styles.borderCompleted]
 					: styles.listItem
 			}
-			titleStyle={ styles.title }
-			descriptionStyle={ styles.description}
+			titleStyle={styles.title}
+			descriptionStyle={styles.description}
 			onPress={() => {
-				navigation.navigate('captureCentral', { cadenamiento: details })
+				isComplete
+					? navigation.navigate('sectionDetail', { cadenamiento: details })
+					: navigation.navigate('captureCentral', { cadenamiento: details })
 			}}
 		/>
 	)

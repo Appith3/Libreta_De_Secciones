@@ -9,19 +9,30 @@ const SectionDetail = (props) => {
 		navigation
 	} = props
 
-	const { cadenamiento } = route.params
-	
+	const {
+		nombre,
+		lectura_central,
+		detalles_izquierda,
+		detalles_derecha,
+		codigo
+	} = route.params.cadenamiento
+
 	useEffect(() => {
-		navigation.setOptions({ title: cadenamiento.nombre })
+		navigation.setOptions({ title: `${nombre} ${codigo}` })
 	}, [])
 
 	return (
 		<View style={styles.container}>
-			{
-				cadenamiento.status === "complete"
-					? <Text>Detalles de la sección</Text>
-					: <Text>Empty</Text>
-			}
+			<View style={styles.main}>
+				<Text style={{ color: "#F5F7FA" }}>Elevación Central: {lectura_central}</Text>
+				<View style={styles.table}>
+					<View style={styles.col}>
+						<View style={styles.row}>
+
+						</View>
+					</View>
+				</View>
+			</View>
 		</View>
 	)
 }
@@ -29,11 +40,23 @@ const SectionDetail = (props) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: "#1e2833",
+		padding: 16
+	},
+	main: {
+		flex: 1,
 		flexDirection: "column",
 		justifyContent: "center",
-		alignItems: "center",
-		gap: 32
+		gap: 32,
+	},
+	table: {
+		backgroundColor: "#A8BED1",
+		height: "90%"
+	},
+	tableHeader: {
+		
 	}
+
 });
 
 export default SectionDetail
