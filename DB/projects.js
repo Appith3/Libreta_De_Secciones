@@ -10,7 +10,7 @@ const projects = {
           "_id": "cadenamiento_id",
           "nombre": "0+000.00",
           "status": "complete",
-          "codigo": "",
+          "codigo": "PT",
           "lectura_central": 1.58,
           "detalles_izquierda": [
             {
