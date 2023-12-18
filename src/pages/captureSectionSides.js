@@ -12,13 +12,9 @@ const CaptureSectionSides = ({ navigation, route }) => {
 
 	useEffect(() => {
 		navigation.setOptions({ title: `${nombre} ${side}` })
-		console.log(_side)
-	}, [_side])
+	}, [side])
 	
-	const changeSide = () => {
-		_side === "Izq" ? setSide("Der") : setSide("Izq")
-		console.log(_side)
-	}
+	const changeSide = () => side === "Izq" ? setSide("Der") : setSide("Izq")
 
 	return (
 		<View style={styles.container}>
@@ -53,9 +49,9 @@ const CaptureSectionSides = ({ navigation, route }) => {
 					/>
 				</View>
 				<View style={styles.controls}>
-					<Button mode="contained" onPress={changeSide}>TERMINAR LADO</Button>
-					<Button mode="contained" onPress={() => navigation.navigate("captureCentral")}>SIGUIENTE SECCIÓN</Button>
-					<Button mode="contained" onPress={() => console.log("reset form")}>SIGUIENTE DETALLE</Button>
+					<Button uppercase mode="contained" onPress={() => console.log("reset form")}>Siguiente detalle</Button>
+					<Button uppercase mode="contained" onPress={changeSide}>Terminar lado</Button>
+					<Button uppercase mode="outlined" textColor="#F5F7FA" onPress={() => navigation.navigate("captureCentral")}>Siguiente sección</Button>
 				</View>
 			</View>
 		</View>
@@ -78,9 +74,6 @@ const styles = StyleSheet.create({
 		gap: 16
 	},
 	controls: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "center",
 		gap: 16
 	}
 });

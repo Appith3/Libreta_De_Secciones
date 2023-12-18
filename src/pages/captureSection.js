@@ -61,8 +61,8 @@ const CaptureSection = ({ navigation, route }) => {
 				</View>
 				<View style={styles.controls} >
 					<Button icon="chevron-left" onPress={onPressLeft} uppercase mode="contained" >Capturar izquierda</Button>
-					<Button uppercase mode="outlined" textColor="#F5F7FA" >Igual a la anterior</Button>
 					<Button icon="chevron-right" onPress={onPressRight} uppercase mode="contained" >Capturar derecha</Button>
+					<Button uppercase mode="outlined" textColor="#F5F7FA" >Igual a la anterior</Button>
 				</View>
 			</View>
 		</View>
@@ -85,9 +85,6 @@ const styles = StyleSheet.create({
 		gap: 16
 	},
 	controls: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "center",
 		gap: 16
 	}
 });
