@@ -6,7 +6,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 
 	const { _side, cadenamiento } = route.params;
 
-	const { detalles_derecha, detalles_izquierda, nombre } = cadenamiento
+	const { detalles, nombre } = cadenamiento
 
 	const [side, setSide] = useState(_side);
 

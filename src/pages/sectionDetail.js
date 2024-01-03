@@ -12,21 +12,13 @@ const SectionDetail = (props) => {
 	const {
 		nombre,
 		lectura_central,
-		detalles_izquierda,
-		detalles_derecha,
+		detalles,
 		codigo
 	} = route.params.cadenamiento
-
-	const [isEditable, setIsEditable] = useState(false)
-	const [isEditing, setIsEditing] = useState(false)
 
 	useEffect(() => {
 		navigation.setOptions({ title: `${nombre} ${codigo}` })
 	}, [])
-
-	const editText = () => {
-		setIsEditing(true)
-	}
 
 	return (
 		<View style={styles.container}>
@@ -34,73 +26,28 @@ const SectionDetail = (props) => {
 				<Text variant="headlineSmall" style={styles.title}>Elevación Central: {lectura_central}</Text>
 				<View style={styles.table}>
 					<View style={styles.row}>
-						<View style={[styles.col, styles.tableHeader, { borderTopLeftRadius: 8 }]}>
-							<Text variant="titleSmall" style={styles.tableHeaderText}>Distancia</Text>
+						<View style={[styles.tableHeader, { borderTopLeftRadius: 8 }]}>
+							<Text variant="titleSmall" style={styles.headerCell}>Distancia</Text>
 						</View>
-						<View style={[styles.col, styles.tableHeader]}>
-							<Text variant="titleSmall" style={styles.tableHeaderText}>Desnivel</Text>
+						<View style={styles.tableHeader}>
+							<Text variant="titleSmall" style={styles.headerCell}>Desnivel</Text>
 						</View>
-						<View style={[styles.col, styles.tableHeader]}>
-							{/* <View style={[styles.col, styles.tableHeader, { borderTopEndRadius: 8 }]}> */}
-							<Text variant="titleSmall" style={styles.tableHeaderText}>Altura</Text>
-						</View>
-						<View style={[styles.col, styles.tableHeader, { borderTopEndRadius: 8 }]}>
-							<Text variant="titleSmall" style={styles.tableHeaderText}>Editar</Text>
+						<View style={[styles.tableHeader, { borderTopEndRadius: 8 }]}>
+							<Text variant="titleSmall" style={styles.headerCell}>Lectura</Text>
 						</View>
 					</View>
-					<View style={styles.row} id="1">
-						<TextInput
-							value="-20"
-							keyboardType="decimal-pad"
-							readOnly={!isEditable}
-							style={styles.tableRow}
-							// onEndEditing={() => setIsEditable(false)}
-						/>
-						<TextInput
-							value="-0.38"
-							keyboardType="decimal-pad"
-							style={styles.tableRow}
-						/>
-						<TextInput
-							value="2.79"
-							keyboardType="decimal-pad"
-							readOnly
-							style={styles.tableRow}
-						/>
-						<IconButton
-							icon="pencil"
-							mode="outlined"
-							style={styles.editButton}
-							iconColor="#B8E2C7"
-							onPress={editText}
-						/>
-					</View>
-					<View style={styles.row} id="2">
-						<TextInput
-							value="-20"
-							keyboardType="decimal-pad"
-							readOnly={!isEditable}
-							style={styles.tableRow}
-						/>
-						<TextInput
-							value="-0.38"
-							keyboardType="decimal-pad"
-							readOnly
-							style={styles.tableRow}
-						/>
-						<TextInput
-							value="2.79"
-							keyboardType="decimal-pad"
-							readOnly={!isEditable}
-							style={styles.tableRow}
-						/>
-						<IconButton
-							icon="pencil"
-							mode="outlined"
-							style={styles.editButton}
-							iconColor="#B8E2C7"
-							onPress={editText}
-						/>
+					<View> {/* NOTE: this View will change to ScrollView */}
+						{
+							detalles.map((detalles) => {
+								return (
+									<View style={styles.row} id={detalles._id}>
+										<Text style={styles.cell}>{detalles.distancia}</Text>
+										<Text style={styles.cell}>{detalles.desnivel}</Text>
+										<Text style={styles.cell}>{detalles.lectura}</Text>
+									</View>
+								)
+							})
+						}
 					</View>
 				</View>
 			</View>
@@ -127,10 +74,9 @@ const styles = StyleSheet.create({
 	},
 	tableHeader: {
 		backgroundColor: "#5D84A6",
-		// width: "33.33%",
-		width: "25%",
+		width: "33.33%",
 	},
-	tableHeaderText: {
+	headerCell: {
 		color: "#F5F7FA",
 		alignSelf: "center",
 		paddingHorizontal: 6,
@@ -140,17 +86,16 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between"
 	},
-	tableRow: {
+	cell: {
 		borderColor: "#A8BED1",
 		borderWidth: 1,
-		width: "25%",
-		// width: "33.33%",
+		width: "33.33%",
 		textAlign: "center",
 		color: "#F5F7FA",
 		fontSize: 16,
 		paddingVertical: 8
 	},
-	editButton:{
+	editButton: {
 		width: "25%",
 		borderColor: "#A8BED1",
 		borderWidth: 1,
