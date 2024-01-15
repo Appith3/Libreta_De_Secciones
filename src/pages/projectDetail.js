@@ -3,12 +3,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Appbar, Chip, TextInput, Portal, FAB, Text, Button } from "react-native-paper"
 import SectionItem from "../componets/SectionItem";
 
-const ProjectDetail = (props) => {
-
-	const {
-		navigation,
-		route
-	} = props;
+const ProjectDetail = ({ navigation, route }) => {
 
 	const { project } = route.params
 
@@ -21,13 +16,14 @@ const ProjectDetail = (props) => {
 	const { open } = state;
 
 	useEffect(() => {
-		navigation.setOptions({ title: project.nombre.projectName || project.nombre })
+		// de donde viene projectName
+		navigation.setOptions({ title: project.name.projectName || project.name })
 	}, [])
 
-	const renderList = project.cadenamientos.map((cadenamiento) => {
-		return cadenamiento.status === "complete"
-			? <SectionItem title={cadenamiento.nombre} listId={cadenamiento._id} isComplete navigation={navigation} details={cadenamiento} />
-			: <SectionItem title={cadenamiento.nombre} listId={cadenamiento._id} navigation={navigation} details={cadenamiento} />
+	const renderList = project.stationing.map((stationing) => {
+		return stationing.status === "complete"
+			? <SectionItem title={stationing.name} listId={stationing._id} isComplete navigation={navigation} details={stationing} />
+			: <SectionItem title={stationing.name} listId={stationing._id} navigation={navigation} details={stationing} />
 	})
 
 	return (
@@ -71,8 +67,8 @@ const ProjectDetail = (props) => {
 							color: '#F5F7FA',
 							style: { backgroundColor: "#799AB7", borderRadius: 32 },
 							onPress: () => navigation.navigate('captureCentral'),
-							//! TODO: FIX TypeError: Cannot read property 'cadenamiento' of undefined
-							// when press Nueva sección the title will be Nueva sección if the property cadenamiento is undefined or is empty
+							//! TODO: FIX TypeError: Cannot read property 'stationing' of undefined
+							// when press Nueva sección the title will be Nueva sección if the property stationing is undefined or is empty
 						},
 						{
 							icon: 'upload',

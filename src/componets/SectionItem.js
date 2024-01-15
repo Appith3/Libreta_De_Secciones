@@ -26,8 +26,8 @@ const SectionItem = (props) => {
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
 					<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => {
 						isComplete
-							? navigation.navigate('sectionDetail', { cadenamiento: details })
-							: navigation.navigate('captureCentral', { cadenamiento: details })
+							? navigation.navigate('sectionDetail', { stationing: details })
+							: navigation.navigate('captureCentral', { stationing: details })
 					}} />
 				</>
 			)}
@@ -40,8 +40,8 @@ const SectionItem = (props) => {
 			descriptionStyle={styles.description}
 			onPress={() => {
 				isComplete
-					? navigation.navigate('sectionDetail', { cadenamiento: details })
-					: navigation.navigate('captureCentral', { cadenamiento: details })
+					? navigation.navigate('sectionDetail', { stationing: details })
+					: navigation.navigate('captureCentral', { stationing: details })
 			}}
 		/>
 	)

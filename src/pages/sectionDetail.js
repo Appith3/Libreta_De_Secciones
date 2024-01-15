@@ -2,28 +2,23 @@ import { useEffect, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { Button, IconButton, Text } from "react-native-paper";
 
-const SectionDetail = (props) => {
+const SectionDetail = ({ route, navigation }) => {
 
 	const {
-		route,
-		navigation
-	} = props
-
-	const {
-		nombre,
-		lectura_central,
-		detalles,
-		codigo
-	} = route.params.cadenamiento
+		name,
+		central_reading,
+		details,
+		code
+	} = route.params.stationing
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${nombre} ${codigo}` })
+		navigation.setOptions({ title: `${name} ${code}` })
 	}, [])
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<Text variant="headlineSmall" style={styles.title}>Elevación Central: {lectura_central}</Text>
+				<Text variant="headlineSmall" style={styles.title}>Elevación Central: {central_reading}</Text>
 				<View style={styles.table}>
 					<View style={styles.row}>
 						<View style={[styles.tableHeader, { borderTopLeftRadius: 8 }]}>
@@ -38,12 +33,12 @@ const SectionDetail = (props) => {
 					</View>
 					<View> {/* NOTE: this View will change to ScrollView */}
 						{
-							detalles.map((detalles) => {
+							details.map((details) => {
 								return (
-									<View style={styles.row} id={detalles._id}>
-										<Text style={styles.cell}>{detalles.distancia}</Text>
-										<Text style={styles.cell}>{detalles.desnivel}</Text>
-										<Text style={styles.cell}>{detalles.lectura}</Text>
+									<View style={styles.row} id={details._id}>
+										<Text style={styles.cell}>{details.distance}</Text>
+										<Text style={styles.cell}>{details.slope}</Text>
+										<Text style={styles.cell}>{details.reading}</Text>
 									</View>
 								)
 							})

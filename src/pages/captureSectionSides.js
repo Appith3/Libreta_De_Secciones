@@ -4,14 +4,14 @@ import { Button, Text, TextInput } from "react-native-paper";
 
 const CaptureSectionSides = ({ navigation, route }) => {
 
-	const { _side, cadenamiento } = route.params;
+	const { _side } = route.params;
 
-	const { detalles, nombre } = cadenamiento
+	const { details, name } = route.params.stationing
 
 	const [side, setSide] = useState(_side);
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${nombre} ${side}` })
+		navigation.setOptions({ title: `${name} ${side}` })
 	}, [side])
 	
 	const changeSide = () => side === "Izq" ? setSide("Der") : setSide("Izq")
@@ -23,8 +23,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 					<TextInput
 						mode="outlined"
 						placeholder="Nombre del detalle"
-						// value={_codigo}
-						// onChangeText={_codigo => setCodigo(_codigo)}
+						// value={_code}
+						// onChangeText={_code => setCodigo(_code)}
 						right={<TextInput.Icon icon="tag" />} />
 
 					<TextInput
@@ -32,8 +32,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						placeholder="Lectura"
 						keyboardType="number-pad"
 						inputMode="decimal"
-						// value={_nombre}
-						// onChangeText={_nombre => setNombre(_nombre)}
+						// value={_name}
+						// onChangeText={_name => setNombre(_name)}
 						right={<TextInput.Icon icon="ruler" />}
 					/>
 
@@ -43,8 +43,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						keyboardType="number-pad"
 						inputMode="decimal"
 						textAlign="left"
-						// value={_lecturaCentral}
-						// onChangeText={_lecturaCentral => setLecturaCentral(_lecturaCentral)} 
+						// value={_centralReading}
+						// onChangeText={_centralReading => setLecturaCentral(_centralReading)} 
 						right={<TextInput.Icon icon="map-marker-distance" />}
 					/>
 				</View>

@@ -16,10 +16,9 @@ const CreateProjectForm = ( props ) => {
 		navigation.navigate("ProjectDetail", {
 			project: {
 				"_id": "project_id_1000",
-				"nombre": {projectName},
-				"fecha_creacion": "27/11/2023",
-				"archivo_texto": "ruta/al/archivo.txt",
-				"cadenamientos": []
+				"name": {projectName},
+				"creation_date": "27/11/2023",
+				"stationing": []
 			}
 		})
 	};
