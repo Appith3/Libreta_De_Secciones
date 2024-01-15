@@ -4,7 +4,6 @@ const projects = {
       "_id": "project_id",
       "name": "Comaleros Eje 0",
       "creation_date": "2023-11-17T12:00:00Z",
-      "archivo_texto": "ruta/al/archivo.txt",
       "stationing": [
         {
           "_id": "cadenamiento_id_1",
@@ -344,6 +343,5 @@ const projects = {
     }
   ]
 }
-
 
 export default projects;
