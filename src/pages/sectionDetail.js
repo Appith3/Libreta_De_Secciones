@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
-import { Button, IconButton, Text } from "react-native-paper";
+import { useEffect } from "react";
+import { StyleSheet, View  } from "react-native";
+import { Text } from "react-native-paper";
 
+// FIXME: Text string must be rendered within a <Text> component
 const SectionDetail = ({ route, navigation }) => {
 
 	const {
@@ -35,7 +36,7 @@ const SectionDetail = ({ route, navigation }) => {
 						{
 							details.map((details) => {
 								return (
-									<View style={styles.row} id={details._id}>
+									<View style={styles.row} key={details._id}>
 										<Text style={styles.cell}>{details.distance}</Text>
 										<Text style={styles.cell}>{details.slope}</Text>
 										<Text style={styles.cell}>{details.reading}</Text>

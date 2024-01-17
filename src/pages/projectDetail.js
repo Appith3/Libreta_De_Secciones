@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Appbar, Chip, TextInput, Portal, FAB, Text, Button } from "react-native-paper"
+import { Chip, TextInput, Portal, FAB } from "react-native-paper"
 import SectionItem from "../componets/SectionItem";
 
 const ProjectDetail = ({ navigation, route }) => {
@@ -22,8 +22,8 @@ const ProjectDetail = ({ navigation, route }) => {
 
 	const renderList = project.stationing.map((stationing) => {
 		return stationing.status === "complete"
-			? <SectionItem title={stationing.name} listId={stationing._id} isComplete navigation={navigation} details={stationing} />
-			: <SectionItem title={stationing.name} listId={stationing._id} navigation={navigation} details={stationing} />
+			? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
+			: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />
 	})
 
 	return (
@@ -67,7 +67,7 @@ const ProjectDetail = ({ navigation, route }) => {
 							color: '#F5F7FA',
 							style: { backgroundColor: "#799AB7", borderRadius: 32 },
 							onPress: () => navigation.navigate('captureCentral'),
-							//! TODO: FIX TypeError: Cannot read property 'stationing' of undefined
+							// FIXME: TypeError: Cannot read property 'stationing' of undefined
 							// when press Nueva sección the title will be Nueva sección if the property stationing is undefined or is empty
 						},
 						{

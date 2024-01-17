@@ -1,6 +1,5 @@
-import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { List, IconButton, Chip } from 'react-native-paper';
+import { List, IconButton } from 'react-native-paper';
 
 const ProjectItem = (props) => {
 
@@ -14,7 +13,6 @@ const ProjectItem = (props) => {
 	return (
 		<List.Item
 			title={title}
-			key={listId}
 			right={() => (
 				<>
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />

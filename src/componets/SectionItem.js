@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { List, IconButton, Chip, Text } from 'react-native-paper';
+import { List, IconButton } from 'react-native-paper';
 
 const SectionItem = (props) => {
 
@@ -20,7 +20,6 @@ const SectionItem = (props) => {
 					? "Completa"
 					: null
 			}
-			key={listId}
 			right={() => (
 				<>
 					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />

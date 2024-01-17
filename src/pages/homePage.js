@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Appbar, FAB, Portal } from 'react-native-paper';
+import { FAB, Portal } from 'react-native-paper';
 import ProjectItem from '../componets/ProjectItem';
 
 import projects from '../../DB/projects';
@@ -28,7 +28,7 @@ const HomePage = ({ navigation }) => {
 				{
 					projectsList.map((project) => {
 						return (
-							<ProjectItem title={project.name} listId={project._id} details={project} navigation={navigation} />
+							<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
 						);
 					})
 				}
@@ -53,8 +53,8 @@ const HomePage = ({ navigation }) => {
 								navigation.navigate('createProject');
 								setFabVisible(false);
 							},
-							//! TODO: FIX when go back from createProjectForm screen the FAB not appear
-							//! TODO: FIX FAB persist in others screen
+							//FIXME:  when go back from createProjectForm screen the FAB not appear
+							//FIXME:  FAB persist in others screen
 						},
 						{
 							icon: 'upload',
