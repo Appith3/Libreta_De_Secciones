@@ -12,66 +12,66 @@ import ImportProject from './src/pages/importProject';
 import ExportProject from './src/pages/exportProject';
 
 const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#5d84a6',
-  }
+	...DefaultTheme,
+	colors: {
+		...DefaultTheme.colors,
+		primary: '#5d84a6',
+	}
 };
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName='HomePage'
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: '#38526c'
-            },
-            headerTintColor: '#F5F7FA'
-          }}
-        >
-          <Stack.Screen
-            name="homePage"
-            component={HomePage}
-            options={{ title: 'Proyectos' }}
-          />
-          <Stack.Screen
-            name="projectDetail"
-            component={ProjectDetail}
-          />
-          <Stack.Screen
-            name='createProject'
-            component={CreateProjectForm}
-            options={{ title: 'Crear Proyecto' }}
-          />
-          <Stack.Screen
-            name='captureCentral'
-            component={CaptureSection}
-          />
-          <Stack.Screen
-            name='captureSectionSides'
-            component={CaptureSectionSides}
-          />
-          <Stack.Screen
-            name='sectionDetail'
-            component={SectionDetail}
-          />
-          <Stack.Screen
-            name='importProject'
-            component={ImportProject}
-            options={{ title: 'Importar proyecto' }}
-          />
-          <Stack.Screen
-            name='exportProject'
-            component={ExportProject}
-            options={{ title: 'Exportar proyecto' }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
-  );
+	return (
+		<PaperProvider theme={theme}>
+			<NavigationContainer>
+				<Stack.Navigator
+					initialRouteName='HomePage'
+					screenOptions={{
+						headerStyle: {
+							backgroundColor: '#38526c'
+						},
+						headerTintColor: '#F5F7FA'
+					}}
+				>
+					<Stack.Screen
+						name='homePage'
+						component={HomePage}
+						options={{ title: 'Proyectos' }}
+					/>
+					<Stack.Screen
+						name='projectDetail'
+						component={ProjectDetail}
+					/>
+					<Stack.Screen
+						name='createProject'
+						component={CreateProjectForm}
+						options={{ title: 'Crear Proyecto' }}
+					/>
+					<Stack.Screen
+						name='captureCentral'
+						component={CaptureSection}
+					/>
+					<Stack.Screen
+						name='captureSectionSides'
+						component={CaptureSectionSides}
+					/>
+					<Stack.Screen
+						name='sectionDetail'
+						component={SectionDetail}
+					/>
+					<Stack.Screen
+						name='importProject'
+						component={ImportProject}
+						options={{ title: 'Importar proyecto' }}
+					/>
+					<Stack.Screen
+						name='exportProject'
+						component={ExportProject}
+						options={{ title: 'Exportar proyecto' }}
+					/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</PaperProvider>
+	);
 }

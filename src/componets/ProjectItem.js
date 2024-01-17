@@ -1,22 +1,23 @@
 import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 const ProjectItem = (props) => {
 
 	const {
-		title,
+		tittle,
 		listId,
 		details,
 		navigation
-	} = props
+	} = props;
 
 	return (
 		<List.Item
-			title={title}
+			title={tittle}
 			right={() => (
 				<>
-					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-					<IconButton icon="share" iconColor='#F5F7FA' onPress={() => console.log("share")} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
+					<IconButton icon='share' iconColor='#F5F7FA' onPress={() => console.log('share')} />
 				</>
 			)}
 			style={styles.listItem}
@@ -25,8 +26,8 @@ const ProjectItem = (props) => {
 				navigation.navigate('projectDetail', { project: details });
 			}}
 		/>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	listItem: {
@@ -34,6 +35,13 @@ const styles = StyleSheet.create({
 		borderRadius: 4,
 		marginVertical: 8
 	}
-})
+});
+
+ProjectItem.propTypes = {
+	tittle: PropTypes.string,
+	listId: PropTypes.string || PropTypes.number,
+	details: PropTypes.object,
+	navigation: PropTypes.object
+};
 
 export default ProjectItem;

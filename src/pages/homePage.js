@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { FAB, Portal } from 'react-native-paper';
 import ProjectItem from '../componets/ProjectItem';
-
+import PropTypes from 'prop-types';
 import projects from '../../DB/projects';
 
 const HomePage = ({ navigation }) => {
@@ -18,8 +18,8 @@ const HomePage = ({ navigation }) => {
 	const projectsList = projects.projects;
 
 	useEffect(() => {
-		setFabVisible(true)
-	}, [])
+		setFabVisible(true);
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -28,7 +28,7 @@ const HomePage = ({ navigation }) => {
 				{
 					projectsList.map((project) => {
 						return (
-							<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+							<ProjectItem tittle={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
 						);
 					})
 				}
@@ -40,7 +40,7 @@ const HomePage = ({ navigation }) => {
 					icon={open ? 'close' : 'plus'}
 					backdropColor='#fff0'
 					color='#F5F7FA'
-					fabStyle={{ backgroundColor: "#446585", borderRadius: 32 }}
+					fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
 					style={{ marginBottom: 46 }}
 					actions={[
 						{
@@ -48,7 +48,7 @@ const HomePage = ({ navigation }) => {
 							label: 'Crear proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: { backgroundColor: "#799AB7", borderRadius: 32 },
+							style: { backgroundColor: '#799AB7', borderRadius: 32 },
 							onPress: () => {
 								navigation.navigate('createProject');
 								setFabVisible(false);
@@ -61,9 +61,9 @@ const HomePage = ({ navigation }) => {
 							label: 'Importar proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: { backgroundColor: "#799AB7", borderRadius: 32 },
+							style: { backgroundColor: '#799AB7', borderRadius: 32 },
 							onPress: () => {
-								navigation.navigate('importProject')
+								navigation.navigate('importProject');
 								setFabVisible(false);
 							},
 						},
@@ -73,7 +73,7 @@ const HomePage = ({ navigation }) => {
 			</Portal>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -82,9 +82,13 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flex: 1,
-		flexDirection: "column",
+		flexDirection: 'column',
 		padding: 16
 	},
 });
+
+HomePage.propTypes = {
+	navigation: PropTypes.object	
+};
 
 export default HomePage;

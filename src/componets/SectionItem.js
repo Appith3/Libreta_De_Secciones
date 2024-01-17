@@ -1,32 +1,33 @@
 import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 const SectionItem = (props) => {
 
 	const {
-		title,
+		tittle,
 		listId,
 		isComplete = false,
 		details,
 		navigation
-	} = props
+	} = props;
 
 	return (
 		<List.Item
-			title={title}
+			title={tittle}
 			// TODO: add if exist section code add it on title prop
 			description={
 				isComplete
-					? "Completa"
+					? 'Completa'
 					: null
 			}
 			right={() => (
 				<>
-					<IconButton icon="delete" iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-					<IconButton icon="chevron-right" iconColor='#F5F7FA' onPress={() => {
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
+					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
 							? navigation.navigate('sectionDetail', { stationing: details })
-							: navigation.navigate('captureCentral', { stationing: details })
+							: navigation.navigate('captureCentral', { stationing: details });
 					}} />
 				</>
 			)}
@@ -40,11 +41,11 @@ const SectionItem = (props) => {
 			onPress={() => {
 				isComplete
 					? navigation.navigate('sectionDetail', { stationing: details })
-					: navigation.navigate('captureCentral', { stationing: details })
+					: navigation.navigate('captureCentral', { stationing: details });
 			}}
 		/>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	listItem: {
@@ -53,23 +54,31 @@ const styles = StyleSheet.create({
 		marginVertical: 8
 	},
 	borderCompleted: {
-		borderColor: "#369361",
-		borderStyle: "solid",
+		borderColor: '#369361',
+		borderStyle: 'solid',
 		borderWidth: 2
 	},
 	chip: {
 		borderRadius: 24,
-		backgroundColor: "#369361",
+		backgroundColor: '#369361',
 		height: 32,
-		alignSelf: "center"
+		alignSelf: 'center'
 	},
 	title: {
 		color: '#F5F7FA'
 	},
 	description: {
-		color: "#DAF1E0",
-		textDecorationLine: "underline"
+		color: '#DAF1E0',
+		textDecorationLine: 'underline'
 	}
-})
+});
+
+SectionItem.propTypes = {
+	tittle: PropTypes.string,
+	listId: PropTypes.string || PropTypes.number,
+	details: PropTypes.object,
+	navigation: PropTypes.object,
+	isComplete: PropTypes.bool
+};
 
 export default SectionItem;

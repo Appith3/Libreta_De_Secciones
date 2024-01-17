@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
-import { Button, HelperText, TextInput } from "react-native-paper";
-import FileInput from "../componets/FileInput";
+import { useEffect, useState } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import { Button, HelperText, TextInput } from 'react-native-paper';
+import FileInput from '../componets/FileInput';
+import PropTypes from 'prop-types';
 
 const CreateProjectForm = ( props ) => {
 
@@ -9,18 +10,18 @@ const CreateProjectForm = ( props ) => {
 		navigation
 	} = props;
 
-	const [projectName, setProjectName] = useState("");
-	const [currentDate, setCurrentDate] = useState("");
+	const [projectName, setProjectName] = useState('');
+	const [currentDate, setCurrentDate] = useState('');
 
 	const createProject = () => {
-		navigation.navigate("ProjectDetail", {
+		navigation.navigate('ProjectDetail', {
 			project: {
-				"_id": "project_id_1000",
-				"name": {projectName},
-				"creation_date": "27/11/2023",
-				"stationing": []
+				'_id': 'project_id_1000',
+				'name': {projectName},
+				'creation_date': '27/11/2023',
+				'stationing': []
 			}
-		})
+		});
 	};
 
 	useEffect(() => {
@@ -28,43 +29,44 @@ const CreateProjectForm = ( props ) => {
 		var month = new Date().getMonth() + 1;
 		var year = new Date().getFullYear();
 
-		setCurrentDate(date + '/' + month + '/' + year)
-	}, [])
+		setCurrentDate(date + '/' + month + '/' + year);
+	}, []);
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
 				<Image
+					// eslint-disable-next-line no-undef
 					source={require('../../assets/illustrations/bridge-construction.png')}
 					style={styles.image}
 				/>
 				<View style={styles.form}>
 					<View>
 						<TextInput
-							mode="outlined"
-							placeholder="Nombre del proyecto"
+							mode='outlined'
+							placeholder='Nombre del proyecto'
 							value={projectName}
 							onChangeText={projectName => setProjectName(projectName)}
-							right={<TextInput.Icon icon="map" />}
+							right={<TextInput.Icon icon='map' />}
 						/>
-						<HelperText type="info" style={styles.helperText}>
+						<HelperText type='info' style={styles.helperText}>
 							¿Como se llama el lugar donde se va seccionar?
 						</HelperText>
 					</View>
 					<TextInput
-						mode="outlined"
+						mode='outlined'
 						value={currentDate}
 						onChangeText={text => setProjectName(text)}
 						editable={false}
-						right={<TextInput.Icon icon="calendar" />}
+						right={<TextInput.Icon icon='calendar' />}
 					/>
 					<FileInput/>
-				<Button icon="plus" mode="contained" style={{marginTop: 32}} onPress={ createProject }>Crear trabajo</Button>
+					<Button icon='plus' mode='contained' style={{marginTop: 32}} onPress={ createProject }>Crear trabajo</Button>
 				</View>
 			</View>
 		</View>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flex: 1,
-		flexDirection: "column",
+		flexDirection: 'column',
 		gap: 32, 
 		padding: 16
 	},
@@ -84,12 +86,16 @@ const styles = StyleSheet.create({
 	},
 	form: {
 		flex: 1,
-		flexDirection: "column",
+		flexDirection: 'column',
 		gap: 16
 	},
 	helperText: {
 		color: '#A8BED1'
 	}
-})
+});
+
+CreateProjectForm.propTypes = {
+	navigation: PropTypes.object	
+};
 
 export default CreateProjectForm;

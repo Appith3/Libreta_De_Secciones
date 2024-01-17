@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { Chip, TextInput, Portal, FAB } from "react-native-paper"
-import SectionItem from "../componets/SectionItem";
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { Chip, TextInput, Portal, FAB } from 'react-native-paper';
+import SectionItem from '../componets/SectionItem';
+import PropTypes from 'prop-types';
 
 const ProjectDetail = ({ navigation, route }) => {
 
-	const { project } = route.params
+	const { project } = route.params;
 
-	const [searchText, setSearchText] = useState("");
+	const [searchText, setSearchText] = useState('');
 
 	const [state, setState] = useState({ open: false });
 
@@ -17,29 +18,29 @@ const ProjectDetail = ({ navigation, route }) => {
 
 	useEffect(() => {
 		// de donde viene projectName
-		navigation.setOptions({ title: project.name.projectName || project.name })
-	}, [])
+		navigation.setOptions({ title: project.name.projectName || project.name });
+	}, []);
 
 	const renderList = project.stationing.map((stationing) => {
-		return stationing.status === "complete"
+		return stationing.status === 'complete'
 			? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
-			: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />
-	})
+			: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />;
+	});
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<TextInput
-					placeholder="Buscar sección"
+					placeholder='Buscar sección'
 					value={searchText}
 					onChangeText={searchText => setSearchText(searchText)}
-					mode="outlined"
+					mode='outlined'
 				/>
 				<View style={styles.chips}>
 					<ScrollView horizontal>
-						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" onPress={() => console.log("Todo")}>Todo</Chip>
-						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" onPress={() => console.log("Secciones completas")}>Secciones completas</Chip>
-						<Chip mode="outlined" style={styles.chip} selectedColor="#5D84A6" onPress={() => console.log("Secciones vacías")}>Secciones vacías</Chip>
+						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Todo')}>Todo</Chip>
+						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Secciones completas')}>Secciones completas</Chip>
+						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Secciones vacías')}>Secciones vacías</Chip>
 					</ScrollView>
 				</View>
 			</View>
@@ -57,7 +58,7 @@ const ProjectDetail = ({ navigation, route }) => {
 					icon={open ? 'close' : 'plus'}
 					backdropColor='#fff0'
 					color='#F5F7FA'
-					fabStyle={{ backgroundColor: "#446585", borderRadius: 32 }}
+					fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
 					style={{ marginBottom: 46 }}
 					actions={[
 						{
@@ -65,9 +66,9 @@ const ProjectDetail = ({ navigation, route }) => {
 							label: 'Nueva sección',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: { backgroundColor: "#799AB7", borderRadius: 32 },
+							style: { backgroundColor: '#799AB7', borderRadius: 32 },
 							onPress: () => navigation.navigate('captureCentral'),
-							// FIXME: TypeError: Cannot read property 'stationing' of undefined
+							//FIXME: TypeError: Cannot read property 'stationing' of undefined
 							// when press Nueva sección the title will be Nueva sección if the property stationing is undefined or is empty
 						},
 						{
@@ -75,7 +76,7 @@ const ProjectDetail = ({ navigation, route }) => {
 							label: 'Exportar proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: { backgroundColor: "#799AB7", borderRadius: 32 },
+							style: { backgroundColor: '#799AB7', borderRadius: 32 },
 							onPress: () => navigation.navigate('exportProject', { project }),
 						},
 						{
@@ -83,7 +84,7 @@ const ProjectDetail = ({ navigation, route }) => {
 							label: 'Borrar proyecto',
 							labelTextColor: '#F5F7FA',
 							color: '#F5F7FA',
-							style: { backgroundColor: "#E54343", borderRadius: 32 },
+							style: { backgroundColor: '#E54343', borderRadius: 32 },
 							onPress: () => console.log('Borrar proyecto'),
 						},
 					]}
@@ -91,8 +92,8 @@ const ProjectDetail = ({ navigation, route }) => {
 				/>
 			</Portal>
 		</View>
-	)
-}
+	);
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#1E2833'
 	},
 	header: {
-		flexDirection: "column",
+		flexDirection: 'column',
 		paddingHorizontal: 16,
 		paddingTop: 16
 	},
@@ -110,12 +111,17 @@ const styles = StyleSheet.create({
 	chip: {
 		marginRight: 12,
 		borderRadius: 24,
-		backgroundColor: "#F5F7FA"
+		backgroundColor: '#F5F7FA'
 	},
 	sectionsList: {
 		paddingHorizontal: 16,
-		height: "70%"
+		height: '70%'
 	}
 });
+
+ProjectDetail.propTypes = {
+	navigation: PropTypes.object,
+	route: PropTypes.object
+};
 
 export default ProjectDetail;
