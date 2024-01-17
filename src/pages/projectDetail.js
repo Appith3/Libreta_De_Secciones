@@ -23,8 +23,8 @@ const ProjectDetail = ({ navigation, route }) => {
 
 	const renderList = project.stationing.map((stationing) => {
 		return stationing.status === 'complete'
-			? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
-			: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />;
+			? <SectionItem tittle={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
+			: <SectionItem tittle={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />;
 	});
 
 	return (
