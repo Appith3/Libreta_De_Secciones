@@ -3,7 +3,6 @@ import { StyleSheet, View  } from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-//FIXME: Text string must be rendered within a <Text> component
 const SectionDetail = ({ route, navigation }) => {
 
 	const {
@@ -20,32 +19,32 @@ const SectionDetail = ({ route, navigation }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<Text variant='headlineSmall' style={styles.title}>Elevación Central: {central_reading}</Text>
+				<Text variant='headlineSmall' style={styles.title}>Elevación central: {central_reading}</Text>
+				{/* Start table code */}
 				<View style={styles.table}>
 					<View style={styles.row}>
-						<View style={[styles.tableHeader, { borderTopLeftRadius: 8 }]}>
-							<Text variant='titleSmall' style={styles.headerCell}>Distancia</Text>
+						<View style={[styles.headerCell, { borderTopLeftRadius: 8}]}>
+							<Text variant='titleSmall' style={styles.tableHeader}>Distancia</Text>
 						</View>
-						<View style={styles.tableHeader}>
-							<Text variant='titleSmall' style={styles.headerCell}>Desnivel</Text>
+						<View style={styles.headerCell}>
+							<Text variant='titleSmall' style={styles.tableHeader}>Desnivel</Text>
 						</View>
-						<View style={[styles.tableHeader, { borderTopEndRadius: 8 }]}>
-							<Text variant='titleSmall' style={styles.headerCell}>Lectura</Text>
+						<View style={[styles.headerCell, { borderTopEndRadius: 8}]}>
+							<Text variant='titleSmall' style={styles.tableHeader}>Lectura</Text>
 						</View>
 					</View>
-					<View> {/* NOTE: this View will change to ScrollView */}
-						{
-							details.map((details) => {
-								return (
-									<View style={styles.row} key={details._id}>
-										<Text style={styles.cell}>{details.distance}</Text>
-										<Text style={styles.cell}>{details.slope}</Text>
-										<Text style={styles.cell}>{details.reading}</Text>
-									</View>
-								);
-							})
-						}
-					</View>
+					{/* Note: think about to add a ScrollView */}
+					{
+						details.map((detail) => {
+							return (
+								<View style={styles.row} key={detail._id}>
+									<Text style={styles.cell}>{detail.distance}</Text>
+									<Text style={styles.cell}>{detail.slope}</Text>
+									<Text style={styles.cell}>{detail.reading}</Text>
+								</View>
+							);
+						})
+					}
 				</View>
 			</View>
 		</View>
@@ -67,17 +66,17 @@ const styles = StyleSheet.create({
 	table: {
 		borderColor: '#A8BED1',
 		borderRadius: 8,
-		borderWidth: 2
+		borderWidth: 1
 	},
 	tableHeader: {
-		backgroundColor: '#5D84A6',
-		width: '33.33%',
-	},
-	headerCell: {
 		color: '#F5F7FA',
 		alignSelf: 'center',
 		paddingHorizontal: 6,
 		paddingVertical: 8
+	},
+	headerCell: {
+		backgroundColor: '#5D84A6',
+		width: '33.33%',
 	},
 	row: {
 		flexDirection: 'row',
