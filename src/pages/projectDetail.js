@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, Portal, FAB } from 'react-native-paper';
+import { Chip, TextInput, FAB } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 
@@ -50,44 +50,41 @@ const ProjectDetail = ({ navigation, route }) => {
 					}
 				</ScrollView>
 			</View>
-			<Portal>
-				<FAB.Group
-					open={open}
-					visible
-					icon={open ? 'close' : 'plus'}
-					backdropColor='#fff0'
-					color='#F5F7FA'
-					fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
-					style={{ marginBottom: 46 }}
-					actions={[
-						{
-							icon: 'plus',
-							label: 'Nueva sección',
-							labelTextColor: '#F5F7FA',
-							color: '#F5F7FA',
-							style: { backgroundColor: '#799AB7', borderRadius: 32 },
-							onPress: () => navigation.navigate('captureCentral'),
-						},
-						{
-							icon: 'upload',
-							label: 'Exportar proyecto',
-							labelTextColor: '#F5F7FA',
-							color: '#F5F7FA',
-							style: { backgroundColor: '#799AB7', borderRadius: 32 },
-							onPress: () => navigation.navigate('exportProject', { project }),
-						},
-						{
-							icon: 'delete',
-							label: 'Borrar proyecto',
-							labelTextColor: '#F5F7FA',
-							color: '#F5F7FA',
-							style: { backgroundColor: '#E54343', borderRadius: 32 },
-							onPress: () => console.log('Borrar proyecto'),
-						},
-					]}
-					onStateChange={onStateChange}
-				/>
-			</Portal>
+			<FAB.Group
+				open={open}
+				icon={open ? 'close' : 'plus'}
+				backdropColor='#fff0'
+				color='#F5F7FA'
+				fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
+				style={{ marginBottom: 46 }}
+				actions={[
+					{
+						icon: 'plus',
+						label: 'Nueva sección',
+						labelTextColor: '#F5F7FA',
+						color: '#F5F7FA',
+						style: { backgroundColor: '#799AB7', borderRadius: 32 },
+						onPress: () => navigation.navigate('captureCentral'),
+					},
+					{
+						icon: 'upload',
+						label: 'Exportar proyecto',
+						labelTextColor: '#F5F7FA',
+						color: '#F5F7FA',
+						style: { backgroundColor: '#799AB7', borderRadius: 32 },
+						onPress: () => navigation.navigate('exportProject', { project }),
+					},
+					{
+						icon: 'delete',
+						label: 'Borrar proyecto',
+						labelTextColor: '#F5F7FA',
+						color: '#F5F7FA',
+						style: { backgroundColor: '#E54343', borderRadius: 32 },
+						onPress: () => console.log('Borrar proyecto'),
+					},
+				]}
+				onStateChange={onStateChange}
+			/>
 		</View>
 	);
 };

@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { FAB, Portal } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import ProjectItem from '../componets/ProjectItem';
 import PropTypes from 'prop-types';
 import projects from '../../DB/projects';
 
 const HomePage = ({ navigation }) => {
-	const [fabVisible, setFabVisible] = useState(false);
 
 	const [state, setState] = useState({ open: false });
 	// TODO: Make function to read projects from DB/projects.json
@@ -16,10 +15,6 @@ const HomePage = ({ navigation }) => {
 	const { open } = state;
 
 	const projectsList = projects.projects;
-
-	useEffect(() => {
-		setFabVisible(true);
-	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -33,44 +28,37 @@ const HomePage = ({ navigation }) => {
 					})
 				}
 			</ScrollView>
-			<Portal>
-				<FAB.Group
-					open={open}
-					visible={fabVisible}
-					icon={open ? 'close' : 'plus'}
-					backdropColor='#fff0'
-					color='#F5F7FA'
-					fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
-					style={{ marginBottom: 46 }}
-					actions={[
-						{
-							icon: 'plus',
-							label: 'Crear proyecto',
-							labelTextColor: '#F5F7FA',
-							color: '#F5F7FA',
-							style: { backgroundColor: '#799AB7', borderRadius: 32 },
-							onPress: () => {
-								navigation.navigate('createProject');
-								setFabVisible(false);
-							},
-							//FIXME:  when go back from createProjectForm screen the FAB not appear
-							//FIXME:  FAB persist in others screen
+			<FAB.Group
+				open={open}
+				icon={open ? 'close' : 'plus'}
+				backdropColor='#fff0'
+				color='#F5F7FA'
+				fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
+				style={{ marginBottom: 46 }}
+				actions={[
+					{
+						icon: 'plus',
+						label: 'Crear proyecto',
+						labelTextColor: '#F5F7FA',
+						color: '#F5F7FA',
+						style: { backgroundColor: '#799AB7', borderRadius: 32 },
+						onPress: () => {
+							navigation.navigate('createProject');
+						}
+					},
+					{
+						icon: 'upload',
+						label: 'Importar proyecto',
+						labelTextColor: '#F5F7FA',
+						color: '#F5F7FA',
+						style: { backgroundColor: '#799AB7', borderRadius: 32 },
+						onPress: () => {
+							navigation.navigate('importProject');
 						},
-						{
-							icon: 'upload',
-							label: 'Importar proyecto',
-							labelTextColor: '#F5F7FA',
-							color: '#F5F7FA',
-							style: { backgroundColor: '#799AB7', borderRadius: 32 },
-							onPress: () => {
-								navigation.navigate('importProject');
-								setFabVisible(false);
-							},
-						},
-					]}
-					onStateChange={onStateChange}
-				/>
-			</Portal>
+					},
+				]}
+				onStateChange={onStateChange}
+			/>
 		</View>
 	);
 };
@@ -88,7 +76,7 @@ const styles = StyleSheet.create({
 });
 
 HomePage.propTypes = {
-	navigation: PropTypes.object	
+	navigation: PropTypes.object
 };
 
 export default HomePage;
