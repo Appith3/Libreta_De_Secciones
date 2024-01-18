@@ -14,6 +14,7 @@ const CreateProjectForm = ( props ) => {
 	const [currentDate, setCurrentDate] = useState('');
 
 	const createProject = () => {
+		// FIXME: Do you have a screen named 'ProjectDetail'?
 		navigation.navigate('ProjectDetail', {
 			project: {
 				'_id': 'project_id_1000',
