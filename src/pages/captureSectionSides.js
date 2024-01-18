@@ -8,7 +8,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	const { _side } = route.params;
 
 	// eslint-disable-next-line no-unused-vars
-	const { details, name } = route.params.stationing;
+	const { details, name } = route.params.stationing || {};
 
 	const [side, setSide] = useState(_side);
 

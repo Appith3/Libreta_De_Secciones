@@ -17,7 +17,6 @@ const ProjectDetail = ({ navigation, route }) => {
 	const { open } = state;
 
 	useEffect(() => {
-		// de donde viene projectName
 		navigation.setOptions({ title: project.name.projectName || project.name });
 	}, []);
 
@@ -68,8 +67,6 @@ const ProjectDetail = ({ navigation, route }) => {
 							color: '#F5F7FA',
 							style: { backgroundColor: '#799AB7', borderRadius: 32 },
 							onPress: () => navigation.navigate('captureCentral'),
-							//FIXME: TypeError: Cannot read property 'stationing' of undefined
-							// when press Nueva sección the title will be Nueva sección if the property stationing is undefined or is empty
 						},
 						{
 							icon: 'upload',

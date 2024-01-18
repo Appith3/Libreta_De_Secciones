@@ -5,17 +5,15 @@ import PropTypes from 'prop-types';
 
 const CaptureSection = ({ navigation, route }) => {
 
-	const stationing = route.params.stationing;
-	const { code, name, central_reading } = stationing;
+	const stationing = route.params?.stationing;
+	const { code, name, central_reading } = stationing || {};
 
-	const [_code, setCode] = useState(code);
-	const [_name, setName] = useState(name);
-	const [_centralReading, setCentralReading] = useState(central_reading);
+	const [_code, setCode] = useState(code || '');
+	const [_name, setName] = useState(name || '');
+	const [_centralReading, setCentralReading] = useState(central_reading || '');
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${_name} CENTRO` || 'Nueva Sección centro' });
-		console.log('stationing: ', stationing);
-		console.log('route: ', route);
+		stationing ? navigation.setOptions({ title: `${_name} centro` }) : navigation.setOptions({ title: 'Nueva Sección centro' });
 	}, []);
 
 	const onPressLeft = () => {
@@ -28,7 +26,7 @@ const CaptureSection = ({ navigation, route }) => {
 
 	// formateamos el valor del cadenamiento de 0000 a 0+000.00
 	// eslint-disable-next-line no-unused-vars
-	const formatAlignmentName = () => {};
+	const formatAlignmentName = () => { };
 
 	return (
 		<View style={styles.container}>
@@ -38,7 +36,7 @@ const CaptureSection = ({ navigation, route }) => {
 						mode='outlined'
 						placeholder='Codigo'
 						value={_code}
-						onChangeText={_code => setCode(_code)}
+						onChangeText={_code => setCode(_code.toUpperCase()) }
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
