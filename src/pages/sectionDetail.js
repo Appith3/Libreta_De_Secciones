@@ -91,14 +91,6 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		paddingVertical: 8
 	},
-	editButton: {
-		width: '25%',
-		borderColor: '#A8BED1',
-		borderWidth: 1,
-		borderRadius: 0,
-		margin: 0,
-		height: '100%'
-	},
 	title: {
 		color: '#F5F7FA'
 	}
