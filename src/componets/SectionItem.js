@@ -15,7 +15,7 @@ const SectionItem = (props) => {
 	return (
 		<List.Item
 			title={title}
-			// TODO: add if exist section code add it on title prop
+			// TODO: add code section to the title if exist
 			description={
 				isComplete
 					? 'Completa'
