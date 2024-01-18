@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { FAB, TextInput } from 'react-native-paper';
 import ProjectItem from '../componets/ProjectItem';
 import PropTypes from 'prop-types';
 import projects from '../../DB/projects';
@@ -8,6 +8,7 @@ import projects from '../../DB/projects';
 const HomePage = ({ navigation }) => {
 
 	const [state, setState] = useState({ open: false });
+	const [searchText, setSearchText] = useState();
 	// TODO: Make function to read projects from DB/projects.json
 
 	const onStateChange = ({ open }) => setState({ open });
@@ -18,16 +19,24 @@ const HomePage = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			{/* TODO: add input search */}
-			<ScrollView style={styles.main}>
-				{
-					projectsList.map((project) => {
-						return (
-							<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
-						);
-					})
-				}
-			</ScrollView>
+			<View  style={styles.main}>
+				<TextInput
+					style={styles.searchInput}
+					mode='outlined'
+					placeholder='Buscar proyecto'
+					value={searchText}
+					onChangeText={searchText => setSearchText(searchText)}
+					right={<TextInput.Icon icon='magnify' />} />
+				<ScrollView>
+					{
+						projectsList.map((project) => {
+							return (
+								<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+							);
+						})
+					}
+				</ScrollView>
+			</View>
 			<FAB.Group
 				open={open}
 				icon={open ? 'close' : 'plus'}
@@ -73,6 +82,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		padding: 16
 	},
+	searchInput: {
+		marginVertical: 8
+	}
 });
 
 HomePage.propTypes = {
