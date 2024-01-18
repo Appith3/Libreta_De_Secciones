@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const ProjectItem = (props) => {
 
 	const {
-		tittle,
+		title,
 		listId,
 		details,
 		navigation
@@ -13,7 +13,7 @@ const ProjectItem = (props) => {
 
 	return (
 		<List.Item
-			title={tittle}
+			title={title}
 			right={() => (
 				<>
 					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 
 ProjectItem.propTypes = {
-	tittle: PropTypes.string,
+	title: PropTypes.string,
 	listId: PropTypes.string || PropTypes.number,
 	details: PropTypes.object,
 	navigation: PropTypes.object

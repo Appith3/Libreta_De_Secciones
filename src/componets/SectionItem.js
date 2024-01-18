@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const SectionItem = (props) => {
 
 	const {
-		tittle,
+		title,
 		listId,
 		isComplete = false,
 		details,
@@ -14,7 +14,7 @@ const SectionItem = (props) => {
 
 	return (
 		<List.Item
-			title={tittle}
+			title={title}
 			// TODO: add if exist section code add it on title prop
 			description={
 				isComplete
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
 });
 
 SectionItem.propTypes = {
-	tittle: PropTypes.string,
+	title: PropTypes.string,
 	listId: PropTypes.string || PropTypes.number,
 	details: PropTypes.object,
 	navigation: PropTypes.object,

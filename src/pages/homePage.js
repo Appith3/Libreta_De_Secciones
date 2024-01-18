@@ -28,7 +28,7 @@ const HomePage = ({ navigation }) => {
 				{
 					projectsList.map((project) => {
 						return (
-							<ProjectItem tittle={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+							<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
 						);
 					})
 				}
