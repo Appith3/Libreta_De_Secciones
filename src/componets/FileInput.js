@@ -1,10 +1,29 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
+import DocumentPicker from 'react-native-document-picker';
 
 const FileInput = () => {
 	// eslint-disable-next-line no-unused-vars
 	const [text, setText] = useState('');
+
+	const pickDocument = async () => {
+		try {
+			const result = await DocumentPicker.pick({
+				type: [DocumentPicker.types.allFiles],
+			});
+			console.log(result);
+		} catch (err) {
+			if (DocumentPicker.isCancel(err)) {
+				// El usuario canceló la selección del documento
+				console.log('Selección de documento cancelada');
+			} else {
+				// Manejo de otros errores
+				console.error('Error al seleccionar el documento:', err);
+			}
+		}
+	};
+	
 
 	return (
 		<View style={styles.fileInput}>
@@ -12,6 +31,7 @@ const FileInput = () => {
 			<Button
 				mode='contained'
 				style={styles.button}	
+				onPress={pickDocument}
 			>
 				Cargar trazo
 			</Button>
