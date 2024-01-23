@@ -1,36 +1,48 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-import DocumentPicker from 'react-native-document-picker';
+import * as DocumentPicker from 'expo-document-picker';
 
 const FileInput = () => {
-	// eslint-disable-next-line no-unused-vars
-	const [text, setText] = useState('');
+
+	const [file, setFile] = useState({
+		mimeType: '',
+		name: 'Nombre del archivo',
+		uri: ''
+	});
 
 	const pickDocument = async () => {
 		try {
-			const result = await DocumentPicker.pick({
-				type: [DocumentPicker.types.allFiles],
+			const doc = await DocumentPicker.getDocumentAsync({
+				type: ['text/plain', 'text/comma-separated-values'],
+				copyToCacheDirectory: false,
 			});
-			console.log(result);
+
+			!doc.assets ?
+				doc.canceled :
+				setFile({
+					mimeType: doc.assets[0].mimeType,
+					name: doc.assets[0].name,
+					uri: doc.assets[0].uri
+				});
+
 		} catch (err) {
-			if (DocumentPicker.isCancel(err)) {
-				// El usuario canceló la selección del documento
-				console.log('Selección de documento cancelada');
-			} else {
-				// Manejo de otros errores
-				console.error('Error al seleccionar el documento:', err);
-			}
+			console.error('Error al seleccionar el documento:', err);
 		}
 	};
-	
 
 	return (
 		<View style={styles.fileInput}>
-			<Text style={styles.placeholder}>Nombre del archivo</Text>
+			<Text
+				style={styles.placeholder}
+				variant='bodyLarge'
+				ellipsizeMode='tail'
+				numberOfLines={1}
+			>
+				{file.name.split('.')[0]
+				}</Text>
 			<Button
 				mode='contained'
-				style={styles.button}	
 				onPress={pickDocument}
 			>
 				Cargar trazo
@@ -50,14 +62,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4
 	},
 	placeholder: {
-		fontFamily: 'sans-serif',
-		letterSpacing: 0.15,
-		fontSize: 16,
-		textAlignVertical: 'center',
-		textAlign: 'left',
-	},
-	button: {
-		
+		maxWidth: '65%'
 	}
 });
 
