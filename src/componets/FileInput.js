@@ -10,25 +10,25 @@ const FileInput = () => {
 		mimeType: '',
 		name: 'Nombre del archivo',
 		uri: '',
-		content: {}
+		content: []
 	});
 
 	useEffect(() => {
 		readFileContent(file.uri);
 	}, [file]);
-	
+
 	const pickFile = async () => {
 		try {
 			const doc = await DocumentPicker.getDocumentAsync({
 				type: ['text/plain', 'text/comma-separated-values'],
-				copyToCacheDirectory: false,
+				copyToCacheDirectory: true,
 			});
 
 			if (doc.assets) {
 				setFile({
 					mimeType: doc.assets[0].mimeType,
 					name: doc.assets[0].name,
-					uri: doc.assets[0].uri
+					uri: doc.assets[0].uri,
 				});
 			}
 			else doc.canceled;
@@ -38,13 +38,14 @@ const FileInput = () => {
 		}
 	};
 
+	//TODO: sabe content.split('\n') on state
 	const readFileContent = async (uri) => {
 		try {
 			const file = await FileSystem.getInfoAsync(uri);
 
-			if(file.exists && !file.isDirectory) {
-				const content = await FileSystem.readAsStringAsync(uri, {encoding: FileSystem.EncodingType.UTF8}); // 
-				console.log(content);
+			if (file.exists && !file.isDirectory) {
+				const content = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.UTF8 });
+				console.log(content.split('\n')[12]);
 			} else {
 				Alert.alert('Error', 'No se puede leer el contenido del archivo');
 			}
