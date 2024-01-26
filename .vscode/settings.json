@@ -10,6 +10,8 @@
 		"creacion",
 		"ellipsize",
 		"firebaseapp",
+		"firestore",
+		"Firestore",
 		"topografica"
 	]
 }

@@ -1,10 +1,10 @@
 import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyDRr01weX_FkMoSqf4e3F0G1wCD4viOQ2s',
 	authDomain: 'libreta-topografica.firebaseapp.com',
-	// databaseURL: 'https://project-id.firebaseio.com',
 	projectId: 'libreta-topografica',
 	storageBucket: 'libreta-topografica.appspot.com',
 	messagingSenderId: '480144485961',
@@ -12,3 +12,5 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
