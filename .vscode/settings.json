@@ -12,6 +12,7 @@
 		"firebaseapp",
 		"firestore",
 		"Firestore",
-		"topografica"
+		"topografica",
+		"zustand"
 	]
 }

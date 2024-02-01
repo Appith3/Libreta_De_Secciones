@@ -109,7 +109,6 @@ const projects = {
 			'_id': 'project_id_2',
 			'name': 'Comaleros Eje 10',
 			'creation_date': '2023-11-17T12:00:00Z',
-			'archivo_texto': 'ruta/al/archivo.txt',
 			'stationing': [
 				{
 					'_id': 'cadenamiento_id_2',
@@ -215,7 +214,6 @@ const projects = {
 			'_id': 'project_id_3',
 			'name': 'Comaleros Eje 20',
 			'creation_date': '2023-11-17T12:00:00Z',
-			'archivo_texto': 'ruta/al/archivo.txt',
 			'stationing': [
 				{
 					'_id': 'cadenamiento_id_4',
@@ -321,7 +319,6 @@ const projects = {
 			'_id': 'project_id_4',
 			'name': 'Blvd La Luz',
 			'creation_date': '2023-11-17T12:00:00Z',
-			'archivo_texto': 'ruta/al/archivo.txt',
 			'stationing': [
 				{
 					'_id': 'cadenamiento_id_13',
