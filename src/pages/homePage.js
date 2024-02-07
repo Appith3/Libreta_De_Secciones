@@ -1,25 +1,46 @@
 import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { FAB, TextInput } from 'react-native-paper';
+import { FAB, TextInput, Text } from 'react-native-paper';
+import { db } from '../firebase/firebaseConfig';
+import { collection } from 'firebase/firestore';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import ProjectItem from '../componets/ProjectItem';
 import PropTypes from 'prop-types';
-import projects from '../../DB/projects';
 
 const HomePage = ({ navigation }) => {
 
-	const [state, setState] = useState({ open: false });
+	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
-	// TODO: Make function to read projects from DB/projects.json
+	const [projects, setProjects] = useState();
 
-	const onStateChange = ({ open }) => setState({ open });
+	const onStateChange = () => {
+		openFAB.open ? setOpenFAB({open: false}) : setOpenFAB({ open: true });
+	};
 
-	const { open } = state;
+	const renderProjects = (projects) => {
+		projects.map((project) => {
+			return (
+				<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+			);
+		});
+	};
 
-	const projectsList = projects.projects;
+	const emptyState = () => {
+		// TODO: Add image to empty state
+		return (
+			<Text
+				variant='displaySmall'
+				style={{
+					color: '#F5F7FA',
+					alignSelf: 'center'
+				}}
+			>No creaste proyectos aun, crea uno para continuar</Text>
+		);
+	};
 
 	return (
 		<View style={styles.container}>
-			<View  style={styles.main}>
+			<View style={styles.main}>
 				<TextInput
 					style={styles.searchInput}
 					mode='outlined'
@@ -29,17 +50,13 @@ const HomePage = ({ navigation }) => {
 					right={<TextInput.Icon icon='magnify' />} />
 				<ScrollView>
 					{
-						projectsList.map((project) => {
-							return (
-								<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
-							);
-						})
+						projects ? renderProjects(projects) : emptyState()
 					}
 				</ScrollView>
 			</View>
 			<FAB.Group
-				open={open}
-				icon={open ? 'close' : 'plus'}
+				open={openFAB.open}
+				icon={openFAB.open ? 'close' : 'plus'}
 				backdropColor='#fff0'
 				color='#F5F7FA'
 				fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
