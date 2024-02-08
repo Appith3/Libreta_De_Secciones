@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { FAB, TextInput, Text } from 'react-native-paper';
 import { db } from '../firebase/firebaseConfig';
-import { collection } from 'firebase/firestore';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import ProjectItem from '../componets/ProjectItem';
 import PropTypes from 'prop-types';
 
@@ -11,19 +10,33 @@ const HomePage = ({ navigation }) => {
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
-	const [projects, setProjects] = useState();
+	
+	// FIXME: Error: FIRESTORE (10.7.2) INTERNAL ASSERTION FAILED: Unexpected state
+	const getProjects = async () => {
+		const projectsCollRef = query(collection(db, 'example_projects'));
+	
+		const projectsSnapshot = await getDocs(projectsCollRef);
+		projectsSnapshot.forEach((project) => {
+			console.log(project.id, ' => ', project.data());
+		});
+
+	};
+
+	useEffect(()=>{
+		getProjects();
+	},[]);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({open: false}) : setOpenFAB({ open: true });
 	};
 
-	const renderProjects = (projects) => {
-		projects.map((project) => {
-			return (
-				<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
-			);
-		});
-	};
+	// const renderProjects = (projects) => {
+	// 	projects.map((project) => {
+	// 		return (
+	// 			<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+	// 		);
+	// 	});
+	// };
 
 	const emptyState = () => {
 		// TODO: Add image to empty state
@@ -49,9 +62,9 @@ const HomePage = ({ navigation }) => {
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
 				<ScrollView>
-					{
+					{/* {
 						projects ? renderProjects(projects) : emptyState()
-					}
+					} */}
 				</ScrollView>
 			</View>
 			<FAB.Group
