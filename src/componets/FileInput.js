@@ -13,9 +13,9 @@ const FileInput = () => {
 		content: []
 	});
 
-	useEffect(() => {
-		readFileContent(file.uri);
-	}, [file]);
+	// useEffect(() => {
+	// 	readFileContent(file.uri);
+	// }, [file]);
 
 	const pickFile = async () => {
 		try {
@@ -27,8 +27,9 @@ const FileInput = () => {
 			if (doc.assets) {
 				setFile({
 					mimeType: doc.assets[0].mimeType,
-					name: doc.assets[0].name,
+					name: doc.assets[0].name.split('.')[0],
 					uri: doc.assets[0].uri,
+					content: readFileContent(doc.assets[0].uri)
 				});
 			}
 			else doc.canceled;
@@ -38,16 +39,17 @@ const FileInput = () => {
 		}
 	};
 
-	//TODO: sabe content.split('\n') on state
+	//TODO: save content.split('\n') on state
 	const readFileContent = async (uri) => {
 		try {
 			const file = await FileSystem.getInfoAsync(uri);
 
 			if (file.exists && !file.isDirectory) {
 				const content = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.UTF8 });
-				console.log(content.split('\n')[12]);
+				return content.split('\n');
 			} else {
 				Alert.alert('Error', 'No se puede leer el contenido del archivo');
+				return;
 			}
 		} catch (err) {
 			console.error('Error al leer el contenido del archivo', err);
@@ -55,21 +57,24 @@ const FileInput = () => {
 	};
 
 	return (
-		<View style={styles.fileInput}>
-			<Text
-				style={styles.placeholder}
-				variant='bodyLarge'
-				ellipsizeMode='tail'
-				numberOfLines={1}
-			>
-				{file.name.split('.')[0]
-				}</Text>
-			<Button
-				mode='contained'
-				onPress={pickFile}
-			>
-				Cargar trazo
-			</Button>
+		<View>
+			<View style={styles.fileInput}>
+				<Text
+					style={styles.placeholder}
+					variant='bodyLarge'
+					ellipsizeMode='tail'
+					numberOfLines={1}
+				>
+					{file.name}
+				</Text>
+				<Button
+					mode='contained'
+					onPress={pickFile}
+				>
+					Cargar trazo
+				</Button>
+			</View>
+			<Text variant='labelSmall' style={styles.caption}>{file.name}</Text>
 		</View>
 	);
 };
@@ -86,6 +91,11 @@ const styles = StyleSheet.create({
 	},
 	placeholder: {
 		maxWidth: '65%'
+	},
+	caption: {
+		color: '#A8BED1',
+		paddingHorizontal: 12,
+		paddingVertical: 4
 	}
 });
 
