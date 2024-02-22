@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import FileInput from '../componets/FileInput';
@@ -11,7 +11,6 @@ const CreateProjectForm = ( props ) => {
 	} = props;
 
 	const [projectName, setProjectName] = useState('');
-	const [currentDate, setCurrentDate] = useState('');
 
 	const createProject = () => {
 		navigation.navigate('projectDetail', {
@@ -23,14 +22,6 @@ const CreateProjectForm = ( props ) => {
 			}
 		});
 	};
-
-	useEffect(() => {
-		var date = new Date().getDate();
-		var month = new Date().getMonth() + 1;
-		var year = new Date().getFullYear();
-
-		setCurrentDate(date + '/' + month + '/' + year);
-	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -53,15 +44,8 @@ const CreateProjectForm = ( props ) => {
 							¿Como se llama el lugar donde se va seccionar?
 						</HelperText>
 					</View>
-					<TextInput
-						mode='outlined'
-						value={currentDate}
-						onChangeText={text => setProjectName(text)}
-						editable={false}
-						right={<TextInput.Icon icon='calendar' />}
-					/>
 					<FileInput/>
-					<Button icon='plus' mode='contained' style={{marginTop: 32}} onPress={ createProject }>Crear trabajo</Button>
+					<Button icon='plus' mode='contained' style={{marginTop: 96}} onPress={ createProject }>Crear trabajo</Button>
 				</View>
 			</View>
 		</View>
