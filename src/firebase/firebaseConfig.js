@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-// TODO: Add SDKs for Firebase products that you want to use
 // TODO: Configure firestore persistence offline
+
+// FIXME: can not read .env.local variables
 
 const firebaseConfig = {
 	apiKey: process.env.EXPO_PUBLIC_API_KEY,
