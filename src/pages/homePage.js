@@ -1,44 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { FAB, TextInput, Text } from 'react-native-paper';
-/*import { db } from '../firebase/firebaseConfig';
-import { collection, query, doc, getDocs, getDoc, where } from 'firebase/firestore';*/
 import ProjectItem from '../componets/ProjectItem';
 import PropTypes from 'prop-types';
+
+import { useProjectStore } from '../hooks/useProjectStore';
 
 const HomePage = ({ navigation }) => {
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
-	const [projects, setProjects] = useState();
 
-	// FIXME: @firebase/firestore: Firestore (10.7.2): INTERNAL UNHANDLED ERROR:  TypeError: Cannot read property 'includes' of undefined
-	/*const getProjects = async () => {
-		try {
-			const projectsQuery = query(collection(db, 'example_projects'), where('stationing', 'exists', true));
-			console.log('projectsQuery: ', projectsQuery.firestore.app);
-			
-			const projectsSnapshot = await getDocs(projectsQuery);
-			if (projectsSnapshot === null || projectsSnapshot === undefined) {
-				console.log('No se encontraron proyectos con la subcolección "stationing".');
-				return;
-			} else {
-				console.log('projectsSnapshot: ', projectsSnapshot);
-			}
-
-			projectsSnapshot.forEach((projectDoc) => {
-				const stationingCollRef = collection(projectDoc.ref, 'stationing');
-				console.log('stationingCollRef: ', stationingCollRef);
-			});
-
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	const projects = useProjectStore((state) => state.projects);
+	const getProjectsFromFirestore = useProjectStore((state) => state.getProjectsFromFirestore);
 
 	useEffect(() => {
-		getProjects();
-	}, []);*/
+		getProjectsFromFirestore();
+	}, [projects]);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
