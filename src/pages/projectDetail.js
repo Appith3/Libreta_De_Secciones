@@ -5,6 +5,10 @@ import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 
 const ProjectDetail = ({ navigation, route }) => {
+	// FIXME: Go Home on projectDetail after create project
+	/* 
+		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
+	*/
 
 	const { project } = route.params;
 
