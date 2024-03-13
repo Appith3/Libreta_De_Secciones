@@ -1,22 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { FAB, TextInput, Text } from 'react-native-paper';
-import ProjectItem from '../componets/ProjectItem';
 import PropTypes from 'prop-types';
-
-import { useProjectStore } from '../hooks/useProjectStore';
+import ProjectItem from '../componets/ProjectItem';
+import { db } from '../firebase/firebaseConfig';
+import { collection } from 'firebase/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 const HomePage = ({ navigation }) => {
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
 
-	const projects = useProjectStore((state) => state.projects);
-	const getAllProjectsFromFirestore = useProjectStore((state) => state.getAllProjectsFromFirestore);
-
-	useEffect(() => {
-		getAllProjectsFromFirestore();
-	}, []);
+	const query = collection(db, 'example_projects');
+	const [projects, loading, error] = useCollectionData(query);
+	// TODO: get document id
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
@@ -46,17 +44,19 @@ const HomePage = ({ navigation }) => {
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
 				<ScrollView>
+					{loading && (<Text variant='bodyLarge' style={{color: '#F5F7FA'}}>Cargando proyectos</Text>)}
 					{
 						projects
 							? (
-								projects.map((project) => {
+								projects?.map((project) => {
 									return (
-										<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+										<ProjectItem title={project.name} key={project.id} firestorePath={`example_projects/${project.id}/stationing`} navigation={navigation} />
 									);
 								})
 							)
 							: emptyState
 					}
+					{error && <Text variant='bodyLarge' style={{color: '#F5F7FA'}}>{error}</Text>}
 				</ScrollView>
 			</View>
 			<FAB.Group

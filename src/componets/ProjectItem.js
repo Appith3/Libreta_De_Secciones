@@ -6,24 +6,24 @@ const ProjectItem = (props) => {
 
 	const {
 		title,
-		listId,
-		details,
 		navigation
 	} = props;
+
+
 
 	return (
 		<List.Item
 			title={title}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log('Deleted item')} />
 					<IconButton icon='share' iconColor='#F5F7FA' onPress={() => console.log('share')} />
 				</>
 			)}
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				navigation.navigate('projectDetail', { project: details });
+				navigation.navigate('projectDetail', { projectTitle: title });
 			}}
 		/>
 	);
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
 
 ProjectItem.propTypes = {
 	title: PropTypes.string,
-	listId: PropTypes.string || PropTypes.number,
 	details: PropTypes.object,
 	navigation: PropTypes.object
 };
