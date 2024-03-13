@@ -6,37 +6,43 @@ export const useProjectStore = create((set) => ({
 	projects: [],
 	roadStationing: [],
 	stationDetails: [],
+	project: {
+		projectId: '', 
+		projectName: '',
+		creationDate: {}
+	},
 	// TODO: Add project, station and details objects
 
 	// actions for projects
-
-	/*FIXME: @firebase/firestore: Firestore (10.8.0): Could not reach Cloud Firestore backend. Connection failed 1 times. 
-		
-	Fix reading of firebase credentials
-	*/
-	getProjectsFromFirestore: async () => {
+	getAllProjectsFromFirestore: async () => {
 		try {
-			const projectsCollection = collection(db, 'example_projects'); // Referencia a la colección de proyectos
-			const snapshot = await getDocs(projectsCollection); // Obtener los proyectos
-
+			const projectsCollection = collection(db, 'example_projects'); 
+			const snapshot = await getDocs(projectsCollection); 
 			const projects = snapshot.docs.map((doc) => ({
 				id: doc.id,
-				...doc.data(), // Extraer los datos del documento
+				...doc.data(), 
 			}));
 
-			set((state) => ({
-				projects: [...state.projects, projects], // Actualizar el estado con los proyectos recuperados
+			set(() => ({
+				projects: projects, 
 			}));
 		} catch (e) {
-			console.error('Error al obtener proyectos de Firebase:', e);
-			// Manejar el error de forma adecuada, por ejemplo, mostrando un mensaje al usuario
+			console.error('Error al obtener proyectos de la base de datos:', e);
+			
 		}
 	},
 
-	addProject: (project) =>
-		set((state) => ({
-			projects: [...state.projects, project],
-		})),
+	addProject: async (project) => {
+		try {
+			
+
+			set((state) => ({
+				projects: [...state.projects, project],
+			}));
+		} catch (e) {
+			console.error('Error al crear el proyecto en la base de datos:', e);
+		}
+	},
 
 	removeProject: (projectId) =>
 		set((state) => ({
@@ -57,5 +63,7 @@ export const useProjectStore = create((set) => ({
 				(stationing) => stationing.stationingId !== stationingId,
 			),
 		})),
+
+	// 
 
 }));

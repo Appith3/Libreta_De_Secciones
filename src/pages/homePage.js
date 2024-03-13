@@ -12,22 +12,14 @@ const HomePage = ({ navigation }) => {
 	const [searchText, setSearchText] = useState();
 
 	const projects = useProjectStore((state) => state.projects);
-	const getProjectsFromFirestore = useProjectStore((state) => state.getProjectsFromFirestore);
+	const getAllProjectsFromFirestore = useProjectStore((state) => state.getAllProjectsFromFirestore);
 
 	useEffect(() => {
-		getProjectsFromFirestore();
-	}, [projects]);
+		getAllProjectsFromFirestore();
+	}, []);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
-	};
-
-	const renderProjects = (projects) => {
-		projects.map((project) => {
-			return (
-				<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
-			);
-		});
 	};
 
 	const emptyState = () => {
@@ -55,7 +47,15 @@ const HomePage = ({ navigation }) => {
 					right={<TextInput.Icon icon='magnify' />} />
 				<ScrollView>
 					{
-						projects ? renderProjects(projects) : emptyState()
+						projects
+							? (
+								projects.map((project) => {
+									return (
+										<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
+									);
+								})
+							)
+							: emptyState
 					}
 				</ScrollView>
 			</View>
