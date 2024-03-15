@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { FAB, TextInput, Text } from 'react-native-paper';
+import { FAB, TextInput, Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import ProjectItem from '../componets/ProjectItem';
 import { db } from '../firebase/firebaseConfig';
@@ -44,7 +44,7 @@ const HomePage = ({ navigation }) => {
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
 				<ScrollView>
-					{loading && (<Text variant='bodyLarge' style={{color: '#F5F7FA'}}>Cargando proyectos</Text>)}
+					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
 					{
 						projects
 							? (
@@ -56,7 +56,7 @@ const HomePage = ({ navigation }) => {
 							)
 							: emptyState
 					}
-					{error && <Text variant='bodyLarge' style={{color: '#F5F7FA'}}>{error}</Text>}
+					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
 				</ScrollView>
 			</View>
 			<FAB.Group
