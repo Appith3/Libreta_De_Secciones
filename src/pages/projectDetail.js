@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, FAB } from 'react-native-paper';
+import { Chip, TextInput, FAB, Text } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,10 @@ const ProjectDetail = ({ navigation, route }) => {
 		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
 	*/
 
-	const { project } = route.params;
+	const { 
+		projectTitle, 
+		firestorePath 
+	} = route.params;
 
 	const [searchText, setSearchText] = useState('');
 
@@ -21,14 +24,8 @@ const ProjectDetail = ({ navigation, route }) => {
 	const { open } = state;
 
 	useEffect(() => {
-		navigation.setOptions({ title: project.name.projectName || project.name });
+		navigation.setOptions({ title: projectTitle });
 	}, []);
-
-	const renderList = project.stationing.map((stationing) => {
-		return stationing.status === 'complete'
-			? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
-			: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />;
-	});
 
 	return (
 		<View style={styles.container}>
@@ -49,9 +46,14 @@ const ProjectDetail = ({ navigation, route }) => {
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
-					{
-						renderList
-					}
+					{/* {
+					project.stationing.map((stationing) => {
+						return stationing.status === 'complete'
+							? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
+							: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />
+					})
+				} */}
+					<Text>Proyecto vació</Text>
 				</ScrollView>
 			</View>
 			<FAB.Group
