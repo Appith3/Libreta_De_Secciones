@@ -1,15 +1,16 @@
 import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
 
 const ProjectItem = (props) => {
 
 	const {
 		title,
-		navigation
+		projectId
 	} = props;
 
-
+	const navigation = useNavigation();
 
 	return (
 		<List.Item
@@ -23,7 +24,7 @@ const ProjectItem = (props) => {
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				navigation.navigate('projectDetail', { projectTitle: title });
+				navigation.navigate('projectDetail', { projectTitle: title, firestorePath: `example_projects/${projectId}/stationing` });
 			}}
 		/>
 	);
@@ -39,8 +40,7 @@ const styles = StyleSheet.create({
 
 ProjectItem.propTypes = {
 	title: PropTypes.string,
-	details: PropTypes.object,
-	navigation: PropTypes.object
+	projectId: PropTypes.string
 };
 
 export default ProjectItem;

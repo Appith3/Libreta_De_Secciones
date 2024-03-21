@@ -1,36 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { FAB, TextInput, Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import ProjectItem from '../componets/ProjectItem';
 import { db } from '../firebase/firebaseConfig';
-import { collection } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 
 const HomePage = ({ navigation }) => {
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
 
-	const query = collection(db, 'example_projects');
-	const [projects, loading, error] = useCollectionData(query);
-	// TODO: get document id
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState();
+	const [docs, setDocs] = useState();
+
+	const getProjectsCollection = async () => {
+		try {
+			const projectsColRef = collection(db, 'example_projects');
+			const projectDocs = await getDocs(projectsColRef);
+
+			const projects = projectDocs.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+			setDocs(projects);
+			setLoading(false);
+		} catch (error) {
+			setError(error);
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		getProjectsCollection();
+	}, []);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
-	};
-
-	const emptyState = () => {
-		// TODO: Add image to empty state
-		return (
-			<Text
-				variant='displaySmall'
-				style={{
-					color: '#F5F7FA',
-					alignSelf: 'center'
-				}}
-			>No creaste proyectos aun, crea uno para continuar</Text>
-		);
 	};
 
 	return (
@@ -46,16 +53,23 @@ const HomePage = ({ navigation }) => {
 				<ScrollView>
 					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
 					{
-						projects
+						docs
 							? (
-								projects?.map((project) => {
+								docs?.map((doc) => {
 									return (
-										<ProjectItem title={project.name} key={project.id} firestorePath={`example_projects/${project.id}/stationing`} navigation={navigation} />
+										<ProjectItem title={doc.name} key={doc.id} projectId={doc.id} navigation={navigation} />
 									);
 								})
 							)
-							: emptyState
+							: <Text
+								variant='displaySmall'
+								style={{
+									color: '#F5F7FA',
+									alignSelf: 'center'
+								}}
+							>No creaste proyectos aun, crea uno para continuar</Text>
 					}
+					{/* // TODO: Add image to empty state */}
 					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
 				</ScrollView>
 			</View>
