@@ -50,26 +50,16 @@ const HomePage = ({ navigation }) => {
 					value={searchText}
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
+				{/* TODO: Create empty state screen */}
 				<ScrollView>
 					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
 					{
-						docs
-							? (
-								docs?.map((doc) => {
-									return (
-										<ProjectItem title={doc.name} key={doc.id} projectId={doc.id} navigation={navigation} />
-									);
-								})
-							)
-							: <Text
-								variant='displaySmall'
-								style={{
-									color: '#F5F7FA',
-									alignSelf: 'center'
-								}}
-							>No creaste proyectos aun, crea uno para continuar</Text>
+						docs?.map((doc) => {
+							return (
+								<ProjectItem title={doc.name} key={doc.id} projectId={doc.id} />
+							);
+						})
 					}
-					{/* // TODO: Add image to empty state */}
 					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
 				</ScrollView>
 			</View>
