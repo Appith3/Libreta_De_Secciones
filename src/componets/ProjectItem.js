@@ -24,7 +24,7 @@ const ProjectItem = (props) => {
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				navigation.navigate('projectDetail', { projectTitle: title, projectId:{projectId}, firestorePath: `example_projects/${projectId}/stationing` });
+				navigation.navigate('projectDetail', { projectTitle: title, projectId: projectId, firestorePath: `example_projects/${projectId}/stationing` });
 			}}
 		/>
 	);

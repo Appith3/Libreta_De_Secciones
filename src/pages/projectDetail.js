@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Chip, TextInput, FAB, Text } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
+import { db } from '../firebase/firebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 const ProjectDetail = ({ navigation, route }) => {
 	// FIXME: Go Home on projectDetail after create project
@@ -10,22 +12,46 @@ const ProjectDetail = ({ navigation, route }) => {
 		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
 	*/
 
-	const { 
-		projectTitle, 
-		firestorePath 
+	const {
+		projectTitle,
+		projectId,
+		firestorePath
 	} = route.params;
 
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState();
+	const [docs, setDocs] = useState();
+
+	const getStationingCollection = async () => {
+		try {
+			const stationingColRef = collection(db, firestorePath);
+			const stationingDocs = await getDocs(stationingColRef);
+
+			const roadStationing = stationingDocs.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+			setDocs(roadStationing);
+			setLoading(false);
+		} catch (error) {
+			setError(error);
+			setLoading(false);
+		}
+	};
+
+	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState('');
-
-	const [state, setState] = useState({ open: false });
-
-	const onStateChange = ({ open }) => setState({ open });
-
-	const { open } = state;
 
 	useEffect(() => {
 		navigation.setOptions({ title: projectTitle });
+		getStationingCollection();
+		console.log(docs);
+		console.log(firestorePath);
 	}, []);
+
+	const onStateChange = () => {
+		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
+	};
 
 	return (
 		<View style={styles.container}>
@@ -46,19 +72,20 @@ const ProjectDetail = ({ navigation, route }) => {
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
-					{/* {
-					project.stationing.map((stationing) => {
-						return stationing.status === 'complete'
-							? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
-							: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />
-					})
-				} */}
-					<Text>Proyecto vació</Text>
+					{
+						docs?.map((stationing) => {
+							let {central_reading, code, id, is_complete, stationing_name} = stationing;
+
+							return stationing.status === 'complete'
+								? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
+								: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />
+						})
+					}
 				</ScrollView>
 			</View>
 			<FAB.Group
-				open={open}
-				icon={open ? 'close' : 'plus'}
+				open={openFAB.open}
+				icon={openFAB.open ? 'close' : 'plus'}
 				backdropColor='#fff0'
 				color='#F5F7FA'
 				fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
