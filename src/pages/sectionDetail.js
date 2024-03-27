@@ -6,20 +6,20 @@ import PropTypes from 'prop-types';
 const SectionDetail = ({ route, navigation }) => {
 
 	const {
-		name,
-		central_reading,
-		details,
-		code
-	} = route.params.stationing;
+		firestorePath,
+		centralReading,
+	} = route.params;
 
 	useEffect(() => {
 		navigation.setOptions({ title: `${name} ${code}` });
 	}, []);
 
+	// TODO: Get details from firestore
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<Text variant='headlineSmall' style={styles.title}>Elevación central: {central_reading}</Text>
+				<Text variant='headlineSmall' style={styles.title}>Elevación central: {centralReading}</Text>
 				{/* Start table code */}
 				<View style={styles.table}>
 					<View style={styles.row}>
@@ -35,7 +35,7 @@ const SectionDetail = ({ route, navigation }) => {
 					</View>
 					{/* Note: think about to add a ScrollView */}
 					{
-						details.map((detail) => {
+						{/* details.map((detail) => {
 							return (
 								<View style={styles.row} key={detail._id}>
 									<Text style={styles.cell}>{detail.distance}</Text>
@@ -43,7 +43,7 @@ const SectionDetail = ({ route, navigation }) => {
 									<Text style={styles.cell}>{detail.reading}</Text>
 								</View>
 							);
-						})
+						}) */}
 					}
 				</View>
 			</View>

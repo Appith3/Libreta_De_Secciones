@@ -1,21 +1,24 @@
 import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
 
 const SectionItem = (props) => {
 
 	const {
 		title,
-		listId,
+		stationingId,
 		isComplete = false,
-		details,
-		navigation
+		rest
 	} = props;
+
+	const navigation = useNavigation();
+
+	const [centralReading, code, projectId] = rest;
 
 	return (
 		<List.Item
-			title={title}
-			// TODO: add code section to the title if exist
+			title={`${title} ${code}`}
 			description={
 				isComplete
 					? 'Completa'
@@ -23,11 +26,11 @@ const SectionItem = (props) => {
 			}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${stationingId}`)} />
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
-							? navigation.navigate('sectionDetail', { stationing: details })
-							: navigation.navigate('captureCentral', { stationing: details });
+							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading })
+							: navigation.navigate('captureCentral', { centralReading });
 					}} />
 				</>
 			)}
@@ -40,8 +43,8 @@ const SectionItem = (props) => {
 			descriptionStyle={styles.description}
 			onPress={() => {
 				isComplete
-					? navigation.navigate('sectionDetail', { stationing: details })
-					: navigation.navigate('captureCentral', { stationing: details });
+					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading })
+					: navigation.navigate('captureCentral', { centralReading });
 			}}
 		/>
 	);
@@ -75,10 +78,9 @@ const styles = StyleSheet.create({
 
 SectionItem.propTypes = {
 	title: PropTypes.string,
-	listId: PropTypes.string || PropTypes.number,
-	details: PropTypes.object,
-	navigation: PropTypes.object,
-	isComplete: PropTypes.bool
+	stationingId: PropTypes.string,
+	isComplete: PropTypes.bool,
+	rest: PropTypes.array
 };
 
 export default SectionItem;

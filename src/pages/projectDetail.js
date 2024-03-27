@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, FAB, Text } from 'react-native-paper';
+import { Chip, TextInput, FAB, Text, ActivityIndicator } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 import { db } from '../firebase/firebaseConfig';
@@ -45,8 +45,6 @@ const ProjectDetail = ({ navigation, route }) => {
 	useEffect(() => {
 		navigation.setOptions({ title: projectTitle });
 		getStationingCollection();
-		console.log(docs);
-		console.log(firestorePath);
 	}, []);
 
 	const onStateChange = () => {
@@ -72,15 +70,17 @@ const ProjectDetail = ({ navigation, route }) => {
 			</View>
 			<View>
 				<ScrollView style={styles.sectionsList}>
+					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
 					{
 						docs?.map((stationing) => {
-							let {central_reading, code, id, is_complete, stationing_name} = stationing;
+							let { central_reading, code, id, is_complete, stationing_name } = stationing;
 
-							return stationing.status === 'complete'
-								? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
-								: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />
+							return is_complete
+								? <SectionItem title={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} isComplete />
+								: <SectionItem title={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} />;
 						})
 					}
+					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
 				</ScrollView>
 			</View>
 			<FAB.Group
@@ -105,7 +105,7 @@ const ProjectDetail = ({ navigation, route }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('exportProject', { project }),
+						onPress: () => navigation.navigate('exportProject'),
 					},
 					{
 						icon: 'delete',
