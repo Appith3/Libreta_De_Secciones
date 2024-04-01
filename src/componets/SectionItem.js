@@ -29,8 +29,8 @@ const SectionItem = (props) => {
 					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${stationingId}`)} />
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
-							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading })
-							: navigation.navigate('captureCentral', { centralReading });
+							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, title })
+							: navigation.navigate('captureCentral', { centralReading, code, title });
 					}} />
 				</>
 			)}
@@ -43,8 +43,8 @@ const SectionItem = (props) => {
 			descriptionStyle={styles.description}
 			onPress={() => {
 				isComplete
-					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading })
-					: navigation.navigate('captureCentral', { centralReading });
+					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, title })
+					: navigation.navigate('captureCentral', { centralReading, code, title });
 			}}
 		/>
 	);
