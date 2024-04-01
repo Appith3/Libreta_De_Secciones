@@ -13,7 +13,7 @@ const CaptureSection = ({ navigation, route }) => {
 	const [_centralReading, setCentralReading] = useState(central_reading || '');
 
 	useEffect(() => {
-		stationing ? navigation.setOptions({ title: `${_name} centro` }) : navigation.setOptions({ title: 'Nueva Sección centro' });
+		navigation.setOptions({ title: `${_name} centro` || 'Nueva Sección centro' });
 	}, []);
 
 	const onPressLeft = () => {
@@ -27,6 +27,8 @@ const CaptureSection = ({ navigation, route }) => {
 	// formateamos el valor del cadenamiento de 0000 a 0+000.00
 	// eslint-disable-next-line no-unused-vars
 	const formatAlignmentName = () => { };
+
+	// FIXME: TextInput Value is doubled during typing
 
 	return (
 		<View style={styles.container}>

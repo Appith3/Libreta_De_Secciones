@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 const SectionItem = (props) => {
 
 	const {
-		title,
+		stationingName,
 		stationingId,
 		isComplete = false,
 		rest
@@ -18,7 +18,7 @@ const SectionItem = (props) => {
 
 	return (
 		<List.Item
-			title={`${title} ${code}`}
+			title={`${stationingName} ${code}`}
 			description={
 				isComplete
 					? 'Completa'
@@ -29,8 +29,8 @@ const SectionItem = (props) => {
 					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${stationingId}`)} />
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
-							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, title })
-							: navigation.navigate('captureCentral', { centralReading, code, title });
+							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, centralReading, code, stationingName, stationingId });
 					}} />
 				</>
 			)}
@@ -43,8 +43,8 @@ const SectionItem = (props) => {
 			descriptionStyle={styles.description}
 			onPress={() => {
 				isComplete
-					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, title })
-					: navigation.navigate('captureCentral', { centralReading, code, title });
+					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, centralReading, code, stationingName, stationingId });
 			}}
 		/>
 	);
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 });
 
 SectionItem.propTypes = {
-	title: PropTypes.string,
+	stationingName: PropTypes.string,
 	stationingId: PropTypes.string,
 	isComplete: PropTypes.bool,
 	rest: PropTypes.array

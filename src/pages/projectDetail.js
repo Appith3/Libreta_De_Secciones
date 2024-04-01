@@ -78,8 +78,8 @@ const ProjectDetail = ({ navigation, route }) => {
 							let { central_reading, code, id, is_complete, stationing_name } = stationing;
 
 							return is_complete
-								? <SectionItem title={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} isComplete />
-								: <SectionItem title={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} />;
+								? <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} isComplete />
+								: <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} />;
 						})
 					}
 					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
