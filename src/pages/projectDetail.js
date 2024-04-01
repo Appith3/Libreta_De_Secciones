@@ -51,6 +51,8 @@ const ProjectDetail = ({ navigation, route }) => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
+	//TODO: get data ordered by name
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
