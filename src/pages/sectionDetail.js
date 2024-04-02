@@ -11,11 +11,11 @@ const SectionDetail = ({ route, navigation }) => {
 		firestorePath,
 		centralReading,
 		code,
-		title
+		stationingName
 	} = route.params;
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${title} ${code}` });
+		navigation.setOptions({ title: `${stationingName} ${code}` });
 		getStationingDetailsCollection();
 	}, []);
 
