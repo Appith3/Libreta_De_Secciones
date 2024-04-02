@@ -2,26 +2,31 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { doc } from 'firebase/firestore';
 
 const CaptureSection = ({ navigation, route }) => {
 
-	const stationing = route.params?.stationing;
-	const { code, name, central_reading } = stationing || {};
+	const {
+		firestorePath, // example_projects/`${projectId}`/stationing/
+		stationingId,
+		stationingName
+	} = route.params;
 
-	const [_code, setCode] = useState(code || '');
-	const [_name, setName] = useState(name || '');
-	const [_centralReading, setCentralReading] = useState(central_reading || '');
+	const [central_reading, setCentralReading] = useState();
+	const [_code, setCode] = useState();
+	const [stationing_name, setStationingName] = useState(stationingName || '');
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${_name} centro` || 'Nueva Sección centro' });
+		navigation.setOptions({ title: `${stationing_name} centro` || 'Nueva Sección centro' });
+		console.log('route: ', route.params);
 	}, []);
 
 	const onPressLeft = () => {
-		navigation.navigate('captureSectionSides', { _side: 'Izq', stationing });
+		navigation.navigate('captureSectionSides', { _side: 'Izq' });
 	};
 
 	const onPressRight = () => {
-		navigation.navigate('captureSectionSides', { _side: 'Der', stationing });
+		navigation.navigate('captureSectionSides', { _side: 'Der' });
 	};
 
 	// formateamos el valor del cadenamiento de 0000 a 0+000.00
@@ -38,7 +43,7 @@ const CaptureSection = ({ navigation, route }) => {
 						mode='outlined'
 						placeholder='Codigo'
 						value={_code}
-						onChangeText={_code => setCode(_code.toUpperCase()) }
+						onChangeText={_code => setCode(_code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
@@ -46,8 +51,8 @@ const CaptureSection = ({ navigation, route }) => {
 						placeholder='Cadenamiento'
 						keyboardType='number-pad'
 						inputMode='decimal'
-						value={_name}
-						onChangeText={_name => setName(_name)}
+						value={stationing_name}
+						onChangeText={stationing_name => setStationingName(stationing_name)}
 						right={<TextInput.Icon icon='map-marker' />}
 					/>
 
@@ -57,8 +62,8 @@ const CaptureSection = ({ navigation, route }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						value={_centralReading}
-						onChangeText={_centralReading => setCentralReading(_centralReading)} />
+						value={central_reading}
+						onChangeText={central_reading => setCentralReading(central_reading)} />
 				</View>
 				<View style={styles.controls} >
 					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' >Capturar izquierda</Button>

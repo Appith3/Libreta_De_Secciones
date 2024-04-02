@@ -30,7 +30,7 @@ const SectionItem = (props) => {
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
 							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
-							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, centralReading, code, stationingName, stationingId });
+							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, stationingName, stationingId });
 					}} />
 				</>
 			)}
@@ -44,7 +44,7 @@ const SectionItem = (props) => {
 			onPress={() => {
 				isComplete
 					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
-					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, centralReading, code, stationingName, stationingId });
+					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, stationingName, stationingId });
 			}}
 		/>
 	);
