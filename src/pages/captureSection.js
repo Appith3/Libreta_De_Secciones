@@ -2,38 +2,133 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { doc } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
+import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 const CaptureSection = ({ navigation, route }) => {
 
 	const {
-		firestorePath, // example_projects/`${projectId}`/stationing/
+		firestorePath, // example_projects/`${projectId}`/stationing/`${stationingId}` ||  example_projects/`${projectId}`/stationing/
 		stationingId,
-		stationingName
+		stationingName = 'Nueva Sección'
 	} = route.params;
 
-	const [central_reading, setCentralReading] = useState();
-	const [_code, setCode] = useState();
-	const [stationing_name, setStationingName] = useState(stationingName || '');
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState();
+	const [stationing, setStationing] = useState({
+		central_reading: '',
+		code: '',
+		is_complete: false,
+		stationing_name: ''
+	});
+
+	const [docExists, setDocExists] = useState(false);
+
+	
+	const getStationingDoc = async () => {
+		try {
+			const stationingDocRef = doc(db, firestorePath);
+			const stationingDocSnap = await getDoc(stationingDocRef);
+			
+			if (stationingDocSnap.exists()) {
+				setStationing({
+					...stationingDocSnap.data()
+				});
+				setDocExists(true);
+			} else {
+				console.log('El documento no existe');
+				setDocExists(false);
+			}
+
+			setLoading(false);
+		} catch (error) {
+			setError(error);
+			setLoading(false);
+		}
+	};
+
+	const updateStationing = async () => {
+		const stationingDocRef = doc(db, firestorePath);
+		await updateDoc(stationingDocRef, {
+			...stationing,
+			central_reading: Number(stationing.central_reading)
+		});
+	};
+
+	const createStationing = async () => {
+		const newStationingDocRef = await addDoc(collection(db, firestorePath), {
+			...stationing,
+			central_reading: Number(stationing.central_reading)
+		});
+		console.log('estación creada con el ID: ', newStationingDocRef.id);
+	};
+
+	const writeStationingCenter = () => {
+		docExists 
+			? updateStationing()
+			: createStationing();
+	};
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${stationing_name} centro` || 'Nueva Sección centro' });
-		console.log('route: ', route.params);
+		navigation.setOptions({ title: `${stationingName} centro`});
+		getStationingDoc();
 	}, []);
 
 	const onPressLeft = () => {
-		navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		writeStationingCenter();
+		// navigation.navigate('captureSectionSides', { _side: 'Izq' });
 	};
 
 	const onPressRight = () => {
-		navigation.navigate('captureSectionSides', { _side: 'Der' });
+		writeStationingCenter();
+		// navigation.navigate('captureSectionSides', { _side: 'Der' });
 	};
 
-	// formateamos el valor del cadenamiento de 0000 a 0+000.00
-	// eslint-disable-next-line no-unused-vars
-	const formatAlignmentName = () => { };
+	const handleOnChangeText = (key, value) => {
+		setStationing({
+			...stationing,
+			[key]: value
+		});
+	};
 
-	// FIXME: TextInput Value is doubled during typing
+	// formateamos el valor del cadenamiento de 0 a 0+000.00
+	const formatAlignmentName = (number) => {
+		// FIXME: input 20.5 -> output 0+002..5
+		let strNumber = number.toString();
+
+		let millares = '0';
+		let resto = '';
+		let decimales = '00';
+		
+		if(number >= 1000) {
+			millares = strNumber.slice(0,1);
+			
+			if (!Number.isInteger(number)) {
+				decimales = strNumber.slice(-2);
+				resto = strNumber.slice(1,-3);
+			} else {
+				resto = strNumber.slice(1);
+			}
+			
+		} else {
+			if (!Number.isInteger(number)) {
+				decimales = strNumber.slice(-2);
+				resto = strNumber.slice(0,-3);
+			} else {
+				resto = strNumber;
+			}
+			
+			let ceros = '0'.repeat(3 - resto.length);
+			resto = ceros + resto;
+		}
+		
+		const formattedNumber = `${millares}+${resto}.${decimales}`;
+
+		setStationing({
+			...stationing,
+			stationing_name: formattedNumber
+		});
+	};
 
 	return (
 		<View style={styles.container}>
@@ -42,8 +137,8 @@ const CaptureSection = ({ navigation, route }) => {
 					<TextInput
 						mode='outlined'
 						placeholder='Codigo'
-						value={_code}
-						onChangeText={_code => setCode(_code.toUpperCase())}
+						value={stationing.code}
+						onChangeText={(code) => handleOnChangeText('code', code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
@@ -51,8 +146,9 @@ const CaptureSection = ({ navigation, route }) => {
 						placeholder='Cadenamiento'
 						keyboardType='number-pad'
 						inputMode='decimal'
-						value={stationing_name}
-						onChangeText={stationing_name => setStationingName(stationing_name)}
+						value={stationing.stationing_name}
+						onChangeText={(stationing_name) => handleOnChangeText('stationing_name', stationing_name.toUpperCase())}
+						onEndEditing={() => formatAlignmentName(Number(stationing.stationing_name))}
 						right={<TextInput.Icon icon='map-marker' />}
 					/>
 
@@ -62,8 +158,8 @@ const CaptureSection = ({ navigation, route }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						value={central_reading}
-						onChangeText={central_reading => setCentralReading(central_reading)} />
+						value={stationing.central_reading}
+						onChangeText={(central_reading) => handleOnChangeText('central_reading', central_reading.toUpperCase())} />
 				</View>
 				<View style={styles.controls} >
 					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' >Capturar izquierda</Button>

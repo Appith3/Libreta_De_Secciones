@@ -15,7 +15,7 @@ const ProjectDetail = ({ navigation, route }) => {
 	const {
 		projectTitle,
 		projectId,
-		firestorePath
+		firestorePath //example_projects/${projectId}/stationing
 	} = route.params;
 
 	const [loading, setLoading] = useState(true);
@@ -99,7 +99,7 @@ const ProjectDetail = ({ navigation, route }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('captureCentral'),
+						onPress: () => navigation.navigate('captureCentral', {firestorePath: `example_projects/${projectId}/stationing`}),
 					},
 					{
 						icon: 'upload',
