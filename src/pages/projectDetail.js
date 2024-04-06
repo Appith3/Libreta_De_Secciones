@@ -4,7 +4,7 @@ import { Chip, TextInput, FAB, Text, ActivityIndicator } from 'react-native-pape
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 import { db } from '../firebase/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 const ProjectDetail = ({ navigation, route }) => {
 	// FIXME: Go Home on projectDetail after create project
@@ -15,7 +15,7 @@ const ProjectDetail = ({ navigation, route }) => {
 	const {
 		projectTitle,
 		projectId,
-		firestorePath //example_projects/${projectId}/stationing
+		firestorePath
 	} = route.params;
 
 	const [loading, setLoading] = useState(true);
@@ -25,7 +25,8 @@ const ProjectDetail = ({ navigation, route }) => {
 	const getStationingCollection = async () => {
 		try {
 			const stationingColRef = collection(db, firestorePath);
-			const stationingDocs = await getDocs(stationingColRef);
+			const q = query(stationingColRef, orderBy('stationing_name', 'asc'));
+			const stationingDocs = await getDocs(q);
 
 			const roadStationing = stationingDocs.docs.map((doc) => ({
 				id: doc.id,
