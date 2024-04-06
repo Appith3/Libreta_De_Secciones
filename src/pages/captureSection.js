@@ -126,6 +126,7 @@ const CaptureSection = ({ navigation, route }) => {
 	};
 
 	// TODO: add some error indicator
+	// FIXME: central_reading isn't rendered on TexTInput 
 	return (
 		<View style={styles.container}>
 			<View style={styles.main} >
@@ -143,7 +144,7 @@ const CaptureSection = ({ navigation, route }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						value={stationing.stationing_name}
-						onChangeText={(stationing_name) => handleOnChangeText('stationing_name', stationing_name.toUpperCase())}
+						onChangeText={(stationing_name) => handleOnChangeText('stationing_name', stationing_name)}
 						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
 						right={<TextInput.Icon icon='map-marker' />}
 					/>
@@ -155,7 +156,7 @@ const CaptureSection = ({ navigation, route }) => {
 						inputMode='decimal'
 						textAlign='left'
 						value={stationing.central_reading}
-						onChangeText={(central_reading) => handleOnChangeText('central_reading', central_reading.toUpperCase())} />
+						onChangeText={(central_reading) => handleOnChangeText('central_reading', central_reading)} />
 				</View>
 				<View style={styles.controls} >
 					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' >Capturar izquierda</Button>
