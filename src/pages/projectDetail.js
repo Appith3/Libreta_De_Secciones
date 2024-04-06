@@ -52,7 +52,7 @@ const ProjectDetail = ({ navigation, route }) => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
-	//TODO: get data ordered by name
+	// TODO: re-render sectionsList when stationing is deleted and add popup confirmation to delete
 
 	return (
 		<View style={styles.container}>
@@ -79,8 +79,8 @@ const ProjectDetail = ({ navigation, route }) => {
 							let { central_reading, code, id, is_complete, stationing_name } = stationing;
 
 							return is_complete
-								? <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} isComplete />
-								: <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} />;
+								? <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} firestorePath={firestorePath} isComplete />
+								: <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} firestorePath={firestorePath} />;
 						})
 					}
 					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}

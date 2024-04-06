@@ -2,6 +2,9 @@ import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../firebase/firebaseConfig';
+import { doc, deleteDoc } from 'firebase/firestore';
+import { useState } from 'react';
 
 const SectionItem = (props) => {
 
@@ -9,6 +12,7 @@ const SectionItem = (props) => {
 		stationingName,
 		stationingId,
 		isComplete = false,
+		firestorePath,
 		rest
 	} = props;
 
@@ -19,6 +23,16 @@ const SectionItem = (props) => {
 	] = rest;
 	
 	const navigation = useNavigation();
+	const [error, setError] = useState();
+
+	const deleteStationing = async (stationingId) => {
+		try {
+			await deleteDoc(doc(db, firestorePath, stationingId));
+			console.log('documento borrado con id: ', stationingId);
+		} catch (error) {
+			setError(error);
+		}
+	};
 	
 	return (
 		<List.Item
@@ -30,7 +44,7 @@ const SectionItem = (props) => {
 			}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${stationingId}`)} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStationing(stationingId)} />
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
 							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
@@ -83,6 +97,7 @@ const styles = StyleSheet.create({
 SectionItem.propTypes = {
 	stationingName: PropTypes.string,
 	stationingId: PropTypes.string,
+	firestorePath: PropTypes.string,
 	isComplete: PropTypes.bool,
 	rest: PropTypes.array
 };
