@@ -8,12 +8,11 @@ import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
 const CaptureSection = ({ navigation, route }) => {
 
 	const {
-		firestorePath, // example_projects/`${projectId}`/stationing/`${stationingId}` ||  example_projects/`${projectId}`/stationing/
+		firestorePath,
 		stationingId,
 		stationingName = 'Nueva Sección'
 	} = route.params;
 
-	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState();
 	const [stationing, setStationing] = useState({
 		central_reading: '',
@@ -24,12 +23,12 @@ const CaptureSection = ({ navigation, route }) => {
 
 	const [docExists, setDocExists] = useState(false);
 
-	
+
 	const getStationingDoc = async () => {
 		try {
 			const stationingDocRef = doc(db, firestorePath);
 			const stationingDocSnap = await getDoc(stationingDocRef);
-			
+
 			if (stationingDocSnap.exists()) {
 				setStationing({
 					...stationingDocSnap.data()
@@ -39,49 +38,54 @@ const CaptureSection = ({ navigation, route }) => {
 				console.log('El documento no existe');
 				setDocExists(false);
 			}
-
-			setLoading(false);
 		} catch (error) {
 			setError(error);
-			setLoading(false);
 		}
 	};
 
 	const updateStationing = async () => {
-		const stationingDocRef = doc(db, firestorePath);
-		await updateDoc(stationingDocRef, {
-			...stationing,
-			central_reading: Number(stationing.central_reading)
-		});
+		try {
+			const stationingDocRef = doc(db, firestorePath);
+			await updateDoc(stationingDocRef, {
+				...stationing,
+				central_reading: Number(stationing.central_reading)
+			});
+		} catch (error) {
+			setError(error);
+		}
 	};
 
 	const createStationing = async () => {
-		const newStationingDocRef = await addDoc(collection(db, firestorePath), {
-			...stationing,
-			central_reading: Number(stationing.central_reading)
-		});
-		console.log('estación creada con el ID: ', newStationingDocRef.id);
+		try {
+			const newStationingDocRef = await addDoc(collection(db, firestorePath), {
+				...stationing,
+				central_reading: Number(stationing.central_reading)
+			});
+			console.log('estación creada con el ID: ', newStationingDocRef.id);
+		} catch (error) {
+			setError(error);
+		}
 	};
 
 	const writeStationingCenter = () => {
-		docExists 
+		docExists
 			? updateStationing()
 			: createStationing();
 	};
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${stationingName} centro`});
+		navigation.setOptions({ title: `${stationingName} centro` });
 		getStationingDoc();
 	}, []);
 
 	const onPressLeft = () => {
 		writeStationingCenter();
-		// navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		navigation.navigate('captureSectionSides', { _side: 'Izq', stationingId });
 	};
 
 	const onPressRight = () => {
 		writeStationingCenter();
-		// navigation.navigate('captureSectionSides', { _side: 'Der' });
+		navigation.navigate('captureSectionSides', { _side: 'Der', stationingId });
 	};
 
 	const handleOnChangeText = (key, value) => {
@@ -92,37 +96,28 @@ const CaptureSection = ({ navigation, route }) => {
 	};
 
 	// formateamos el valor del cadenamiento de 0 a 0+000.00
-	const formatAlignmentName = (number) => {
-		// FIXME: input 20.5 -> output 0+002..5
-		let strNumber = number.toString();
+	const number2stationingFormat = (number) => {
+		const strNumber = number.toString();
+		let thousands = '0';
+		let integers = '';
+		let decimals = '00';
 
-		let millares = '0';
-		let resto = '';
-		let decimales = '00';
-		
-		if(number >= 1000) {
-			millares = strNumber.slice(0,1);
-			
-			if (!Number.isInteger(number)) {
-				decimales = strNumber.slice(-2);
-				resto = strNumber.slice(1,-3);
-			} else {
-				resto = strNumber.slice(1);
-			}
-			
+		if (number >= 10000) {
+			[thousands, integers, decimals] = strNumber.includes('.')
+				? [strNumber.slice(0, 2), strNumber.slice(2).split('.')[0], strNumber.split('.')[1] || '00']
+				: [strNumber.slice(0, 2), strNumber.slice(2), '00'];
+		} else if (number >= 1000) {
+			[thousands, integers, decimals] = strNumber.includes('.')
+				? [strNumber[0], strNumber.slice(1).split('.')[0], strNumber.split('.')[1] || '00']
+				: [strNumber[0], strNumber.slice(1), '00'];
 		} else {
-			if (!Number.isInteger(number)) {
-				decimales = strNumber.slice(-2);
-				resto = strNumber.slice(0,-3);
-			} else {
-				resto = strNumber;
-			}
-			
-			let ceros = '0'.repeat(3 - resto.length);
-			resto = ceros + resto;
+			[integers, decimals] = strNumber.includes('.')
+				? strNumber.split('.')
+				: [strNumber, '00'];
+			integers = integers.padStart(3, '0');
 		}
-		
-		const formattedNumber = `${millares}+${resto}.${decimales}`;
+
+		const formattedNumber = `${thousands}+${integers}.${decimals}`;
 
 		setStationing({
 			...stationing,
@@ -130,6 +125,7 @@ const CaptureSection = ({ navigation, route }) => {
 		});
 	};
 
+	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
 			<View style={styles.main} >
@@ -148,7 +144,7 @@ const CaptureSection = ({ navigation, route }) => {
 						inputMode='decimal'
 						value={stationing.stationing_name}
 						onChangeText={(stationing_name) => handleOnChangeText('stationing_name', stationing_name.toUpperCase())}
-						onEndEditing={() => formatAlignmentName(Number(stationing.stationing_name))}
+						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
 						right={<TextInput.Icon icon='map-marker' />}
 					/>
 
