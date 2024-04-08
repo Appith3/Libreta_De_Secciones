@@ -23,7 +23,6 @@ const CaptureSection = ({ navigation, route }) => {
 
 	const [docExists, setDocExists] = useState(false);
 
-
 	const getStationingDoc = async () => {
 		try {
 			const stationingDocRef = doc(db, firestorePath);
@@ -80,12 +79,12 @@ const CaptureSection = ({ navigation, route }) => {
 
 	const onPressLeft = () => {
 		writeStationingCenter();
-		navigation.navigate('captureSectionSides', { _side: 'Izq', stationingId });
+		navigation.navigate('captureSectionSides', { _side: 'Izq', firestorePath, stationingName, centralReading: stationing.central_reading });
 	};
 
 	const onPressRight = () => {
 		writeStationingCenter();
-		navigation.navigate('captureSectionSides', { _side: 'Der', stationingId });
+		navigation.navigate('captureSectionSides', { _side: 'Der', firestorePath, stationingName, centralReading: stationing.central_reading });
 	};
 
 	const handleOnChangeText = (key, value) => {
