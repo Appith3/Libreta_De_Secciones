@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { db } from '../firebase/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 const SectionDetail = ({ route, navigation }) => {
 
@@ -26,13 +26,13 @@ const SectionDetail = ({ route, navigation }) => {
 	const getStationingDetailsCollection = async () => {
 		try {
 			const detailsColRef = collection(db, firestorePath);
-			const detailsDocs = await getDocs(detailsColRef);
+			const q = query(detailsColRef, orderBy('distance', 'asc'));
+			const detailsDocs = await getDocs(q);
 
 			const roadStationingDetail = detailsDocs.docs.map((doc) => ({
 				id: doc.id,
 				...doc.data(),
 			}));
-			console.log('details: ', roadStationingDetail);
 			setDocs(roadStationingDetail);
 			setLoading(false);
 		} catch (error) {
@@ -41,6 +41,8 @@ const SectionDetail = ({ route, navigation }) => {
 		}
 	};
 
+	// TODO: add a ScrollView to view the details table and chart
+	// TODO: add a chart to preview the section
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
@@ -58,7 +60,6 @@ const SectionDetail = ({ route, navigation }) => {
 							<Text variant='titleSmall' style={styles.tableHeader}>Lectura</Text>
 						</View>
 					</View>
-					{/* Note: think about to add a ScrollView */}
 					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
 					{
 						docs?.map((detail) => {
