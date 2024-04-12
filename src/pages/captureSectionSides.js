@@ -15,6 +15,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	} = route.params;
 
 	const [side, setSide] = useState(_side);
+	// eslint-disable-next-line no-unused-vars
 	const [error, setError] = useState();
 
 	const [detail, setDetail] = useState({
@@ -26,10 +27,11 @@ const CaptureSectionSides = ({ navigation, route }) => {
 
 	const createDetail = async () => {
 
-		let slope = centralReading - Number(detail.reading)
+		let slope = centralReading - Number(detail.reading);
 
+		// FIXME: cuando se crea una sección desde el FAB en projectDetail el firestorePath es el siguiente example_projects/${projectId}/stationing/undefined/details
 		try {
-			const newDetailDocRef = await addDoc(collection(db, `${firestorePath}/details`), {
+			const newDetailDocRef = await addDoc(collection(db, firestorePath), {
 				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
 				detail_name: detail.detail_name,
 				notes: detail.notes,
@@ -54,6 +56,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	};
 
 	useEffect(() => {
+		console.log('route: ', route.params);
 		navigation.setOptions({ title: `${stationingName} ${side}` });
 	}, [side]);
 

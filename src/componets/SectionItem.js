@@ -17,12 +17,13 @@ const SectionItem = (props) => {
 	} = props;
 
 	const [
-		centralReading, 
-		code = '', 
+		centralReading,
+		code = '',
 		projectId
 	] = rest;
-	
+
 	const navigation = useNavigation();
+	// eslint-disable-next-line no-unused-vars
 	const [error, setError] = useState();
 
 	const deleteStationing = async (stationingId) => {
@@ -33,7 +34,7 @@ const SectionItem = (props) => {
 			setError(error);
 		}
 	};
-	
+
 	return (
 		<List.Item
 			title={`${stationingName} ${code}`}
@@ -48,7 +49,7 @@ const SectionItem = (props) => {
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
 							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
-							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/`, stationingId, stationingName });
+							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing`, stationingId, stationingName, projectId });
 					}} />
 				</>
 			)}
@@ -62,7 +63,7 @@ const SectionItem = (props) => {
 			onPress={() => {
 				isComplete
 					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
-					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}`, stationingName, stationingId });
+					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing`, stationingId, stationingName, projectId });
 			}}
 		/>
 	);

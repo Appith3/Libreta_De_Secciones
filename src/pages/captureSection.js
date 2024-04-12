@@ -10,9 +10,11 @@ const CaptureSection = ({ navigation, route }) => {
 	const {
 		firestorePath,
 		stationingId,
+		projectId,
 		stationingName = 'Nueva Sección'
 	} = route.params;
 
+	// eslint-disable-next-line no-unused-vars
 	const [error, setError] = useState();
 	const [stationing, setStationing] = useState({
 		central_reading: '',
@@ -22,15 +24,19 @@ const CaptureSection = ({ navigation, route }) => {
 	});
 
 	const [docExists, setDocExists] = useState(false);
+	const [stationId, setStationId] = useState(stationingId);
 
 	const getStationingDoc = async () => {
 		try {
-			const stationingDocRef = doc(db, firestorePath);
+			const stationingDocRef = doc(db, `${firestorePath}/${stationId}`);
 			const stationingDocSnap = await getDoc(stationingDocRef);
 
 			if (stationingDocSnap.exists()) {
 				setStationing({
-					...stationingDocSnap.data()
+					central_reading: stationingDocSnap.data().central_reading,
+					code: stationingDocSnap.data().code,
+					is_complete: stationingDocSnap.data().is_complete,
+					stationing_name: stationingDocSnap.data().stationing_name
 				});
 				setDocExists(true);
 			} else {
@@ -38,18 +44,21 @@ const CaptureSection = ({ navigation, route }) => {
 				setDocExists(false);
 			}
 		} catch (error) {
+			console.log('error: ', error);
 			setError(error);
 		}
 	};
 
 	const updateStationing = async () => {
 		try {
-			const stationingDocRef = doc(db, firestorePath);
+			const stationingDocRef = doc(db, `${firestorePath}/${stationId}`);
 			await updateDoc(stationingDocRef, {
 				...stationing,
 				central_reading: Number(stationing.central_reading)
 			});
+			console.log(`estación con ID ${stationId} actualizada`);
 		} catch (error) {
+			console.log('error: ', error);
 			setError(error);
 		}
 	};
@@ -60,8 +69,10 @@ const CaptureSection = ({ navigation, route }) => {
 				...stationing,
 				central_reading: Number(stationing.central_reading)
 			});
+			setStationId(newStationingDocRef.id);
 			console.log('estación creada con el ID: ', newStationingDocRef.id);
 		} catch (error) {
+			console.log('error: ', error);
 			setError(error);
 		}
 	};
@@ -73,18 +84,33 @@ const CaptureSection = ({ navigation, route }) => {
 	};
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${stationingName} centro` });
 		getStationingDoc();
+		navigation.setOptions({ title: `${stationingName} centro` });
+		console.log('route: ', route.params);
 	}, []);
 
 	const onPressLeft = () => {
 		writeStationingCenter();
-		navigation.navigate('captureSectionSides', { _side: 'Izq', firestorePath, stationingName, centralReading: stationing.central_reading });
+		console.log('station ID: ', stationId);
+		navigation.navigate('captureSectionSides', {
+			_side: 'Izq',
+			firestorePath: `example_projects/${projectId}/stationing/${stationId}/details`,
+			stationingName,
+			centralReading: stationing.central_reading,
+			stationId
+		});
 	};
 
 	const onPressRight = () => {
 		writeStationingCenter();
-		navigation.navigate('captureSectionSides', { _side: 'Der', firestorePath, stationingName, centralReading: stationing.central_reading });
+		console.log('station ID: ', stationId);
+		navigation.navigate('captureSectionSides', {
+			_side: 'Der',
+			firestorePath: `example_projects/${projectId}/stationing/${stationId}/details`,
+			stationingName,
+			centralReading: stationing.central_reading,
+			stationId
+		});
 	};
 
 	const handleOnChangeText = (key, value) => {
@@ -141,7 +167,6 @@ const CaptureSection = ({ navigation, route }) => {
 						mode='outlined'
 						placeholder='Cadenamiento'
 						keyboardType='number-pad'
-						inputMode='decimal'
 						value={stationing.stationing_name}
 						onChangeText={(stationing_name) => handleOnChangeText('stationing_name', stationing_name)}
 						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
@@ -157,6 +182,7 @@ const CaptureSection = ({ navigation, route }) => {
 						value={stationing.central_reading}
 						onChangeText={(central_reading) => handleOnChangeText('central_reading', central_reading)} />
 				</View>
+
 				<View style={styles.controls} >
 					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' >Capturar izquierda</Button>
 					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' >Capturar derecha</Button>
