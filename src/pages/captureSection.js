@@ -16,6 +16,8 @@ const CaptureSection = ({ navigation, route }) => {
 
 	// eslint-disable-next-line no-unused-vars
 	const [error, setError] = useState();
+	const [loading, setLoading] = useState(false);
+
 	const [stationing, setStationing] = useState({
 		central_reading: '',
 		code: '',
@@ -57,6 +59,7 @@ const CaptureSection = ({ navigation, route }) => {
 				central_reading: Number(stationing.central_reading)
 			});
 			console.log(`estación con ID ${stationId} actualizada`);
+			setLoading(false);
 		} catch (error) {
 			console.log('error: ', error);
 			setError(error);
@@ -69,8 +72,10 @@ const CaptureSection = ({ navigation, route }) => {
 				...stationing,
 				central_reading: Number(stationing.central_reading)
 			});
+			setDocExists(true);
 			setStationId(newStationingDocRef.id);
 			console.log('estación creada con el ID: ', newStationingDocRef.id);
+			setLoading(false);
 		} catch (error) {
 			console.log('error: ', error);
 			setError(error);
@@ -89,16 +94,25 @@ const CaptureSection = ({ navigation, route }) => {
 		console.log('route: ', route.params);
 	}, []);
 
-	const onPressLeft = () => {
-		writeStationingCenter();
-		console.log('station ID: ', stationId);
-		navigation.navigate('captureSectionSides', {
-			_side: 'Izq',
-			firestorePath: `example_projects/${projectId}/stationing/${stationId}/details`,
-			stationingName,
-			centralReading: stationing.central_reading,
-			stationId
-		});
+	const onPressLeft = async () => {
+		try {
+			setLoading(true);
+			await writeStationingCenter(); // Await the promise // Destructure returned object
+
+			// Navigate only after successful write operation (if docExists is true)
+			if (docExists) {
+				navigation.navigate('captureSectionSides', {
+					_side: 'Izq',
+					firestorePath: `example_projects/${projectId}/stationing/${stationId}/details`,
+					stationingName,
+					centralReading: stationing.central_reading,
+					stationId
+				});
+			}
+		} catch (error) {
+			console.log('error: ', error);
+			setError(error); // Handle errors appropriately
+		}
 	};
 
 	const onPressRight = () => {
@@ -179,14 +193,14 @@ const CaptureSection = ({ navigation, route }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						value={stationing.central_reading}
+						value={stationing.central_reading.toString()}
 						onChangeText={(central_reading) => handleOnChangeText('central_reading', central_reading)} />
 				</View>
 
 				<View style={styles.controls} >
-					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' >Capturar izquierda</Button>
-					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' >Capturar derecha</Button>
-					<Button uppercase mode='outlined' textColor='#F5F7FA' >Igual a la anterior</Button>
+					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
+					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
+					<Button uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
 				</View>
 			</View>
 		</View>
