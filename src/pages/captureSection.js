@@ -94,6 +94,7 @@ const CaptureSection = ({ navigation, route }) => {
 		console.log('route: ', route.params);
 	}, []);
 
+	// FIXME: prevent navigation before writeStationingCenter, stationId is undefined
 	const onPressLeft = async () => {
 		try {
 			setLoading(true);

@@ -40,6 +40,7 @@ const HomePage = ({ navigation }) => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
+	// TODO: change ScrollView to FlatList
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>

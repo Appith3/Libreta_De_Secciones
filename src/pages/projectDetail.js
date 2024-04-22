@@ -72,6 +72,7 @@ const ProjectDetail = ({ navigation, route }) => {
 				</View>
 			</View>
 			<View>
+				{/* TODO: Change ScrollView to FlatList */}
 				<ScrollView style={styles.sectionsList}>
 					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
 					{
