@@ -30,6 +30,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 		let slope = centralReading - Number(detail.reading);
 
 		// FIXME: cuando se crea una sección desde el FAB en projectDetail el firestorePath es el siguiente example_projects/${projectId}/stationing/undefined/details
+		// FIXME: slope is string on firestore
 		try {
 			const newDetailDocRef = await addDoc(collection(db, firestorePath), {
 				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),

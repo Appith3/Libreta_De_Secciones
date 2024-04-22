@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import FileInput from '../componets/FileInput';
 import PropTypes from 'prop-types';
+
+import { useStore } from '../store/useStore';
 
 const CreateProjectForm = ( props ) => {
 
@@ -10,18 +12,13 @@ const CreateProjectForm = ( props ) => {
 		navigation
 	} = props;
 
-	const [projectName, setProjectName] = useState('');
-
-	const createProject = () => {
-		navigation.navigate('projectDetail', {
-			project: {
-				'_id': 'project_id_1000',
-				'name': {projectName},
-				'creation_date': '27/11/2023',
-				'stationing': []
-			}
-		});
-	};
+	const project = useStore((state) => state.project);
+	const createProject = useStore((state) => state.createProject);
+	const updateProjectName = useStore((state) => state.updateProjectName);
+	
+	useEffect(() => {
+		console.log('project: ', project.project_name);
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -36,8 +33,8 @@ const CreateProjectForm = ( props ) => {
 						<TextInput
 							mode='outlined'
 							placeholder='Nombre del proyecto'
-							value={projectName}
-							onChangeText={projectName => setProjectName(projectName)}
+							value={project.project_name}
+							onChangeText={(e) => updateProjectName(e)}
 							right={<TextInput.Icon icon='map' />}
 						/>
 						<HelperText type='info' style={styles.helperText}>
