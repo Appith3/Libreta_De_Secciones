@@ -4,7 +4,7 @@ import { FAB, TextInput, Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import ProjectItem from '../componets/ProjectItem';
 import { db } from '../firebase/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 const HomePage = ({ navigation }) => {
 
@@ -18,7 +18,8 @@ const HomePage = ({ navigation }) => {
 	const getProjectsCollection = async () => {
 		try {
 			const projectsColRef = collection(db, 'example_projects');
-			const projectDocs = await getDocs(projectsColRef);
+			const q = query(projectsColRef, orderBy('creation_date', 'desc'));
+			const projectDocs = await getDocs(q);
 
 			const projects = projectDocs.docs.map((doc) => ({
 				id: doc.id,
