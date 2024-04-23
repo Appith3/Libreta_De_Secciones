@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import FileInput from '../componets/FileInput';
@@ -6,19 +5,36 @@ import PropTypes from 'prop-types';
 
 import { useStore } from '../store/useStore';
 
-const CreateProjectForm = ( props ) => {
+const CreateProjectForm = (props) => {
 
 	const {
 		navigation
 	} = props;
 
 	const project = useStore((state) => state.project);
-	const createProject = useStore((state) => state.createProject);
 	const updateProjectName = useStore((state) => state.updateProjectName);
-	
-	useEffect(() => {
-		console.log('project: ', project.project_name);
-	}, []);
+	const createProject = useStore((state) => state.createProject);
+	const stationingFile = useStore((state) => state.stationingFile);
+	const stations = useStore((state) => state.stations);
+	const createStationing = useStore((state) => state.createStationing);
+
+	const handleCreateProjectTap = () => {
+		const { id } = project;		
+		const { mime_type } = stationingFile;
+
+		stations?.map((s) => {
+			const station = mime_type === 'txt'
+				? s.split('\t')
+				: s.split(',');
+
+			const [, , , , station_name, code] = station;
+
+			createStationing({station_name, code}, id);
+		});
+
+		// FIXME: projectTitle, projectId, firestorePath are undefined
+		// navigation.navigate('projectDetail');
+	};
 
 	return (
 		<View style={styles.container}>
@@ -35,14 +51,15 @@ const CreateProjectForm = ( props ) => {
 							placeholder='Nombre del proyecto'
 							value={project.project_name}
 							onChangeText={(e) => updateProjectName(e)}
+							onEndEditing={() => createProject(project)}
 							right={<TextInput.Icon icon='map' />}
 						/>
 						<HelperText type='info' style={styles.helperText}>
 							¿Como se llama el lugar donde se va seccionar?
 						</HelperText>
 					</View>
-					<FileInput/>
-					<Button icon='plus' mode='contained' style={{marginTop: 96}} onPress={ createProject }>Crear trabajo</Button>
+					<FileInput />
+					<Button icon='plus' mode='contained' style={{ marginTop: 96 }} onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
 				</View>
 			</View>
 		</View>
@@ -57,7 +74,7 @@ const styles = StyleSheet.create({
 	main: {
 		flex: 1,
 		flexDirection: 'column',
-		gap: 32, 
+		gap: 32,
 		padding: 16
 	},
 	image: {
@@ -76,7 +93,7 @@ const styles = StyleSheet.create({
 });
 
 CreateProjectForm.propTypes = {
-	navigation: PropTypes.object	
+	navigation: PropTypes.object
 };
 
 export default CreateProjectForm;
