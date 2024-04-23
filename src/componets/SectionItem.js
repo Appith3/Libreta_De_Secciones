@@ -49,6 +49,7 @@ const SectionItem = (props) => {
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
 							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+							// FIXME: TypeError: Cannot read property 'toString' of undefined. ocurrs when want to navigate to captureCentral on stations made whit store
 							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing`, stationingId, stationingName, projectId });
 					}} />
 				</>
@@ -63,6 +64,7 @@ const SectionItem = (props) => {
 			onPress={() => {
 				isComplete
 					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+					// FIXME: TypeError: Cannot read property 'toString' of undefined. ocurrs when want to navigate to captureCentral on stations made whit store
 					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing`, stationingId, stationingName, projectId });
 			}}
 		/>
