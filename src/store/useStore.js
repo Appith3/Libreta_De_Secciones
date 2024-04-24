@@ -64,8 +64,20 @@ export const useStore = create((set) => ({
 
 		} catch (error) {
 			console.log('error: ', error);
-			set(() => ({error: error}));
+			set(() => ({
+				error: error,
+				isLoading: false
+			}));
 		}
+	},
+
+	setCurrentProject: (project) => {
+		set(() => ({
+			project: {
+				id: project.projectId,
+				project_name: project.projectName
+			}
+		}));
 	},
 
 	createProject: async (project) => {
@@ -120,6 +132,40 @@ export const useStore = create((set) => ({
 			console.log('estación creada con el ID: ', newStationingDocRef.id);
 		} catch (error) {
 			console.log('error: ', error);
+		}
+	},
+
+	getStationingFromFirestore: async (currentProject) => {
+		try {
+			const stationingColRef = collection(db, `example_projects/${currentProject}/stationing`);
+			const q = query(stationingColRef, orderBy('stationing_name', 'asc'));
+			const stationingDocs = await getDocs(q);
+
+			set(() => ({
+				stations: stationingDocs.docs.map((doc) => ({
+					id: doc.id,
+					...doc.data(),
+				})),
+				isLoading: false
+			}));
+
+		} catch (error) {
+			console.log('error: ', error);
+			set(() => ({
+				error: error,
+				isLoading: false
+			}));
+		}
+	},
+
+	deleteStation: async (currentProject, stationId) => {
+		try {
+			await deleteDoc(doc(db, `example_projects/${currentProject}/stationing`, stationId));
+			console.log('documento borrado con id: ', stationId);
+		} catch (error) {
+			set(()=>({
+				error: error
+			}));
 		}
 	}
 
