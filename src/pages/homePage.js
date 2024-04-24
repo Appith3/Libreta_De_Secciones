@@ -17,7 +17,7 @@ const HomePage = ({ navigation }) => {
 	
 	useEffect(() => {
 		getProjectsFromFirestore();
-	}, []);
+	}, [projects]);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
@@ -26,7 +26,7 @@ const HomePage = ({ navigation }) => {
 	const renderItem = ({item}) => {
 		return (
 			<ProjectItem 
-				title={item.name} 
+				projectName={item.name} 
 				projectId={item.id} />
 		);
 	};

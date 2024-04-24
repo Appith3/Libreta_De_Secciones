@@ -8,17 +8,18 @@ import { useStore } from '../store/useStore';
 const ProjectItem = (props) => {
 
 	const {
-		title,
+		projectName,
 		projectId
 	} = props;
 
 	const navigation = useNavigation();
 
 	const deleteProject = useStore((state) => state.deleteProject);
+	const setCurrentProject  = useStore((state) => state.setCurrentProject);
 
 	return (
 		<List.Item
-			title={title}
+			title={projectName}
 			right={() => (
 				<>
 					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteProject(projectId)} />
@@ -28,7 +29,8 @@ const ProjectItem = (props) => {
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				navigation.navigate('projectDetail', { projectTitle: title, projectId: projectId, firestorePath: `example_projects/${projectId}/stationing` });
+				setCurrentProject({projectId, projectName});
+				navigation.navigate('projectDetail');
 			}}
 		/>
 	);
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
 });
 
 ProjectItem.propTypes = {
-	title: PropTypes.string,
+	projectName: PropTypes.string,
 	projectId: PropTypes.string
 };
 
