@@ -1,47 +1,45 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { FAB, TextInput, Text, ActivityIndicator } from 'react-native-paper';
+import { StyleSheet, View, FlatList } from 'react-native';
+import { FAB, TextInput, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import ProjectItem from '../componets/ProjectItem';
-import { db } from '../firebase/firebaseConfig';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { useStore } from '../store/useStore';
+import { StatusBar } from 'expo-status-bar';
 
 const HomePage = ({ navigation }) => {
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
 
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState();
-	const [docs, setDocs] = useState();
-
-	const getProjectsCollection = async () => {
-		try {
-			const projectsColRef = collection(db, 'example_projects');
-			const q = query(projectsColRef, orderBy('creation_date', 'desc'));
-			const projectDocs = await getDocs(q);
-
-			const projects = projectDocs.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-			setDocs(projects);
-			setLoading(false);
-		} catch (error) {
-			setError(error);
-			setLoading(false);
-		}
-	};
-
+	const isLoading = useStore((state) => state.isLoading);
+	const getProjectsFromFirestore = useStore((state) => state.getProjectsFromFirestore);
+	const projects = useStore((state) => state.projects);
+	
 	useEffect(() => {
-		getProjectsCollection();
+		getProjectsFromFirestore();
 	}, []);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
-	// TODO: change ScrollView to FlatList
+	const renderItem = ({item}) => {
+		return (
+			<ProjectItem 
+				title={item.name} 
+				projectId={item.id} />
+		);
+	};
+
+	if(isLoading) {
+		// TODO: add gif/image to loading state
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size={'large'}/>
+			</View>
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
@@ -52,18 +50,11 @@ const HomePage = ({ navigation }) => {
 					value={searchText}
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
-				{/* TODO: Create empty state screen */}
-				<ScrollView>
-					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
-					{
-						docs?.map((doc) => {
-							return (
-								<ProjectItem title={doc.name} key={doc.id} projectId={doc.id} />
-							);
-						})
-					}
-					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
-				</ScrollView>
+				<FlatList
+					data={projects}
+					renderItem={renderItem}
+					keyExtractor={item => item.id}
+				/>
 			</View>
 			<FAB.Group
 				open={openFAB.open}
@@ -101,6 +92,13 @@ const HomePage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		backgroundColor: '#1e2833',
+		paddingTop: StatusBar.currentHeight,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833'

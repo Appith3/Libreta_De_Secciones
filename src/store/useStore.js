@@ -1,8 +1,21 @@
 import { create } from 'zustand';
-import { Timestamp, addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
+import {
+	Timestamp,
+	addDoc,
+	collection,
+	deleteDoc,
+	doc,
+	getDocs,
+	orderBy,
+	query
+} from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
 export const useStore = create((set) => ({
+
+	isLoading: true,
+	error: {},
+
 	projects: [],
 	project: {
 		id: '',
@@ -28,19 +41,31 @@ export const useStore = create((set) => ({
 	// TODO: refactor methods related whit stationing or details made previously
 
 	updateProjectName: (project_name) =>
-		set((state) =>
-			(
-				{
-					project: {
-						...state.project,
-						project_name: project_name
-					}
-				}
-			)
-		),
+		set((state) => ({
+			project: {
+				...state.project,
+				project_name: project_name
+			}
+		})),
 
-	getProjectsFromFirestore: async () => {
-		// TODO: implement getProjectsFromFirestore
+	getProjectsFromFirestore: async () => {		
+		try {
+			const projectsColRef = collection(db, 'example_projects');
+			const q = query(projectsColRef, orderBy('creation_date', 'desc'));
+			const projectDocs = await getDocs(q);
+
+			set(() => ({
+				projects: projectDocs.docs.map((doc) => ({
+					id: doc.id,
+					...doc.data(),
+				})),
+				isLoading: false
+			}));
+
+		} catch (error) {
+			console.log('error: ', error);
+			set(() => ({error: error}));
+		}
 	},
 
 	createProject: async (project) => {
@@ -68,18 +93,14 @@ export const useStore = create((set) => ({
 		}
 	},
 
-	updateStationingFile: (stationingFile) => 
-		set(() =>
-			(
-				{
-					stationingFile: {
-						mime_type: stationingFile.mimeType,
-						file_name: stationingFile.fileName,
-						uri: stationingFile.uri,
-					}
-				}
-			)
-		),
+	updateStationingFile: (stationingFile) =>
+		set(() => ({
+			stationingFile: {
+				mime_type: stationingFile.mimeType,
+				file_name: stationingFile.fileName,
+				uri: stationingFile.uri,
+			}
+		})),
 
 	getStationingFromFile: (stations) => {
 		let stationingArray = stations.split('\n');
