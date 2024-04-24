@@ -2,9 +2,7 @@ import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
-import { db } from '../firebase/firebaseConfig';
-import { doc, deleteDoc } from 'firebase/firestore';
-import { useState } from 'react';
+import { useStore } from '../store/useStore';
 
 const SectionItem = (props) => {
 
@@ -12,28 +10,14 @@ const SectionItem = (props) => {
 		stationingName,
 		stationingId,
 		isComplete = false,
-		firestorePath,
-		rest
-	} = props;
-
-	const [
 		centralReading,
 		code = '',
-		projectId
-	] = rest;
+	} = props;
 
 	const navigation = useNavigation();
-	// eslint-disable-next-line no-unused-vars
-	const [error, setError] = useState();
 
-	const deleteStationing = async (stationingId) => {
-		try {
-			await deleteDoc(doc(db, firestorePath, stationingId));
-			console.log('documento borrado con id: ', stationingId);
-		} catch (error) {
-			setError(error);
-		}
-	};
+	const deleteStation = useStore((state) => state.deleteStation);
+	const project = useStore((state) => state.project);
 
 	return (
 		<List.Item
@@ -45,12 +29,12 @@ const SectionItem = (props) => {
 			}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStationing(stationingId)} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStation(project.id, stationingId)} />
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
 						isComplete
-							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+							? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${project.id}/stationing/${stationingId}/details`, centralReading, code, stationingName })
 							// FIXME: TypeError: Cannot read property 'toString' of undefined. ocurrs when want to navigate to captureCentral on stations made whit store
-							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing`, stationingId, stationingName, projectId });
+							: navigation.navigate('captureCentral', { firestorePath: `example_projects/${project.id}/stationing`, stationingId, stationingName });
 					}} />
 				</>
 			)}
@@ -63,9 +47,9 @@ const SectionItem = (props) => {
 			descriptionStyle={styles.description}
 			onPress={() => {
 				isComplete
-					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${projectId}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+					? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${project.id}/stationing/${stationingId}/details`, centralReading, code, stationingName })
 					// FIXME: TypeError: Cannot read property 'toString' of undefined. ocurrs when want to navigate to captureCentral on stations made whit store
-					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${projectId}/stationing`, stationingId, stationingName, projectId });
+					: navigation.navigate('captureCentral', { firestorePath: `example_projects/${project.id}/stationing`, stationingId, stationingName });
 			}}
 		/>
 	);
@@ -100,9 +84,9 @@ const styles = StyleSheet.create({
 SectionItem.propTypes = {
 	stationingName: PropTypes.string,
 	stationingId: PropTypes.string,
-	firestorePath: PropTypes.string,
 	isComplete: PropTypes.bool,
-	rest: PropTypes.array
+	centralReading: PropTypes.number,
+	code: PropTypes.string,
 };
 
 export default SectionItem;

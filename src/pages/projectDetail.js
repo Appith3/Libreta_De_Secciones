@@ -1,58 +1,55 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, FAB, Text, ActivityIndicator } from 'react-native-paper';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import { Chip, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
-import { db } from '../firebase/firebaseConfig';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { useStore } from '../store/useStore';
 
-const ProjectDetail = ({ navigation, route }) => {
+const ProjectDetail = ({ navigation }) => {
 	// FIXME: Go Home on projectDetail after create project
 	/* 
 		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
 	*/
 
-	const {
-		projectTitle,
-		projectId,
-		firestorePath
-	} = route.params;
-
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState();
-	const [docs, setDocs] = useState();
-
-	const getStationingCollection = async () => {
-		try {
-			const stationingColRef = collection(db, firestorePath);
-			const q = query(stationingColRef, orderBy('stationing_name', 'asc'));
-			const stationingDocs = await getDocs(q);
-
-			const roadStationing = stationingDocs.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-			setDocs(roadStationing);
-			setLoading(false);
-		} catch (error) {
-			setError(error);
-			setLoading(false);
-		}
-	};
-
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState('');
 
+	const isLoading = useStore((state) => state.isLoading);
+	const project = useStore((state) => state.project);
+	const getStationingFromFirestore = useStore((state) => state.getStationingFromFirestore);
+	const stations = useStore((state) => state.stations);
+
 	useEffect(() => {
-		navigation.setOptions({ title: projectTitle });
-		getStationingCollection();
+		navigation.setOptions({ title: project.project_name });
 	}, []);
+
+	useEffect(() => {getStationingFromFirestore(project.id);}, [stations]);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
-	// TODO: re-render sectionsList when stationing is deleted and add popup confirmation to delete
+	const renderItem = ({item}) => {
+		return (
+			<SectionItem 
+				stationingName={item.stationing_name}
+				stationingId={item.id}
+				isComplete={item.is_complete}
+				centralReading={item.central_reading}
+				code={item.code}
+			/>
+		);
+	};
+
+	// TODO: add popup confirmation to delete
+	if(isLoading) {
+		// TODO: add gif/image to loading state
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size={'large'}/>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
@@ -72,20 +69,12 @@ const ProjectDetail = ({ navigation, route }) => {
 				</View>
 			</View>
 			<View>
-				{/* TODO: Change ScrollView to FlatList */}
-				<ScrollView style={styles.sectionsList}>
-					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
-					{
-						docs?.map((stationing) => {
-							let { central_reading, code, id, is_complete, stationing_name } = stationing;
-
-							return is_complete
-								? <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} firestorePath={firestorePath} isComplete />
-								: <SectionItem stationingName={stationing_name} stationingId={id} key={id} rest={[central_reading, code, projectId]} firestorePath={firestorePath} />;
-						})
-					}
-					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
-				</ScrollView>
+				<FlatList
+					style={styles.sectionsList}
+					data={stations}
+					renderItem={renderItem}
+					keyExtractor={item => item.id}
+				/>
 			</View>
 			<FAB.Group
 				open={openFAB.open}
@@ -101,7 +90,7 @@ const ProjectDetail = ({ navigation, route }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('captureCentral', {firestorePath: `example_projects/${projectId}/stationing`, projectId}),
+						onPress: () => navigation.navigate('captureCentral', {firestorePath: `example_projects/${project.id}/stationing`}),
 					},
 					{
 						icon: 'upload',
