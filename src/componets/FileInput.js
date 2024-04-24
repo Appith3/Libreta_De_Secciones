@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -27,7 +26,6 @@ const FileInput = () => {
 				});
 
 				readFileContent(doc.assets[0].uri);
-
 			}
 			else doc.canceled;
 
