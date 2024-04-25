@@ -7,6 +7,7 @@ import { useStore } from '../store/useStore';
 
 const ProjectDetail = ({ navigation }) => {
 	// FIXME: Go Home on projectDetail after create project
+	// TODO: Clean store when go back to home page
 	/* 
 		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
 	*/
@@ -21,9 +22,8 @@ const ProjectDetail = ({ navigation }) => {
 
 	useEffect(() => {
 		navigation.setOptions({ title: project.project_name });
+		getStationingFromFirestore(project.id);
 	}, []);
-
-	useEffect(() => {getStationingFromFirestore(project.id);}, [stations]);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
@@ -90,7 +90,7 @@ const ProjectDetail = ({ navigation }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('captureCentral', {firestorePath: `example_projects/${project.id}/stationing`}),
+						onPress: () => navigation.navigate('captureCentral'),
 					},
 					{
 						icon: 'upload',

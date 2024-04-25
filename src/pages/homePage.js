@@ -8,6 +8,8 @@ import { StatusBar } from 'expo-status-bar';
 
 const HomePage = ({ navigation }) => {
 
+	// TODO: Clean all store
+
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
 
@@ -17,7 +19,7 @@ const HomePage = ({ navigation }) => {
 	
 	useEffect(() => {
 		getProjectsFromFirestore();
-	}, [projects]);
+	}, []);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
