@@ -1,138 +1,64 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { db } from '../firebase/firebaseConfig';
-import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { useStore } from '../store/useStore';
 
-const CaptureSection = ({ navigation, route }) => {
+const CaptureSection = ({ navigation }) => {
 
-	const {
-		firestorePath,
-		stationingId,
-		projectId,
-		stationingName = 'Nueva Sección'
-	} = route.params;
+	const loading = useStore((state) => state.loading);
+	const stationExists = useStore((state) => state.stationExists);
 
-	// eslint-disable-next-line no-unused-vars
-	const [error, setError] = useState();
-	const [loading, setLoading] = useState(false);
-
-	const [stationing, setStationing] = useState({
-		central_reading: '',
-		code: '',
-		is_complete: false,
-		stationing_name: ''
-	});
-
-	const [docExists, setDocExists] = useState(false);
-	const [stationId, setStationId] = useState(stationingId);
-
-	const getStationingDoc = async () => {
-		try {
-			const stationingDocRef = doc(db, `${firestorePath}/${stationId}`);
-			const stationingDocSnap = await getDoc(stationingDocRef);
-
-			if (stationingDocSnap.exists()) {
-				setStationing({
-					central_reading: stationingDocSnap.data().central_reading,
-					code: stationingDocSnap.data().code,
-					is_complete: stationingDocSnap.data().is_complete,
-					stationing_name: stationingDocSnap.data().stationing_name
-				});
-				setDocExists(true);
-			} else {
-				console.log('El documento no existe');
-				setDocExists(false);
-			}
-		} catch (error) {
-			console.log('error: ', error);
-			setError(error);
-		}
-	};
-
-	const updateStationing = async () => {
-		try {
-			const stationingDocRef = doc(db, `${firestorePath}/${stationId}`);
-			await updateDoc(stationingDocRef, {
-				...stationing,
-				central_reading: Number(stationing.central_reading)
-			});
-			console.log(`estación con ID ${stationId} actualizada`);
-			setLoading(false);
-		} catch (error) {
-			console.log('error: ', error);
-			setError(error);
-		}
-	};
-
-	const createStationing = async () => {
-		try {
-			const newStationingDocRef = await addDoc(collection(db, firestorePath), {
-				...stationing,
-				central_reading: Number(stationing.central_reading)
-			});
-			setDocExists(true);
-			setStationId(newStationingDocRef.id);
-			console.log('estación creada con el ID: ', newStationingDocRef.id);
-			setLoading(false);
-		} catch (error) {
-			console.log('error: ', error);
-			setError(error);
-		}
-	};
+	const project = useStore((state) => state.project);
+	const stationing = useStore((state) => state.stationing);
+	const getStationFromFirestore = useStore((state) => state.getStationFromFirestore);
+	const updateStationingFromFirestore = useStore((state) => state.updateStationingFromFirestore);
+	const createStationing = useStore((state) => state.createStationing);
+	const updateStationingCode = useStore((state) => state.updateStationingCode);
+	const updateStationingName = useStore((state) => state.updateStationingName);
+	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
 
 	const writeStationingCenter = () => {
-		docExists
-			? updateStationing()
-			: createStationing();
+		stationExists
+			? updateStationingFromFirestore(project.id, stationing)
+			: createStationing(project.id, stationing);
 	};
 
 	useEffect(() => {
-		getStationingDoc();
-		navigation.setOptions({ title: `${stationingName} centro` });
-		console.log('route: ', route.params);
+		console.log('stationing: ', stationing);
+		getStationFromFirestore(project.id,);
 	}, []);
 
-	// FIXME: prevent navigation before writeStationingCenter, stationId is undefined
-	const onPressLeft = async () => {
-		try {
-			setLoading(true);
-			await writeStationingCenter(); // Await the promise // Destructure returned object
+	useEffect(() => {
+		navigation.setOptions({ title: `${stationing.stationing_name === '' ? 'Nueva sección' : stationing.stationing_name} centro` });
+	}, [stationing.stationing_name]);
 
-			// Navigate only after successful write operation (if docExists is true)
-			if (docExists) {
-				navigation.navigate('captureSectionSides', {
-					_side: 'Izq',
-					firestorePath: `example_projects/${projectId}/stationing/${stationId}/details`,
-					stationingName,
-					centralReading: stationing.central_reading,
-					stationId
-				});
-			}
-		} catch (error) {
-			console.log('error: ', error);
-			setError(error); // Handle errors appropriately
-		}
+	// FIXME: prevent navigation before writeStationingCenter, stationId is undefined
+	const onPressLeft = () => {
+		writeStationingCenter();
+
+		// if (stationExists) {
+		// 	navigation.navigate('captureSectionSides', {
+		// 		_side: 'Izq',
+		// 		firestorePath: `example_projects/${project.id}/stationing/${stationId}/details`,
+		// 		stationingName,
+		// 		centralReading: stationing.central_reading,
+		// 		stationId
+		// 	});
+		// }
 	};
 
 	const onPressRight = () => {
 		writeStationingCenter();
-		console.log('station ID: ', stationId);
-		navigation.navigate('captureSectionSides', {
-			_side: 'Der',
-			firestorePath: `example_projects/${projectId}/stationing/${stationId}/details`,
-			stationingName,
-			centralReading: stationing.central_reading,
-			stationId
-		});
-	};
 
-	const handleOnChangeText = (key, value) => {
-		setStationing({
-			...stationing,
-			[key]: value
-		});
+		// console.log('station ID: ', stationId);
+		// navigation.navigate('captureSectionSides', {
+		// 	_side: 'Der',
+		// 	firestorePath: `example_projects/${project.id}/stationing/${stationId}/details`,
+		// 	stationingName,
+		// 	centralReading: stationing.central_reading,
+		// 	stationId
+		// });
 	};
 
 	// formateamos el valor del cadenamiento de 0 a 0+000.00
@@ -159,10 +85,7 @@ const CaptureSection = ({ navigation, route }) => {
 
 		const formattedNumber = `${thousands}+${integers}.${decimals}`;
 
-		setStationing({
-			...stationing,
-			stationing_name: formattedNumber
-		});
+		updateStationingName(formattedNumber);
 	};
 
 	// TODO: add some error indicator
@@ -175,7 +98,7 @@ const CaptureSection = ({ navigation, route }) => {
 						mode='outlined'
 						placeholder='Codigo'
 						value={stationing.code}
-						onChangeText={(code) => handleOnChangeText('code', code.toUpperCase())}
+						onChangeText={(code) => updateStationingCode(code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
@@ -183,7 +106,7 @@ const CaptureSection = ({ navigation, route }) => {
 						placeholder='Cadenamiento'
 						keyboardType='number-pad'
 						value={stationing.stationing_name}
-						onChangeText={(stationing_name) => handleOnChangeText('stationing_name', stationing_name)}
+						onChangeText={(stationing_name) => updateStationingName(stationing_name)}
 						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
 						right={<TextInput.Icon icon='map-marker' />}
 					/>
@@ -195,13 +118,13 @@ const CaptureSection = ({ navigation, route }) => {
 						inputMode='decimal'
 						textAlign='left'
 						value={stationing.central_reading.toString()}
-						onChangeText={(central_reading) => handleOnChangeText('central_reading', central_reading)} />
+						onChangeText={(central_reading) => updateStationingCentralReading(central_reading)} />
 				</View>
 
 				<View style={styles.controls} >
 					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
 					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
-					<Button uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					<Button uppercase mode='outlined' textColor='#F5F7FA' loading={loading} onPress={writeStationingCenter}>Igual a la anterior</Button>
 				</View>
 			</View>
 		</View>
