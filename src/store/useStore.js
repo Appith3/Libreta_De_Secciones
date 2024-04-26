@@ -160,7 +160,7 @@ export const useStore = create((set) => ({
 	},
 
 	setCurrentStation: (station) => {
-		console.log('store station: ', station);
+		console.log('current station: ', station);
 		set((state) => ({
 			stationing: {
 				...state.station,
@@ -181,10 +181,10 @@ export const useStore = create((set) => ({
 	createStationing: async (currentProject, stationing) => {		
 		try {
 			const newStationingDocRef = await addDoc(collection(db, `example_projects/${currentProject}/stationing`), {
-				stationing_name: stationing.stationing_name,
+				stationing_name: stationing.station_name,
 				code: stationing.code,
 				is_complete: false,
-				central_reading: Number(stationing.central_reading)
+				central_reading: Number(stationing.central_reading) || ''
 			});
 
 			set(() => ({
@@ -227,8 +227,6 @@ export const useStore = create((set) => ({
 
 	// Fetches a single stationing entry by ID from the Firestore database.
 	getStationFromFirestore: async (currentProject, currentStation) => {
-		console.log('currentStation: ', currentStation);
-		console.log('currentProject: ', currentProject);
 		try {
 			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation}`);
 			const stationingDocSnap = await getDoc(stationingDocRef);
