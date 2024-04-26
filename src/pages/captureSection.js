@@ -7,7 +7,7 @@ import { useStore } from '../store/useStore';
 const CaptureSection = ({ navigation }) => {
 
 	const loading = useStore((state) => state.loading);
-	const stationExists = useStore((state) => state.stationExists);
+	const stationExists = useStore((state) => state.stationExists); // FIXME: is false until station exists on DB
 
 	const project = useStore((state) => state.project);
 	const stationing = useStore((state) => state.stationing);
@@ -25,7 +25,6 @@ const CaptureSection = ({ navigation }) => {
 	};
 
 	useEffect(() => {
-		console.log('stationing: ', stationing);
 		getStationFromFirestore(project.id,);
 	}, []);
 
@@ -97,7 +96,7 @@ const CaptureSection = ({ navigation }) => {
 					<TextInput
 						mode='outlined'
 						placeholder='Codigo'
-						value={stationing.code}
+						value={stationing.code === '' ? stationing.code : ''} // FIXME: always '' until code exists
 						onChangeText={(code) => updateStationingCode(code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
@@ -117,7 +116,7 @@ const CaptureSection = ({ navigation }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						value={stationing.central_reading.toString()}
+						value={stationing.central ? stationing.central_reading.toString() : ''}
 						onChangeText={(central_reading) => updateStationingCentralReading(central_reading)} />
 				</View>
 
