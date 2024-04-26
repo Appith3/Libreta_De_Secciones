@@ -29,11 +29,10 @@ const CreateProjectForm = (props) => {
 
 			const [, , , , station_name, code] = station;
 
-			createStationing({station_name, code}, id);
+			createStationing(id, {station_name, code});
 		});
 
-		// FIXME: projectTitle, projectId, firestorePath are undefined
-		// navigation.navigate('projectDetail');
+		navigation.navigate('projectDetail');
 	};
 
 	return (
