@@ -16,6 +16,7 @@ const ProjectItem = (props) => {
 
 	const deleteProject = useStore((state) => state.deleteProject);
 	const setCurrentProject  = useStore((state) => state.setCurrentProject);
+	const resetLoading = useStore((state) => state.resetLoading);
 
 	return (
 		<List.Item
@@ -29,6 +30,7 @@ const ProjectItem = (props) => {
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
+				resetLoading();
 				setCurrentProject({projectId, projectName});
 				navigation.navigate('projectDetail');
 			}}
