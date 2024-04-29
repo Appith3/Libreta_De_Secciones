@@ -4,6 +4,7 @@ import { Chip, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
+import { StatusBar } from 'expo-status-bar';
 
 const ProjectDetail = ({ navigation }) => {
 	// FIXME: Go Home on projectDetail after create project
@@ -116,6 +117,13 @@ const ProjectDetail = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		backgroundColor: '#1e2833',
+		paddingTop: StatusBar.currentHeight,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#1E2833'
