@@ -22,10 +22,10 @@ const SectionItem = (props) => {
 
 	const handlePressItem = () => {
 		setCurrentStation({ stationingId, stationingName, centralReading, code });
-		
+
 		isComplete
 			? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${currentProject.id}/stationing/${stationingId}/details`, centralReading, code, stationingName })
-			: navigation.navigate('captureCentral'); //* FIXME: TypeError: Cannot read property 'toString' of undefined.
+			: navigation.navigate('captureCentral');
 	};
 
 	return (
@@ -84,7 +84,7 @@ SectionItem.propTypes = {
 	stationingName: PropTypes.string,
 	stationingId: PropTypes.string,
 	isComplete: PropTypes.bool,
-	centralReading: PropTypes.number,
+	centralReading: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	code: PropTypes.string,
 };
 

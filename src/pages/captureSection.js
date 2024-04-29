@@ -7,7 +7,7 @@ import { useStore } from '../store/useStore';
 const CaptureSection = ({ navigation }) => {
 
 	const loading = useStore((state) => state.loading);
-	const stationExists = useStore((state) => state.stationExists); // FIXME: is false until station exists on DB
+	const stationExists = useStore((state) => state.stationExists);
 
 	const project = useStore((state) => state.project);
 	const stationing = useStore((state) => state.stationing);
@@ -25,7 +25,9 @@ const CaptureSection = ({ navigation }) => {
 	};
 
 	useEffect(() => {
-		getStationFromFirestore(project.id,);
+		console.log('UI stationExists: ', stationExists);
+		console.log('UI stationing: ', stationing.id);
+		getStationFromFirestore(project.id, stationing.id,);
 	}, []);
 
 	useEffect(() => {
@@ -88,7 +90,6 @@ const CaptureSection = ({ navigation }) => {
 	};
 
 	// TODO: add some error indicator
-	// FIXME: central_reading isn't rendered on TexTInput 
 	return (
 		<View style={styles.container}>
 			<View style={styles.main} >
@@ -96,7 +97,7 @@ const CaptureSection = ({ navigation }) => {
 					<TextInput
 						mode='outlined'
 						placeholder='Codigo'
-						value={stationing.code === '' ? stationing.code : ''} // FIXME: always '' until code exists
+						value={stationing.code ? stationing.code : ''}
 						onChangeText={(code) => updateStationingCode(code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
@@ -116,7 +117,7 @@ const CaptureSection = ({ navigation }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						value={stationing.central ? stationing.central_reading.toString() : ''}
+						value={stationing.central_reading ? stationing.central_reading.toString() : ''}
 						onChangeText={(central_reading) => updateStationingCentralReading(central_reading)} />
 				</View>
 
@@ -152,7 +153,6 @@ const styles = StyleSheet.create({
 
 CaptureSection.propTypes = {
 	navigation: PropTypes.object,
-	route: PropTypes.object
 };
 
 export default CaptureSection;
