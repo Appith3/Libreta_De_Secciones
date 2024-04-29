@@ -44,6 +44,14 @@ export const useStore = create((set) => ({
 
 	// TODO: refactor methods related whit stationing or details made previously
 
+	resetProjectStore: () => {
+		// TODO: reset store when go back from determined screen
+	},
+
+	resetLoading: () => {
+		set(() => ({ isLoading: true }));
+	},
+
 	// Updates the project name in the store state.
 	updateProjectName: (project_name) =>
 		set((state) => ({
@@ -59,7 +67,8 @@ export const useStore = create((set) => ({
 			project: {
 				id: project.projectId,
 				project_name: project.projectName
-			}
+			},
+			stationExists: true
 		}));
 	},
 
@@ -115,6 +124,10 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	resetStationingStore: () => {
+		// TODO: reset store when go back from determinated screen
+	},
+
 	// Updates the stationing file information in the store state.
 	updateStationingFile: (stationingFile) =>
 		set(() => ({
@@ -160,11 +173,11 @@ export const useStore = create((set) => ({
 	},
 
 	setCurrentStation: (station) => {
-		console.log('current station: ', station);
+		console.log('store station: ', station);
 		set((state) => ({
 			stationing: {
 				...state.station,
-				id: station.id,
+				id: station.stationingId,
 				central_reading: station.centraReading,
 				code: station.code,
 				stationing_name: station.stationingName,
@@ -178,11 +191,11 @@ export const useStore = create((set) => ({
 	 * @param currentProject project id 
 	 * @param stationing stationing object
 	 */
-	createStationing: async (currentProject, stationing) => {		
+	createStationing: async (currentProject, stationing) => {
 		try {
 			const newStationingDocRef = await addDoc(collection(db, `example_projects/${currentProject}/stationing`), {
 				stationing_name: stationing.station_name,
-				code: stationing.code,
+				code: stationing.code.trim(),
 				is_complete: false,
 				central_reading: Number(stationing.central_reading) || ''
 			});
@@ -196,7 +209,7 @@ export const useStore = create((set) => ({
 			}));
 			console.log('estación creada con el ID: ', newStationingDocRef.id);
 		} catch (error) {
-			console.log('error: ', error);
+			console.log('create error: ', error);
 		}
 	},
 
@@ -217,7 +230,7 @@ export const useStore = create((set) => ({
 
 			console.log('Estaciones leídas: ', stationingSnapshot.docs.length);
 		} catch (error) {
-			console.log('error: ', error);
+			console.log('get stationing error: ', error);
 			set(() => ({
 				error: error,
 				isLoading: false
@@ -227,6 +240,7 @@ export const useStore = create((set) => ({
 
 	// Fetches a single stationing entry by ID from the Firestore database.
 	getStationFromFirestore: async (currentProject, currentStation) => {
+		console.log('store currentStation: ', currentStation); //undefined
 		try {
 			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation}`);
 			const stationingDocSnap = await getDoc(stationingDocRef);
@@ -235,7 +249,7 @@ export const useStore = create((set) => ({
 
 				set(() => ({
 					stationing: {
-						id: '',
+						id: stationingDocSnap.id,
 						central_reading: stationingDocSnap.data().central_reading,
 						code: stationingDocSnap.data().code,
 						is_complete: stationingDocSnap.data().is_complete,
@@ -248,7 +262,7 @@ export const useStore = create((set) => ({
 				console.log('El documento no existe');
 			}
 		} catch (error) {
-			console.log('error: ', error);
+			console.log('get station error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
@@ -260,6 +274,7 @@ export const useStore = create((set) => ({
 	 * @param currentStation stationing object
 	 */
 	updateStationingFromFirestore: async (currentProject, currentStation) => {
+		console.log('currentStation: ', currentStation);
 		try {
 			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation.id}`);
 
@@ -271,7 +286,7 @@ export const useStore = create((set) => ({
 			console.log(`estación con ID ${currentStation.id} actualizada`);
 			set((state) => ({ isLoading: state.isLoading }));
 		} catch (error) {
-			console.log('error: ', error);
+			console.log('update station error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
