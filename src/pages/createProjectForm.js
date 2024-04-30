@@ -27,9 +27,9 @@ const CreateProjectForm = (props) => {
 				? s.split('\t')
 				: s.split(',');
 
-			const [, , , , station_name, code] = station;
+			const [, , , , stationing_name, code] = station;
 
-			createStationing(id, {station_name, code});
+			createStationing(id, {stationing_name, code});
 		});
 
 		navigation.navigate('projectDetail');
