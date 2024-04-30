@@ -81,7 +81,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 
 	const goNextSection = () => {
 		updateStationing();
-		// navigation.navigate('captureCentral');
+		// navigation.navigate('captureSectionCentral');
 	};
 
 	return (

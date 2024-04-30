@@ -91,7 +91,7 @@ const ProjectDetail = ({ navigation }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('captureCentral'),
+						onPress: () => navigation.navigate('captureNewSectionCentral'),
 					},
 					{
 						icon: 'upload',
