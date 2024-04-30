@@ -10,13 +10,10 @@ const CaptureSection = ({ navigation }) => {
 
 	const project = useStore((state) => state.project);
 	const stationing = useStore((state) => state.stationing);
-	const getStationFromFirestore = useStore((state) => state.getStationFromFirestore);
-	const updateStationingFromFirestore = useStore((state) => state.updateStationingFromFirestore);
+	const createStationing = useStore((state) => state.createStationing);
+	const updateStationingCode = useStore((state) => state.updateStationingCode);
+	const updateStationingName = useStore((state) => state.updateStationingName);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
-
-	useEffect(() => {
-		getStationFromFirestore(project.id, stationing.id,);
-	}, []);
 
 	useEffect(() => {
 		navigation.setOptions({ title: `${stationing.stationing_name === '' ? 'Nueva sección' : stationing.stationing_name} centro` });
@@ -24,7 +21,7 @@ const CaptureSection = ({ navigation }) => {
 
 	// FIXME: prevent navigation before writeStationingCenter, stationId is undefined
 	const onPressLeft = () => {
-		updateStationingFromFirestore(project.id, stationing);
+		createStationing(project.id, stationing);
 
 		// if (stationExists) {
 		// 	navigation.navigate('captureSectionSides', {
@@ -38,7 +35,7 @@ const CaptureSection = ({ navigation }) => {
 	};
 
 	const onPressRight = () => {
-		updateStationingFromFirestore(project.id, stationing);
+		createStationing(project.id, stationing);
 
 		// console.log('station ID: ', stationId);
 		// navigation.navigate('captureSectionSides', {
@@ -50,6 +47,33 @@ const CaptureSection = ({ navigation }) => {
 		// });
 	};
 
+	// formateamos el valor del cadenamiento de 0 a 0+000.00
+	const number2stationingFormat = (number) => {
+		const strNumber = number.toString();
+		let thousands = '0';
+		let integers = '';
+		let decimals = '00';
+
+		if (number >= 10000) {
+			[thousands, integers, decimals] = strNumber.includes('.')
+				? [strNumber.slice(0, 2), strNumber.slice(2).split('.')[0], strNumber.split('.')[1] || '00']
+				: [strNumber.slice(0, 2), strNumber.slice(2), '00'];
+		} else if (number >= 1000) {
+			[thousands, integers, decimals] = strNumber.includes('.')
+				? [strNumber[0], strNumber.slice(1).split('.')[0], strNumber.split('.')[1] || '00']
+				: [strNumber[0], strNumber.slice(1), '00'];
+		} else {
+			[integers, decimals] = strNumber.includes('.')
+				? strNumber.split('.')
+				: [strNumber, '00'];
+			integers = integers.padStart(3, '0');
+		}
+
+		const formattedNumber = `${thousands}+${integers}.${decimals}`;
+
+		updateStationingName(formattedNumber);
+	};
+
 	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
@@ -59,7 +83,7 @@ const CaptureSection = ({ navigation }) => {
 						mode='outlined'
 						placeholder='Codigo'
 						value={stationing.code ? stationing.code : ''}
-						disabled
+						onChangeText={(code) => updateStationingCode(code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
@@ -67,7 +91,8 @@ const CaptureSection = ({ navigation }) => {
 						placeholder='Cadenamiento'
 						keyboardType='number-pad'
 						value={stationing.stationing_name}
-						disabled
+						onChangeText={(stationing_name) => updateStationingName(stationing_name)}
+						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
 						right={<TextInput.Icon icon='map-marker' />}
 					/>
 

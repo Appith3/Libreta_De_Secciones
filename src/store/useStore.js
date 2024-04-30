@@ -32,8 +32,6 @@ export const useStore = create((set) => ({
 
 	stations: [],
 
-	stationExists: false,
-
 	stationing: {
 		id: '',
 		central_reading: '',
@@ -83,7 +81,7 @@ export const useStore = create((set) => ({
 			project.id = newProjectDocRef.id;
 			console.log('proyecto creado con el ID: ', newProjectDocRef.id);
 		} catch (error) {
-			console.log('error: ', error);
+			console.log('create project error: ', error);
 		}
 	},
 
@@ -104,7 +102,7 @@ export const useStore = create((set) => ({
 
 			console.log('Proyectos leídos: ', projectSnapshot.docs.length);
 		} catch (error) {
-			console.log('error: ', error);
+			console.log('error getting projects: ', error);
 			set(() => ({
 				error: error,
 				isLoading: false
@@ -125,7 +123,7 @@ export const useStore = create((set) => ({
 	},
 
 	resetStationingStore: () => {
-		// TODO: reset store when go back from determinated screen
+		// TODO: reset store when go back from determined screen
 	},
 
 	// Updates the stationing file information in the store state.
@@ -194,7 +192,7 @@ export const useStore = create((set) => ({
 	createStationing: async (currentProject, stationing) => {
 		try {
 			const newStationingDocRef = await addDoc(collection(db, `example_projects/${currentProject}/stationing`), {
-				stationing_name: stationing.station_name,
+				stationing_name: stationing.stationing_name,
 				code: stationing.code.trim(),
 				is_complete: false,
 				central_reading: Number(stationing.central_reading) || ''
@@ -205,7 +203,6 @@ export const useStore = create((set) => ({
 					...stationing,
 					id: newStationingDocRef.id
 				},
-				stationExists: true
 			}));
 			console.log('estación creada con el ID: ', newStationingDocRef.id);
 		} catch (error) {
@@ -240,7 +237,6 @@ export const useStore = create((set) => ({
 
 	// Fetches a single stationing entry by ID from the Firestore database.
 	getStationFromFirestore: async (currentProject, currentStation) => {
-		console.log('store currentStation: ', currentStation); //undefined
 		try {
 			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation}`);
 			const stationingDocSnap = await getDoc(stationingDocRef);
@@ -255,7 +251,6 @@ export const useStore = create((set) => ({
 						is_complete: stationingDocSnap.data().is_complete,
 						stationing_name: stationingDocSnap.data().stationing_name,
 					},
-					stationExists: true
 				}));
 
 			} else {
@@ -274,7 +269,6 @@ export const useStore = create((set) => ({
 	 * @param currentStation stationing object
 	 */
 	updateStationingFromFirestore: async (currentProject, currentStation) => {
-		console.log('currentStation: ', currentStation);
 		try {
 			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation.id}`);
 

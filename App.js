@@ -3,6 +3,7 @@ import HomePage from './src/pages/homePage';
 import ProjectDetail from './src/pages/projectDetail';
 import CreateProjectForm from './src/pages/createProjectForm';
 import CaptureSection from './src/pages/captureSection';
+import CaptureNewSection from './src/pages/captureNewSection';
 import CaptureSectionSides from './src/pages/captureSectionSides';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -49,8 +50,12 @@ export default function App() {
 						options={{ title: 'Crear Proyecto' }}
 					/>
 					<Stack.Screen
-						name='captureCentral'
+						name='captureSectionCentral'
 						component={CaptureSection}
+					/>
+					<Stack.Screen
+						name='captureNewSectionCentral'
+						component={CaptureNewSection}
 					/>
 					<Stack.Screen
 						name='captureSectionSides'
