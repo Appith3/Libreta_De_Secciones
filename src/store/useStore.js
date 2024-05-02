@@ -9,7 +9,7 @@ import {
 	orderBy,
 	query,
 	getDoc,
-	updateDoc
+	updateDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
@@ -38,6 +38,15 @@ export const useStore = create((set) => ({
 		code: '',
 		is_complete: false,
 		stationing_name: '',
+	},
+
+	details: [],
+	detail: {
+		id: '',
+		distance: '',
+		detail_name: '',
+		notes: '',
+		reading: '',
 	},
 
 	// TODO: refactor methods related whit stationing or details made previously
@@ -163,6 +172,16 @@ export const useStore = create((set) => ({
 		}));
 	},
 
+	updateStationingIsComplete: () => {
+		console.log('updateStationingIsComplete');
+		set((state) => ({
+			stationing: {
+				...state.stationing,
+				is_complete: true
+			}
+		}));
+	},
+
 	// Parses stationing data from a file and sets it in the store state.
 	getStationingFromFile: (stations) => {
 		let stationingArray = stations.split('\n');
@@ -171,7 +190,6 @@ export const useStore = create((set) => ({
 	},
 
 	setCurrentStation: (station) => {
-		console.log('store station: ', station);
 		set((state) => ({
 			stationing: {
 				...state.station,
@@ -273,8 +291,26 @@ export const useStore = create((set) => ({
 			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation.id}`);
 
 			await updateDoc(stationingDocRef, {
-				...currentStation,
+				stationing_name: currentStation.stationing_name,
+				code: currentStation.code?.trim(),
 				central_reading: Number(currentStation.central_reading)
+			});
+
+			console.log(`estación con ID ${currentStation.id} actualizada`);
+			set((state) => ({ isLoading: state.isLoading }));
+		} catch (error) {
+			console.log('update station error: ', error);
+			set(() => ({ error: error }));
+		}
+	},
+
+	updateStationingIsCompleteFromFirestore: async (currentProject, currentStation) => {
+		console.log('updateStationingIsCompleteFromFirestore currentStation: ', currentStation);
+		try {
+			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation.id}`);
+
+			await updateDoc(stationingDocRef, {
+				is_complete: true
 			});
 
 			console.log(`estación con ID ${currentStation.id} actualizada`);
@@ -296,5 +332,76 @@ export const useStore = create((set) => ({
 			}));
 		}
 	},
+
+	updateDistance: (value) => {
+		set((state) => ({
+			detail: {
+				...state.detail,
+				distance: value
+			}
+		}));
+	},
+
+	updateDetailName: (value) => {
+		set((state) => ({
+			detail: {
+				...state.detail,
+				detail_name: value
+			}
+		}));
+	},
+
+	updateReading: (value) => {
+		set((state) => ({
+			detail: {
+				...state.detail,
+				reading: value
+			}
+		}));
+	},
+
+	updateNotes: (value) => {
+		set((state) => ({
+			detail: {
+				...state.detail,
+				notes: value
+			}
+		}));
+	},
+
+	clearDetailStore: () => {
+		set(() => ({
+			detail: {
+				distance: 0,
+				detail_name: '',
+				notes: '',
+				reading: 0
+			}
+		}));
+	},
+
+	createSectionDetail: async (currentProject, currentStation, detail, side) => {
+		let slope = currentStation.central_reading - Number(detail.reading);
+
+		try {
+			const newDetailDocRef = await addDoc(collection(db, `example_projects/${currentProject}/stationing/${currentStation.id}/details`), {
+				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
+				detail_name: detail.detail_name,
+				notes: detail.notes,
+				reading: Number(detail.reading),
+				slope: Number(slope.toFixed(2))
+			});
+			console.log('detalle creado con el ID: ', newDetailDocRef.id);
+		} catch (error) {
+			console.log('create detail error: ', error);
+			set(() => ({ error: error }));
+		}
+	},
+
+	getSectionDetails: async () => {},
+
+	updateDetailsInFirestore: async () => {},
+
+	deleteDetailFromFirestore: async () => {},
 
 }));

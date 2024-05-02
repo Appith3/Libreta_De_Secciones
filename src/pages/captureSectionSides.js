@@ -2,86 +2,46 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { addDoc, collection, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
+import { useStore } from '../store/useStore';
 
 const CaptureSectionSides = ({ navigation, route }) => {
 
 	const {
 		_side,
-		firestorePath,
-		stationingName,
-		centralReading
 	} = route.params;
 
+	const project = useStore((state) => state.project);
+	const stationing = useStore((state) => state.stationing);
+	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
+	const updateStationingIsCompleteFromFirestore = useStore((state) => state.updateStationingIsCompleteFromFirestore);
+	const detail = useStore((state) => state.detail);
+	const clearDetailStore = useStore((state) => state.clearDetailStore);
+	const createSectionDetail = useStore((state) => state.createSectionDetail);
+	const updateDetailName = useStore((state) => state.updateDetailName);
+	const updateReading = useStore((state) => state.updateReading);
+	const updateDistance = useStore((state) => state.updateDistance);
+
 	const [side, setSide] = useState(_side);
-	// eslint-disable-next-line no-unused-vars
-	const [error, setError] = useState();
-
-	const [detail, setDetail] = useState({
-		distance: 0,
-		detail_name: '',
-		notes: '',
-		reading: 0,
-	});
-
-	const createDetail = async () => {
-
-		let slope = centralReading - Number(detail.reading);
-
-		// FIXME: cuando se crea una sección desde el FAB en projectDetail el firestorePath es el siguiente example_projects/${projectId}/stationing/undefined/details
-		// FIXME: slope is string on firestore
-		try {
-			const newDetailDocRef = await addDoc(collection(db, firestorePath), {
-				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
-				detail_name: detail.detail_name,
-				notes: detail.notes,
-				reading: Number(detail.reading),
-				slope: slope.toFixed(2)
-			});
-			console.log('detalle creado con el ID: ', newDetailDocRef.id);
-		} catch (error) {
-			setError(error);
-		}
-	};
-
-	const updateStationing = async () => {
-		try {
-			const stationingDocRef = doc(db, firestorePath);
-			await updateDoc(stationingDocRef, {
-				is_complete: true
-			});
-		} catch (error) {
-			setError(error);
-		}
-	};
 
 	useEffect(() => {
-		console.log('route: ', route.params);
-		navigation.setOptions({ title: `${stationingName} ${side}` });
+		navigation.setOptions({ title: `${stationing.stationing_name} ${side}` });
 	}, [side]);
 
 	const changeSide = () => side === 'Izq' ? setSide('Der') : setSide('Izq');
 
-	const handleOnChangeText = (key, value) => {
-		setDetail({
-			...detail,
-			[key]: value
-		});
-	};
+	const handlePressNextDetails = () => {
+		let { id, central_reading } = stationing;
 
-	const clearForm = () => {
-		setDetail({
-			distance: 0,
-			detail_name: '',
-			notes: '',
-			reading: 0
-		});
+		createSectionDetail(project.id, { id, central_reading }, detail, side);
+		clearDetailStore();
 	};
 
 	const goNextSection = () => {
-		updateStationing();
-		// navigation.navigate('captureSectionCentral');
+		updateStationingIsComplete();
+		setTimeout(() => {
+			updateStationingIsCompleteFromFirestore(project.id, stationing);		
+			navigation.navigate('projectDetail');
+		}, 1000);
 	};
 
 	return (
@@ -92,7 +52,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						mode='outlined'
 						placeholder='Nombre del detalle'
 						value={detail.detail_name}
-						onChangeText={detail_name => handleOnChangeText('detail_name', detail_name.toUpperCase())}
+						onChangeText={detail_name => updateDetailName(detail_name.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
@@ -100,8 +60,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						placeholder='Lectura'
 						keyboardType='number-pad'
 						inputMode='decimal'
-						value={detail.reading}
-						onChangeText={reading => handleOnChangeText('reading', reading)}
+						value={detail.reading.toString()}
+						onChangeText={reading => updateReading(reading)}
 						right={<TextInput.Icon icon='ruler' />}
 					/>
 
@@ -111,13 +71,13 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						value={detail.distance}
-						onChangeText={distance => handleOnChangeText('distance', distance)}
+						value={detail.distance.toString()}
+						onChangeText={distance => updateDistance(distance)}
 						right={<TextInput.Icon icon='map-marker-distance' />}
 					/>
 				</View>
 				<View style={styles.controls}>
-					<Button uppercase mode='contained' onPress={() => { createDetail(); clearForm(); }}>Siguiente detalle</Button>
+					<Button uppercase mode='contained' onPress={() => handlePressNextDetails()}>Siguiente detalle</Button>
 					<Button uppercase mode='contained' onPress={() => changeSide()}>Terminar lado</Button>
 					<Button uppercase mode='outlined' textColor='#F5F7FA' onPress={() => goNextSection()}>Siguiente sección</Button>
 				</View>
