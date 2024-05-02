@@ -23,28 +23,13 @@ const CaptureSection = ({ navigation }) => {
 	const onPressLeft = () => {
 		createStationing(project.id, stationing);
 
-		// if (stationExists) {
-		// 	navigation.navigate('captureSectionSides', {
-		// 		_side: 'Izq',
-		// 		firestorePath: `example_projects/${project.id}/stationing/${stationId}/details`,
-		// 		stationingName,
-		// 		centralReading: stationing.central_reading,
-		// 		stationId
-		// 	});
-		// }
+		navigation.navigate('captureSectionSides', { _side: 'Izq' });
 	};
 
 	const onPressRight = () => {
 		createStationing(project.id, stationing);
 
-		// console.log('station ID: ', stationId);
-		// navigation.navigate('captureSectionSides', {
-		// 	_side: 'Der',
-		// 	firestorePath: `example_projects/${project.id}/stationing/${stationId}/details`,
-		// 	stationingName,
-		// 	centralReading: stationing.central_reading,
-		// 	stationId
-		// });
+		navigation.navigate('captureSectionSides', { _side: 'Der' });
 	};
 
 	// formateamos el valor del cadenamiento de 0 a 0+000.00

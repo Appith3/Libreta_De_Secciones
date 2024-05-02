@@ -26,28 +26,14 @@ const CaptureSection = ({ navigation }) => {
 	const onPressLeft = () => {
 		updateStationingFromFirestore(project.id, stationing);
 
-		// if (stationExists) {
-		// 	navigation.navigate('captureSectionSides', {
-		// 		_side: 'Izq',
-		// 		firestorePath: `example_projects/${project.id}/stationing/${stationId}/details`,
-		// 		stationingName,
-		// 		centralReading: stationing.central_reading,
-		// 		stationId
-		// 	});
-		// }
+		navigation.navigate('captureSectionSides', { _side: 'Izq' });
+
 	};
 
 	const onPressRight = () => {
 		updateStationingFromFirestore(project.id, stationing);
 
-		// console.log('station ID: ', stationId);
-		// navigation.navigate('captureSectionSides', {
-		// 	_side: 'Der',
-		// 	firestorePath: `example_projects/${project.id}/stationing/${stationId}/details`,
-		// 	stationingName,
-		// 	centralReading: stationing.central_reading,
-		// 	stationId
-		// });
+		navigation.navigate('captureSectionSides', { _side: 'Der' });
 	};
 
 	// TODO: add some error indicator
