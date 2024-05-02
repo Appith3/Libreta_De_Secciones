@@ -24,7 +24,7 @@ const SectionItem = (props) => {
 		setCurrentStation({ stationingId, stationingName, centralReading, code });
 
 		isComplete
-			? navigation.navigate('sectionDetail', { firestorePath: `example_projects/${currentProject.id}/stationing/${stationingId}/details`, centralReading, code, stationingName })
+			? navigation.navigate('sectionDetail')
 			: navigation.navigate('captureSectionCentral');
 	};
 

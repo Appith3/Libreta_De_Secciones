@@ -1,53 +1,50 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useEffect } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { db } from '../firebase/firebaseConfig';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { StatusBar } from 'expo-status-bar';
+import { useStore } from '../store/useStore';
 
-const SectionDetail = ({ route, navigation }) => {
+const SectionDetail = ({ navigation }) => {
 
-	const {
-		firestorePath,
-		centralReading,
-		code,
-		stationingName
-	} = route.params;
+	const isLoading = useStore((state) => state.isLoading);
 
+	const project = useStore((state) => state.project);
+	const stationing = useStore((state) => state.stationing);
+	const details = useStore((state) => state.details);
+	const getSectionDetails = useStore((state) => state.getSectionDetails);
+	
 	useEffect(() => {
-		navigation.setOptions({ title: `${stationingName} ${code}` });
-		getStationingDetailsCollection();
+		navigation.setOptions({ title: `${stationing.stationing_name} ${stationing.code}` });
+		getSectionDetails(project.id, stationing.id);
 	}, []);
-
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState();
-	const [docs, setDocs] = useState();
-
-	const getStationingDetailsCollection = async () => {
-		try {
-			const detailsColRef = collection(db, firestorePath);
-			const q = query(detailsColRef, orderBy('distance', 'asc'));
-			const detailsDocs = await getDocs(q);
-
-			const roadStationingDetail = detailsDocs.docs.map((doc) => ({
-				id: doc.id,
-				...doc.data(),
-			}));
-			setDocs(roadStationingDetail);
-			setLoading(false);
-		} catch (error) {
-			setError(error);
-			setLoading(false);
-		}
-	};
 
 	// TODO: add a ScrollView to view the details table and chart
 	// TODO: add a chart to preview the section
+
+	const renderItem = ({ item }) => {
+		return (
+			<View style={styles.row} key={item.id}>
+				<Text style={styles.cell}>{item.distance}</Text>
+				<Text style={styles.cell}>{item.slope}</Text>
+				<Text style={styles.cell}>{item.reading}</Text>
+			</View>
+		);
+	};
+
+	if (isLoading) {
+		// TODO: add gif/image to loading state
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size={'large'} />
+			</View>
+		);
+	}
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<Text variant='headlineSmall' style={styles.title}>Elevación central: {centralReading}</Text>
-				{/* Start table code */}
+				<Text variant='headlineSmall' style={styles.title}>Elevación central: {stationing.central_reading}</Text>
 				<View style={styles.table}>
 					<View style={styles.row}>
 						<View style={[styles.headerCell, { borderTopLeftRadius: 8 }]}>
@@ -60,19 +57,11 @@ const SectionDetail = ({ route, navigation }) => {
 							<Text variant='titleSmall' style={styles.tableHeader}>Lectura</Text>
 						</View>
 					</View>
-					{loading && (<ActivityIndicator size={'large'} animating={true} />)}
-					{
-						docs?.map((detail) => {
-							return (
-								<View style={styles.row} key={detail.id}>
-									<Text style={styles.cell}>{detail.distance}</Text>
-									<Text style={styles.cell}>{detail.slope}</Text>
-									<Text style={styles.cell}>{detail.reading}</Text>
-								</View>
-							);
-						})
-					}
-					{error && <Text variant='bodyLarge' style={{ color: '#F5F7FA' }}>{error}</Text>}
+					<FlatList
+						data={details}
+						renderItem={renderItem}
+						keyExtractor={item => item.id}
+					/>
 				</View>
 			</View>
 		</View>
@@ -80,6 +69,13 @@ const SectionDetail = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		backgroundColor: '#1e2833',
+		paddingTop: StatusBar.currentHeight,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833',

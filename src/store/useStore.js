@@ -49,8 +49,6 @@ export const useStore = create((set) => ({
 		reading: '',
 	},
 
-	// TODO: refactor methods related whit stationing or details made previously
-
 	resetProjectStore: () => {
 		// TODO: reset store when go back from determined screen
 	},
@@ -194,7 +192,7 @@ export const useStore = create((set) => ({
 			stationing: {
 				...state.station,
 				id: station.stationingId,
-				central_reading: station.centraReading,
+				central_reading: station.centralReading,
 				code: station.code,
 				stationing_name: station.stationingName,
 			},
@@ -398,7 +396,40 @@ export const useStore = create((set) => ({
 		}
 	},
 
-	getSectionDetails: async () => {},
+	getSectionDetails: async (currentProject, currentStation) => {
+		try {
+			const detailsColRef = collection(db, `example_projects/${currentProject}/stationing/${currentStation}/details`);
+			const q = query(detailsColRef, orderBy('distance', 'asc'));
+			const detailsDocs = await getDocs(q);
+	
+			if (detailsDocs.empty) {
+				console.log('No details found');
+				set(() => ({
+					details: [],
+					isLoading: false,
+				}));
+				return;
+			}
+	
+			const processedDetails = detailsDocs.docs.map((doc) => ({
+				id: doc.id,
+				...doc.data(),
+			}));
+	
+			set(() => ({
+				details: processedDetails,
+				isLoading: false,
+			}));
+	
+			console.log('detalles leídos: ', processedDetails.length);
+		} catch (error) {
+			console.log('getSectionDetail error: ', error);
+			set(() => ({
+				error: error,
+				isLoading: false,
+			}));
+		}
+	},
 
 	updateDetailsInFirestore: async () => {},
 
