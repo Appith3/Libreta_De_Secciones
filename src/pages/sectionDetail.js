@@ -1,50 +1,67 @@
 import { useEffect } from 'react';
-import { StyleSheet, View  } from 'react-native';
-import { Text } from 'react-native-paper';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { StatusBar } from 'expo-status-bar';
+import { useStore } from '../store/useStore';
 
-const SectionDetail = ({ route, navigation }) => {
+const SectionDetail = ({ navigation }) => {
 
-	const {
-		name,
-		central_reading,
-		details,
-		code
-	} = route.params.stationing;
+	const isLoading = useStore((state) => state.isLoading);
 
+	const project = useStore((state) => state.project);
+	const stationing = useStore((state) => state.stationing);
+	const details = useStore((state) => state.details);
+	const getSectionDetails = useStore((state) => state.getSectionDetails);
+	
 	useEffect(() => {
-		navigation.setOptions({ title: `${name} ${code}` });
+		navigation.setOptions({ title: `${stationing.stationing_name} ${stationing.code}` });
+		getSectionDetails(project.id, stationing.id);
 	}, []);
+
+	// TODO: add a ScrollView to view the details table and chart
+	// TODO: add a chart to preview the section
+
+	const renderItem = ({ item }) => {
+		return (
+			<View style={styles.row} key={item.id}>
+				<Text style={styles.cell}>{item.distance}</Text>
+				<Text style={styles.cell}>{item.slope}</Text>
+				<Text style={styles.cell}>{item.reading}</Text>
+			</View>
+		);
+	};
+
+	if (isLoading) {
+		// TODO: add gif/image to loading state
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size={'large'} />
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<Text variant='headlineSmall' style={styles.title}>Elevación central: {central_reading}</Text>
-				{/* Start table code */}
+				<Text variant='headlineSmall' style={styles.title}>Elevación central: {stationing.central_reading}</Text>
 				<View style={styles.table}>
 					<View style={styles.row}>
-						<View style={[styles.headerCell, { borderTopLeftRadius: 8}]}>
+						<View style={[styles.headerCell, { borderTopLeftRadius: 8 }]}>
 							<Text variant='titleSmall' style={styles.tableHeader}>Distancia</Text>
 						</View>
 						<View style={styles.headerCell}>
 							<Text variant='titleSmall' style={styles.tableHeader}>Desnivel</Text>
 						</View>
-						<View style={[styles.headerCell, { borderTopEndRadius: 8}]}>
+						<View style={[styles.headerCell, { borderTopEndRadius: 8 }]}>
 							<Text variant='titleSmall' style={styles.tableHeader}>Lectura</Text>
 						</View>
 					</View>
-					{/* Note: think about to add a ScrollView */}
-					{
-						details.map((detail) => {
-							return (
-								<View style={styles.row} key={detail._id}>
-									<Text style={styles.cell}>{detail.distance}</Text>
-									<Text style={styles.cell}>{detail.slope}</Text>
-									<Text style={styles.cell}>{detail.reading}</Text>
-								</View>
-							);
-						})
-					}
+					<FlatList
+						data={details}
+						renderItem={renderItem}
+						keyExtractor={item => item.id}
+					/>
 				</View>
 			</View>
 		</View>
@@ -52,6 +69,13 @@ const SectionDetail = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		backgroundColor: '#1e2833',
+		paddingTop: StatusBar.currentHeight,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833',
@@ -92,13 +116,14 @@ const styles = StyleSheet.create({
 		paddingVertical: 8
 	},
 	title: {
-		color: '#F5F7FA'
+		color: '#F5F7FA',
+		alignSelf: 'center'
 	}
 });
 
 SectionDetail.propTypes = {
 	navigation: PropTypes.object,
-	route: PropTypes.object	
+	route: PropTypes.object
 };
 
 export default SectionDetail;

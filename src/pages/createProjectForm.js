@@ -1,36 +1,39 @@
-import { useEffect, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import FileInput from '../componets/FileInput';
 import PropTypes from 'prop-types';
 
-const CreateProjectForm = ( props ) => {
+import { useStore } from '../store/useStore';
+
+const CreateProjectForm = (props) => {
 
 	const {
 		navigation
 	} = props;
 
-	const [projectName, setProjectName] = useState('');
-	const [currentDate, setCurrentDate] = useState('');
+	const project = useStore((state) => state.project);
+	const updateProjectName = useStore((state) => state.updateProjectName);
+	const createProject = useStore((state) => state.createProject);
+	const stationingFile = useStore((state) => state.stationingFile);
+	const stations = useStore((state) => state.stations);
+	const createStationing = useStore((state) => state.createStationing);
 
-	const createProject = () => {
-		navigation.navigate('projectDetail', {
-			project: {
-				'_id': 'project_id_1000',
-				'name': {projectName},
-				'creation_date': '27/11/2023',
-				'stationing': []
-			}
+	const handleCreateProjectTap = () => {
+		const { id } = project;		
+		const { mime_type } = stationingFile;
+
+		stations?.map((s) => {
+			const station = mime_type === 'txt'
+				? s.split('\t')
+				: s.split(',');
+
+			const [, , , , stationing_name, code] = station;
+
+			createStationing(id, {stationing_name, code});
 		});
+
+		navigation.navigate('projectDetail');
 	};
-
-	useEffect(() => {
-		var date = new Date().getDate();
-		var month = new Date().getMonth() + 1;
-		var year = new Date().getFullYear();
-
-		setCurrentDate(date + '/' + month + '/' + year);
-	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -45,23 +48,17 @@ const CreateProjectForm = ( props ) => {
 						<TextInput
 							mode='outlined'
 							placeholder='Nombre del proyecto'
-							value={projectName}
-							onChangeText={projectName => setProjectName(projectName)}
+							value={project.project_name}
+							onChangeText={(e) => updateProjectName(e)}
+							onEndEditing={() => createProject(project)}
 							right={<TextInput.Icon icon='map' />}
 						/>
 						<HelperText type='info' style={styles.helperText}>
 							¿Como se llama el lugar donde se va seccionar?
 						</HelperText>
 					</View>
-					<TextInput
-						mode='outlined'
-						value={currentDate}
-						onChangeText={text => setProjectName(text)}
-						editable={false}
-						right={<TextInput.Icon icon='calendar' />}
-					/>
-					<FileInput/>
-					<Button icon='plus' mode='contained' style={{marginTop: 32}} onPress={ createProject }>Crear trabajo</Button>
+					<FileInput />
+					<Button icon='plus' mode='contained' style={{ marginTop: 96 }} onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
 				</View>
 			</View>
 		</View>
@@ -76,7 +73,7 @@ const styles = StyleSheet.create({
 	main: {
 		flex: 1,
 		flexDirection: 'column',
-		gap: 32, 
+		gap: 32,
 		padding: 16
 	},
 	image: {
@@ -95,7 +92,7 @@ const styles = StyleSheet.create({
 });
 
 CreateProjectForm.propTypes = {
-	navigation: PropTypes.object	
+	navigation: PropTypes.object
 };
 
 export default CreateProjectForm;

@@ -1,29 +1,38 @@
 import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
+
+import { useStore } from '../store/useStore';
 
 const ProjectItem = (props) => {
 
 	const {
-		title,
-		listId,
-		details,
-		navigation
+		projectName,
+		projectId
 	} = props;
+
+	const navigation = useNavigation();
+
+	const deleteProject = useStore((state) => state.deleteProject);
+	const setCurrentProject  = useStore((state) => state.setCurrentProject);
+	const resetLoading = useStore((state) => state.resetLoading);
 
 	return (
 		<List.Item
-			title={title}
+			title={projectName}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteProject(projectId)} />
 					<IconButton icon='share' iconColor='#F5F7FA' onPress={() => console.log('share')} />
 				</>
 			)}
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
-				navigation.navigate('projectDetail', { project: details });
+				resetLoading();
+				setCurrentProject({projectId, projectName});
+				navigation.navigate('projectDetail');
 			}}
 		/>
 	);
@@ -38,10 +47,8 @@ const styles = StyleSheet.create({
 });
 
 ProjectItem.propTypes = {
-	title: PropTypes.string,
-	listId: PropTypes.string || PropTypes.number,
-	details: PropTypes.object,
-	navigation: PropTypes.object
+	projectName: PropTypes.string,
+	projectId: PropTypes.string
 };
 
 export default ProjectItem;

@@ -1,21 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 
+import { useStore } from '../store/useStore';
+
 const FileInput = () => {
 
-	const [file, setFile] = useState({
-		mimeType: '',
-		name: 'Nombre del archivo',
-		uri: '',
-		content: []
-	});
-
-	useEffect(() => {
-		readFileContent(file.uri);
-	}, [file]);
+	const stationingFile = useStore((state) => state.stationingFile);
+	const updateStationingFile = useStore((state) => state.updateStationingFile);
+	const getStationingFromFile = useStore((state) => state.getStationingFromFile);
 
 	const pickFile = async () => {
 		try {
@@ -25,11 +19,13 @@ const FileInput = () => {
 			});
 
 			if (doc.assets) {
-				setFile({
-					mimeType: doc.assets[0].mimeType,
-					name: doc.assets[0].name,
+				updateStationingFile({
+					mimeType: doc.assets[0].name.split('.')[1],
+					fileName: doc.assets[0].name.split('.')[0],
 					uri: doc.assets[0].uri,
 				});
+
+				readFileContent(doc.assets[0].uri);
 			}
 			else doc.canceled;
 
@@ -38,16 +34,18 @@ const FileInput = () => {
 		}
 	};
 
-	//TODO: sabe content.split('\n') on state
 	const readFileContent = async (uri) => {
 		try {
 			const file = await FileSystem.getInfoAsync(uri);
 
 			if (file.exists && !file.isDirectory) {
 				const content = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.UTF8 });
-				console.log(content.split('\n')[12]);
+
+				getStationingFromFile(content);
+				return content;
 			} else {
-				Alert.alert('Error', 'No se puede leer el contenido del archivo');
+				console.alert('Error', 'No se puede leer el contenido del archivo');
+				return;
 			}
 		} catch (err) {
 			console.error('Error al leer el contenido del archivo', err);
@@ -55,21 +53,24 @@ const FileInput = () => {
 	};
 
 	return (
-		<View style={styles.fileInput}>
-			<Text
-				style={styles.placeholder}
-				variant='bodyLarge'
-				ellipsizeMode='tail'
-				numberOfLines={1}
-			>
-				{file.name.split('.')[0]
-				}</Text>
-			<Button
-				mode='contained'
-				onPress={pickFile}
-			>
-				Cargar trazo
-			</Button>
+		<View>
+			<View style={styles.fileInput}>
+				<Text
+					style={styles.placeholder}
+					variant='bodyLarge'
+					ellipsizeMode='tail'
+					numberOfLines={1}
+				>
+					{stationingFile.file_name}
+				</Text>
+				<Button
+					mode='contained'
+					onPress={pickFile}
+				>
+					Cargar trazo
+				</Button>
+			</View>
+			<Text variant='labelSmall' style={styles.caption}>{stationingFile.file_name}</Text>
 		</View>
 	);
 };
@@ -86,6 +87,11 @@ const styles = StyleSheet.create({
 	},
 	placeholder: {
 		maxWidth: '65%'
+	},
+	caption: {
+		color: '#A8BED1',
+		paddingHorizontal: 12,
+		paddingVertical: 4
 	}
 });
 

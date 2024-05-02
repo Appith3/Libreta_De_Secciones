@@ -1,21 +1,36 @@
 import { StyleSheet } from 'react-native';
 import { List, IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
+import { useStore } from '../store/useStore';
 
 const SectionItem = (props) => {
 
 	const {
-		title,
-		listId,
+		stationingName,
+		stationingId,
 		isComplete = false,
-		details,
-		navigation
+		centralReading,
+		code = '',
 	} = props;
+
+	const navigation = useNavigation();
+
+	const deleteStation = useStore((state) => state.deleteStation);
+	const currentProject = useStore((state) => state.project);
+	const setCurrentStation = useStore((state) => state.setCurrentStation);
+
+	const handlePressItem = () => {
+		setCurrentStation({ stationingId, stationingName, centralReading, code });
+
+		isComplete
+			? navigation.navigate('sectionDetail')
+			: navigation.navigate('captureSectionCentral');
+	};
 
 	return (
 		<List.Item
-			title={title}
-			// TODO: add code section to the title if exist
+			title={`${stationingName} ${code}`}
 			description={
 				isComplete
 					? 'Completa'
@@ -23,12 +38,8 @@ const SectionItem = (props) => {
 			}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => console.log(`Deleted item ${listId}`)} />
-					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => {
-						isComplete
-							? navigation.navigate('sectionDetail', { stationing: details })
-							: navigation.navigate('captureCentral', { stationing: details });
-					}} />
+					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStation(currentProject.id, stationingId)} />
+					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => handlePressItem()} />
 				</>
 			)}
 			style={
@@ -38,11 +49,7 @@ const SectionItem = (props) => {
 			}
 			titleStyle={styles.title}
 			descriptionStyle={styles.description}
-			onPress={() => {
-				isComplete
-					? navigation.navigate('sectionDetail', { stationing: details })
-					: navigation.navigate('captureCentral', { stationing: details });
-			}}
+			onPress={() => handlePressItem()}
 		/>
 	);
 };
@@ -74,11 +81,11 @@ const styles = StyleSheet.create({
 });
 
 SectionItem.propTypes = {
-	title: PropTypes.string,
-	listId: PropTypes.string || PropTypes.number,
-	details: PropTypes.object,
-	navigation: PropTypes.object,
-	isComplete: PropTypes.bool
+	stationingName: PropTypes.string,
+	stationingId: PropTypes.string,
+	isComplete: PropTypes.bool,
+	centralReading: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	code: PropTypes.string,
 };
 
 export default SectionItem;

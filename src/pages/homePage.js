@@ -1,25 +1,50 @@
-import { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { FAB, TextInput } from 'react-native-paper';
-import ProjectItem from '../componets/ProjectItem';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View, FlatList } from 'react-native';
+import { FAB, TextInput, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import projects from '../../DB/projects';
+import ProjectItem from '../componets/ProjectItem';
+import { useStore } from '../store/useStore';
+import { StatusBar } from 'expo-status-bar';
 
 const HomePage = ({ navigation }) => {
 
-	const [state, setState] = useState({ open: false });
+	// TODO: Clean all store
+
+	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
-	// TODO: Make function to read projects from DB/projects.json
 
-	const onStateChange = ({ open }) => setState({ open });
+	const isLoading = useStore((state) => state.isLoading);
+	const getProjectsFromFirestore = useStore((state) => state.getProjectsFromFirestore);
+	const projects = useStore((state) => state.projects);
+	
+	useEffect(() => {
+		getProjectsFromFirestore();
+	}, []);
 
-	const { open } = state;
+	const onStateChange = () => {
+		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
+	};
 
-	const projectsList = projects.projects;
+	const renderItem = ({item}) => {
+		return (
+			<ProjectItem 
+				projectName={item.name} 
+				projectId={item.id} />
+		);
+	};
+
+	if(isLoading) {
+		// TODO: add gif/image to loading state
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size={'large'}/>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
-			<View  style={styles.main}>
+			<View style={styles.main}>
 				<TextInput
 					style={styles.searchInput}
 					mode='outlined'
@@ -27,19 +52,15 @@ const HomePage = ({ navigation }) => {
 					value={searchText}
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
-				<ScrollView>
-					{
-						projectsList.map((project) => {
-							return (
-								<ProjectItem title={project.name} listId={project._id} key={project._id} details={project} navigation={navigation} />
-							);
-						})
-					}
-				</ScrollView>
+				<FlatList
+					data={projects}
+					renderItem={renderItem}
+					keyExtractor={item => item.id}
+				/>
 			</View>
 			<FAB.Group
-				open={open}
-				icon={open ? 'close' : 'plus'}
+				open={openFAB.open}
+				icon={openFAB.open ? 'close' : 'plus'}
 				backdropColor='#fff0'
 				color='#F5F7FA'
 				fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
@@ -73,6 +94,13 @@ const HomePage = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		backgroundColor: '#1e2833',
+		paddingTop: StatusBar.currentHeight,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833'

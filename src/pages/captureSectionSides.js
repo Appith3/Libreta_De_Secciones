@@ -2,21 +2,47 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { useStore } from '../store/useStore';
 
 const CaptureSectionSides = ({ navigation, route }) => {
 
-	const { _side } = route.params;
+	const {
+		_side,
+	} = route.params;
 
-	// eslint-disable-next-line no-unused-vars
-	const { details, name } = route.params.stationing || {};
+	const project = useStore((state) => state.project);
+	const stationing = useStore((state) => state.stationing);
+	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
+	const updateStationingIsCompleteFromFirestore = useStore((state) => state.updateStationingIsCompleteFromFirestore);
+	const detail = useStore((state) => state.detail);
+	const clearDetailStore = useStore((state) => state.clearDetailStore);
+	const createSectionDetail = useStore((state) => state.createSectionDetail);
+	const updateDetailName = useStore((state) => state.updateDetailName);
+	const updateReading = useStore((state) => state.updateReading);
+	const updateDistance = useStore((state) => state.updateDistance);
 
 	const [side, setSide] = useState(_side);
 
 	useEffect(() => {
-		navigation.setOptions({ title: `${name} ${side}` });
+		navigation.setOptions({ title: `${stationing.stationing_name} ${side}` });
 	}, [side]);
-	
+
 	const changeSide = () => side === 'Izq' ? setSide('Der') : setSide('Izq');
+
+	const handlePressNextDetails = () => {
+		let { id, central_reading } = stationing;
+
+		createSectionDetail(project.id, { id, central_reading }, detail, side);
+		clearDetailStore();
+	};
+
+	const goNextSection = () => {
+		updateStationingIsComplete();
+		setTimeout(() => {
+			updateStationingIsCompleteFromFirestore(project.id, stationing);		
+			navigation.navigate('projectDetail');
+		}, 1000);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -25,8 +51,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 					<TextInput
 						mode='outlined'
 						placeholder='Nombre del detalle'
-						// value={_code}
-						// onChangeText={_code => setCodigo(_code)}
+						value={detail.detail_name}
+						onChangeText={detail_name => updateDetailName(detail_name.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
 					<TextInput
@@ -34,8 +60,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						placeholder='Lectura'
 						keyboardType='number-pad'
 						inputMode='decimal'
-						// value={_name}
-						// onChangeText={_name => setNombre(_name)}
+						value={detail.reading.toString()}
+						onChangeText={reading => updateReading(reading)}
 						right={<TextInput.Icon icon='ruler' />}
 					/>
 
@@ -45,15 +71,15 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						keyboardType='number-pad'
 						inputMode='decimal'
 						textAlign='left'
-						// value={_centralReading}
-						// onChangeText={_centralReading => setLecturaCentral(_centralReading)} 
+						value={detail.distance.toString()}
+						onChangeText={distance => updateDistance(distance)}
 						right={<TextInput.Icon icon='map-marker-distance' />}
 					/>
 				</View>
 				<View style={styles.controls}>
-					<Button uppercase mode='contained' onPress={() => console.log('reset form')}>Siguiente detalle</Button>
-					<Button uppercase mode='contained' onPress={changeSide}>Terminar lado</Button>
-					<Button uppercase mode='outlined' textColor='#F5F7FA' onPress={() => navigation.navigate('captureCentral')}>Siguiente sección</Button>
+					<Button uppercase mode='contained' onPress={() => handlePressNextDetails()}>Siguiente detalle</Button>
+					<Button uppercase mode='contained' onPress={() => changeSide()}>Terminar lado</Button>
+					<Button uppercase mode='outlined' textColor='#F5F7FA' onPress={() => goNextSection()}>Siguiente sección</Button>
 				</View>
 			</View>
 		</View>
@@ -82,7 +108,7 @@ const styles = StyleSheet.create({
 
 CaptureSectionSides.propTypes = {
 	navigation: PropTypes.object,
-	route: PropTypes.object	
+	route: PropTypes.object
 };
 
 export default CaptureSectionSides;

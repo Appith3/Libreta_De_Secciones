@@ -1,30 +1,56 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, FAB } from 'react-native-paper';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import { Chip, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
+import { useStore } from '../store/useStore';
+import { StatusBar } from 'expo-status-bar';
 
-const ProjectDetail = ({ navigation, route }) => {
+const ProjectDetail = ({ navigation }) => {
+	// FIXME: Go Home on projectDetail after create project
+	// TODO: Clean store when go back to home page
+	/* 
+		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
+	*/
 
-	const { project } = route.params;
-
+	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState('');
 
-	const [state, setState] = useState({ open: false });
-
-	const onStateChange = ({ open }) => setState({ open });
-
-	const { open } = state;
+	const isLoading = useStore((state) => state.isLoading);
+	const project = useStore((state) => state.project);
+	const getStationingFromFirestore = useStore((state) => state.getStationingFromFirestore);
+	const stations = useStore((state) => state.stations);
 
 	useEffect(() => {
-		navigation.setOptions({ title: project.name.projectName || project.name });
+		navigation.setOptions({ title: project.project_name });
+		getStationingFromFirestore(project.id);
 	}, []);
 
-	const renderList = project.stationing.map((stationing) => {
-		return stationing.status === 'complete'
-			? <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} isComplete navigation={navigation} details={stationing} />
-			: <SectionItem title={stationing.name} listId={stationing._id} key={stationing._id} navigation={navigation} details={stationing} />;
-	});
+	const onStateChange = () => {
+		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
+	};
+
+	const renderItem = ({item}) => {
+		return (
+			<SectionItem 
+				stationingName={item.stationing_name}
+				stationingId={item.id}
+				isComplete={item.is_complete}
+				centralReading={item.central_reading}
+				code={item.code}
+			/>
+		);
+	};
+
+	// TODO: add popup confirmation to delete
+	if(isLoading) {
+		// TODO: add gif/image to loading state
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size={'large'}/>
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
@@ -44,15 +70,16 @@ const ProjectDetail = ({ navigation, route }) => {
 				</View>
 			</View>
 			<View>
-				<ScrollView style={styles.sectionsList}>
-					{
-						renderList
-					}
-				</ScrollView>
+				<FlatList
+					style={styles.sectionsList}
+					data={stations}
+					renderItem={renderItem}
+					keyExtractor={item => item.id}
+				/>
 			</View>
 			<FAB.Group
-				open={open}
-				icon={open ? 'close' : 'plus'}
+				open={openFAB.open}
+				icon={openFAB.open ? 'close' : 'plus'}
 				backdropColor='#fff0'
 				color='#F5F7FA'
 				fabStyle={{ backgroundColor: '#446585', borderRadius: 32 }}
@@ -64,7 +91,7 @@ const ProjectDetail = ({ navigation, route }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('captureCentral'),
+						onPress: () => navigation.navigate('captureNewSectionCentral'),
 					},
 					{
 						icon: 'upload',
@@ -72,7 +99,7 @@ const ProjectDetail = ({ navigation, route }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('exportProject', { project }),
+						onPress: () => navigation.navigate('exportProject'),
 					},
 					{
 						icon: 'delete',
@@ -90,6 +117,13 @@ const ProjectDetail = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+	loadingContainer: {
+		flex: 1,
+		backgroundColor: '#1e2833',
+		paddingTop: StatusBar.currentHeight,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
 	container: {
 		flex: 1,
 		backgroundColor: '#1E2833'
