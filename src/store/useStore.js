@@ -51,7 +51,12 @@ export const useStore = create((set) => ({
 	},
 
 	resetProjectStore: () => {
-		// TODO: reset store when go back from determined screen
+		set(() => ({
+			project: {
+				id: '',
+				project_name: ''
+			}
+		}));
 	},
 
 	resetLoading: () => {
@@ -131,7 +136,16 @@ export const useStore = create((set) => ({
 	},
 
 	resetStationingStore: () => {
-		// TODO: reset store when go back from determined screen
+		set(() => ({
+			stationing: {
+				id: '',
+				central_reading: '',
+				code: '',
+				is_complete: false,
+				stationing_name: '',
+			},
+			details: [],
+		}));
 	},
 
 	// Updates the stationing file information in the store state.

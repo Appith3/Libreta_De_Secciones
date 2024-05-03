@@ -14,10 +14,16 @@ const CaptureSection = ({ navigation }) => {
 	const getStationFromFirestore = useStore((state) => state.getStationFromFirestore);
 	const updateStationingFromFirestore = useStore((state) => state.updateStationingFromFirestore);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
+	const resetStationingStore = useStore((state) => state.resetStationingStore);
 
 	useEffect(() => {
 		getStationFromFirestore(project.id, stationing.id,);
 	}, []);
+
+	const handleOnBackPress = () => {
+		resetStationingStore();
+		navigation.goBack();
+	};
 
 	const onPressLeft = () => {
 		updateStationingFromFirestore(project.id, stationing);
@@ -35,7 +41,7 @@ const CaptureSection = ({ navigation }) => {
 	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
-			<Topbar title={`${stationing.stationing_name} centro`} hasBackAction onBack={() => navigation.goBack()}/>
+			<Topbar title={`${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput

@@ -14,6 +14,12 @@ const CaptureSection = ({ navigation }) => {
 	const updateStationingCode = useStore((state) => state.updateStationingCode);
 	const updateStationingName = useStore((state) => state.updateStationingName);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
+	const resetStationingStore = useStore((state) => state.resetStationingStore);
+
+	const handleOnBackPress = () => {
+		resetStationingStore();
+		navigation.goBack();
+	};
 
 	const onPressLeft = () => {
 		createStationing(project.id, stationing);
@@ -57,7 +63,7 @@ const CaptureSection = ({ navigation }) => {
 	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
-			<Topbar title={stationing.stationing_name === '' ? 'Nueva sección centro' : `${stationing.stationing_name} centro`} hasBackAction onBack={() => navigation.goBack()}/>
+			<Topbar title={stationing.stationing_name === '' ? 'Nueva sección centro' : `${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput

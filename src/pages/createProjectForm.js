@@ -16,7 +16,13 @@ const CreateProjectForm = (props) => {
 	const createProject = useStore((state) => state.createProject);
 	const stationingFile = useStore((state) => state.stationingFile);
 	const stations = useStore((state) => state.stations);
+	const resetProjectStore = useStore((state) => state.resetProjectStore);
 	const createStationing = useStore((state) => state.createStationing);
+
+	const handleOnBackPress = () => {
+		resetProjectStore();
+		navigation.goBack();
+	};
 
 	const handleCreateProjectTap = () => {
 		const { id } = project;		
@@ -37,7 +43,7 @@ const CreateProjectForm = (props) => {
 
 	return (
 		<View style={styles.container}>
-			<Topbar title='Nuevo proyecto' hasBackAction onBack={() => navigation.goBack()}/>
+			<Topbar title='Nuevo proyecto' hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.main}>
 				<Image
 					// eslint-disable-next-line no-undef

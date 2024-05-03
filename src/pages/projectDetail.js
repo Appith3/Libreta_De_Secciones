@@ -8,11 +8,6 @@ import { StatusBar } from 'expo-status-bar';
 import Topbar from '../componets/Topbar';
 
 const ProjectDetail = ({ navigation }) => {
-	// FIXME: Go Home on projectDetail after create project
-	// TODO: Clean store when go back to home page
-	/* 
-		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
-	*/
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [filterValue, setFilterValue] = useState('all');
@@ -21,7 +16,13 @@ const ProjectDetail = ({ navigation }) => {
 	const project = useStore((state) => state.project);
 	const getStationingFromFirestore = useStore((state) => state.getStationingFromFirestore);
 	const stations = useStore((state) => state.stations);
+	const resetProjectStore = useStore((state) => state.resetProjectStore);
 	
+	const handleOnBackPress = () => {
+		resetProjectStore();
+		navigation.popToTop();
+	};
+ 
 	useEffect(() => {
 		getStationingFromFirestore(project.id);
 	}, []);
@@ -69,7 +70,7 @@ const ProjectDetail = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Topbar title={project.project_name} hasBackAction onBack={() => navigation.popToTop()}/>
+			<Topbar title={project.project_name} hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.header}>
 				<View style={styles.filter}>
 					<Text variant='labelLarge' style={styles.filterText}>Mostrar secciones</Text>

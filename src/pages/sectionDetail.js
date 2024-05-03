@@ -14,6 +14,7 @@ const SectionDetail = ({ navigation }) => {
 	const stationing = useStore((state) => state.stationing);
 	const details = useStore((state) => state.details);
 	const getSectionDetails = useStore((state) => state.getSectionDetails);
+	const resetStationingStore = useStore((state) => state.resetStationingStore);
 	
 	useEffect(() => {
 		navigation.setOptions({ title: `${stationing.stationing_name} ${stationing.code}` });
@@ -22,6 +23,11 @@ const SectionDetail = ({ navigation }) => {
 
 	// TODO: add a ScrollView to view the details table and chart
 	// TODO: add a chart to preview the section
+
+	const handleOnBackPress = () => {
+		resetStationingStore();
+		navigation.goBack();
+	};
 
 	const renderItem = ({ item }) => {
 		return (
@@ -44,7 +50,7 @@ const SectionDetail = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Topbar title={`${stationing.stationing_name} ${stationing.code}`} hasBackAction onBack={() => navigation.goBack()}/>
+			<Topbar title={`${stationing.stationing_name} ${stationing.code}`} hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.main}>
 				<Text variant='headlineSmall' style={styles.title}>Elevación central: {stationing.central_reading}</Text>
 				<View style={styles.table}>

@@ -9,7 +9,6 @@ import Topbar from '../componets/Topbar';
 
 const HomePage = ({ navigation }) => {
 
-	// TODO: Clean all store
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [searchText, setSearchText] = useState();
