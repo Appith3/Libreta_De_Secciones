@@ -15,7 +15,6 @@ const ProjectDetail = ({ navigation }) => {
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [filterValue, setFilterValue] = useState('all');
-	const [filteredStations, SetFilteredStations] = useState(stations);
 
 	const isLoading = useStore((state) => state.isLoading);
 	const project = useStore((state) => state.project);
@@ -27,22 +26,20 @@ const ProjectDetail = ({ navigation }) => {
 		getStationingFromFirestore(project.id);
 	}, []);
 	
-	useEffect(() => {
-		SetFilteredStations(
-			stations.filter((station) => {
-				switch (filterValue) {
-				case 'all':
-					return true; // Show all stations
-				case 'done':
-					return station.is_complete; // Show only stations marked as complete
-				case 'todo':
-					return !station.is_complete; // Show only stations not marked as complete
-				default:
-					return true; // Default to showing all stations if filterValue is unexpected
-				}
-			})
-		);
-	}, [filterValue]);
+	const filterStations = (stations) => {
+		return stations.filter((station) => {
+			switch (filterValue) {
+			case 'all':
+				return true; // Show all stations
+			case 'done':
+				return station.is_complete; // Show only stations marked as complete
+			case 'todo':
+				return !station.is_complete; // Show only stations not marked as complete
+			default:
+				return true; // Default to showing all stations if filterValue is unexpected
+			}
+		});
+	};
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
@@ -101,7 +98,7 @@ const ProjectDetail = ({ navigation }) => {
 			<View>
 				<FlatList
 					style={styles.sectionsList}
-					data={filteredStations}
+					data={filterStations(stations)}
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
 				/>
@@ -171,7 +168,7 @@ const styles = StyleSheet.create({
 	},
 	sectionsList: {
 		paddingHorizontal: 16,
-		height: '70%'
+		height: '100%'
 	}
 });
 
