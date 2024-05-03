@@ -148,6 +148,16 @@ export const useStore = create((set) => ({
 		}));
 	},
 
+	resetStationingFileStore: () => {
+		set(() => ({
+			stationingFile: {
+				mime_type: '',
+				file_name: 'Nombre del archivo',
+				uri: '',
+			}
+		}));
+	},
+
 	// Updates the stationing file information in the store state.
 	updateStationingFile: (stationingFile) =>
 		set(() => ({

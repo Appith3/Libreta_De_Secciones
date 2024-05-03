@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Text, HelperText } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
@@ -23,31 +23,56 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	const updateDistance = useStore((state) => state.updateDistance);
 
 	const [side, setSide] = useState(_side);
+	const [errors, setErrors] = useState({});
+
+	const validateForm = () => {
+		let errors = {};
+
+		let {
+			distance,
+			reading,
+		} = detail;
+
+		if (!distance) errors.distance = 'La distancia es requerida';
+		if (!reading) errors.reading = 'La lectura es requerida';
+		setErrors(errors);
+
+		return Object.keys(errors).length === 0;
+	};
 
 	useEffect(() => {
 		navigation.setOptions({ title: `${stationing.stationing_name} ${side}` });
 	}, [side]);
 
-	const changeSide = () => side === 'Izq' ? setSide('Der') : setSide('Izq');
+	const changeSide = () => {
+		if (validateForm()) {
+			side === 'Izq' ? setSide('Der') : setSide('Izq');
+		}
+	};
 
 	const handlePressNextDetails = () => {
 		let { id, central_reading } = stationing;
 
-		createSectionDetail(project.id, { id, central_reading }, detail, side);
-		clearDetailStore();
+		if (validateForm()) {
+			createSectionDetail(project.id, { id, central_reading }, detail, side);
+			clearDetailStore();
+		}
 	};
 
 	const goNextSection = () => {
-		updateStationingIsComplete();
-		setTimeout(() => {
-			updateStationingIsCompleteFromFirestore(project.id, stationing);		
-			navigation.navigate('projectDetail');
-		}, 1000);
+
+		if (validateForm) {
+			updateStationingIsComplete();
+			setTimeout(() => {
+				updateStationingIsCompleteFromFirestore(project.id, stationing);
+				navigation.navigate('projectDetail');
+			}, 1000);
+		}
 	};
 
 	return (
 		<View style={styles.container}>
-			<Topbar title={`${stationing.stationing_name} ${side}`} hasBackAction onBack={() => navigation.goBack()}/>
+			<Topbar title={`${stationing.stationing_name} ${side}`} hasBackAction onBack={() => navigation.goBack()} />
 			<View style={styles.main}>
 				<View style={styles.form}>
 					<TextInput
@@ -57,26 +82,32 @@ const CaptureSectionSides = ({ navigation, route }) => {
 						onChangeText={detail_name => updateDetailName(detail_name.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
-					<TextInput
-						mode='outlined'
-						placeholder='Lectura'
-						keyboardType='number-pad'
-						inputMode='decimal'
-						value={detail.reading.toString()}
-						onChangeText={reading => updateReading(reading)}
-						right={<TextInput.Icon icon='ruler' />}
-					/>
+					<View>
+						<TextInput
+							mode='outlined'
+							placeholder='Lectura'
+							keyboardType='number-pad'
+							inputMode='decimal'
+							value={detail.reading.toString()}
+							onChangeText={reading => updateReading(reading)}
+							right={<TextInput.Icon icon='ruler' />}
+						/>
+						{errors.reading ? <HelperText style={styles.errorText} type='error'>{errors.reading}</HelperText> : null}
+					</View>
 
-					<TextInput
-						mode='outlined'
-						placeholder='Distancia'
-						keyboardType='number-pad'
-						inputMode='decimal'
-						textAlign='left'
-						value={detail.distance.toString()}
-						onChangeText={distance => updateDistance(distance)}
-						right={<TextInput.Icon icon='map-marker-distance' />}
-					/>
+					<View>
+						<TextInput
+							mode='outlined'
+							placeholder='Distancia'
+							keyboardType='number-pad'
+							inputMode='decimal'
+							textAlign='left'
+							value={detail.distance.toString()}
+							onChangeText={distance => updateDistance(distance)}
+							right={<TextInput.Icon icon='map-marker-distance' />}
+						/>
+						{errors.distance ? <HelperText style={styles.errorText} type='error'>{errors.distance}</HelperText> : null}
+					</View>
 				</View>
 				<View style={styles.controls}>
 					<Button uppercase mode='contained' onPress={() => handlePressNextDetails()}>Siguiente detalle</Button>
@@ -105,6 +136,9 @@ const styles = StyleSheet.create({
 	},
 	controls: {
 		gap: 16
+	},
+	errorText: {
+		color: '#e54343',
 	}
 });
 

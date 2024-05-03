@@ -1,8 +1,9 @@
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Text, HelperText } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
+import { useState } from 'react';
 
 const CaptureSection = ({ navigation }) => {
 
@@ -16,21 +17,40 @@ const CaptureSection = ({ navigation }) => {
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
 	const resetStationingStore = useStore((state) => state.resetStationingStore);
 
+	const [errors, setErrors] = useState({});
+
+	const validateForm = () => {
+		let errors = {};
+
+		let {
+			stationing_name
+		} = stationing;
+
+		if (!stationing_name) errors.stationing_name = 'El cadenamiento es requerido';
+		setErrors(errors);
+
+		return Object.keys(errors).length === 0;
+	};
+
 	const handleOnBackPress = () => {
 		resetStationingStore();
 		navigation.goBack();
 	};
 
 	const onPressLeft = () => {
-		createStationing(project.id, stationing);
-
-		navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		if (validateForm()) {
+			setErrors({});
+			createStationing(project.id, stationing);
+			navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		}
 	};
 
 	const onPressRight = () => {
-		createStationing(project.id, stationing);
-
-		navigation.navigate('captureSectionSides', { _side: 'Der' });
+		if (validateForm()) {
+			setErrors({});
+			createStationing(project.id, stationing);
+			navigation.navigate('captureSectionSides', { _side: 'Der' });
+		}
 	};
 
 	// formateamos el valor del cadenamiento de 0 a 0+000.00
@@ -63,7 +83,7 @@ const CaptureSection = ({ navigation }) => {
 	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
-			<Topbar title={stationing.stationing_name === '' ? 'Nueva sección centro' : `${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress}/>
+			<Topbar title={stationing.stationing_name === '' ? 'Nueva sección centro' : `${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress} />
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput
@@ -73,15 +93,18 @@ const CaptureSection = ({ navigation }) => {
 						onChangeText={(code) => updateStationingCode(code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
-					<TextInput
-						mode='outlined'
-						placeholder='Cadenamiento'
-						keyboardType='number-pad'
-						value={stationing.stationing_name}
-						onChangeText={(stationing_name) => updateStationingName(stationing_name)}
-						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
-						right={<TextInput.Icon icon='map-marker' />}
-					/>
+					<View>
+						<TextInput
+							mode='outlined'
+							placeholder='Cadenamiento'
+							keyboardType='number-pad'
+							value={stationing.stationing_name}
+							onChangeText={(stationing_name) => updateStationingName(stationing_name)}
+							onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
+							right={<TextInput.Icon icon='map-marker' />} />
+
+						{errors.stationing_name ? <HelperText style={styles.errorText} type='error'>{errors.stationing_name}</HelperText> : null}
+					</View>
 
 					<TextInput
 						mode='outlined'
@@ -120,6 +143,9 @@ const styles = StyleSheet.create({
 	},
 	controls: {
 		gap: 16
+	},
+	errorText: {
+		color: '#e54343',
 	}
 });
 
