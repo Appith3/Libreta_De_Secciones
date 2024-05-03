@@ -19,7 +19,6 @@ const CaptureSection = ({ navigation }) => {
 		navigation.setOptions({ title: `${stationing.stationing_name === '' ? 'Nueva sección' : stationing.stationing_name} centro` });
 	}, [stationing.stationing_name]);
 
-	// FIXME: prevent navigation before writeStationingCenter, stationId is undefined
 	const onPressLeft = () => {
 		createStationing(project.id, stationing);
 
