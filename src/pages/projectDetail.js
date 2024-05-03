@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { FAB, ActivityIndicator, SegmentedButtons, Text } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
@@ -14,25 +14,43 @@ const ProjectDetail = ({ navigation }) => {
 	*/
 
 	const [openFAB, setOpenFAB] = useState({ open: false });
-	const [searchText, setSearchText] = useState('');
+	const [filterValue, setFilterValue] = useState('all');
+	const [filteredStations, SetFilteredStations] = useState(stations);
 
 	const isLoading = useStore((state) => state.isLoading);
 	const project = useStore((state) => state.project);
 	const getStationingFromFirestore = useStore((state) => state.getStationingFromFirestore);
 	const stations = useStore((state) => state.stations);
-
+	
 	useEffect(() => {
 		navigation.setOptions({ title: project.project_name });
 		getStationingFromFirestore(project.id);
 	}, []);
+	
+	useEffect(() => {
+		SetFilteredStations(
+			stations.filter((station) => {
+				switch (filterValue) {
+				case 'all':
+					return true; // Show all stations
+				case 'done':
+					return station.is_complete; // Show only stations marked as complete
+				case 'todo':
+					return !station.is_complete; // Show only stations not marked as complete
+				default:
+					return true; // Default to showing all stations if filterValue is unexpected
+				}
+			})
+		);
+	}, [filterValue]);
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
-	const renderItem = ({item}) => {
+	const renderItem = ({ item }) => {
 		return (
-			<SectionItem 
+			<SectionItem
 				stationingName={item.stationing_name}
 				stationingId={item.id}
 				isComplete={item.is_complete}
@@ -43,11 +61,11 @@ const ProjectDetail = ({ navigation }) => {
 	};
 
 	// TODO: add popup confirmation to delete
-	if(isLoading) {
+	if (isLoading) {
 		// TODO: add gif/image to loading state
 		return (
 			<View style={styles.loadingContainer}>
-				<ActivityIndicator size={'large'}/>
+				<ActivityIndicator size={'large'} />
 			</View>
 		);
 	}
@@ -55,24 +73,35 @@ const ProjectDetail = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
-				<TextInput
-					placeholder='Buscar sección'
-					value={searchText}
-					onChangeText={searchText => setSearchText(searchText)}
-					mode='outlined'
-				/>
-				<View style={styles.chips}>
-					<ScrollView horizontal>
-						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Todo')}>Todo</Chip>
-						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Secciones completas')}>Secciones completas</Chip>
-						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Secciones vacías')}>Secciones vacías</Chip>
-					</ScrollView>
+				<View style={styles.filter}>
+					<Text variant='labelLarge' style={styles.filterText}>Mostrar secciones</Text>
+					<SegmentedButtons
+						value={filterValue}
+						onValueChange={setFilterValue}
+						buttons={[
+							{
+								value: 'all',
+								label: 'Todas',
+								uncheckedColor: '#F5F7FA'
+							},
+							{
+								value: 'done',
+								label: 'Completas',
+								uncheckedColor: '#F5F7FA'
+							},
+							{
+								value: 'todo',
+								label: 'Vacías',
+								uncheckedColor: '#F5F7FA'
+							},
+						]}
+					/>
 				</View>
 			</View>
 			<View>
 				<FlatList
 					style={styles.sectionsList}
-					data={stations}
+					data={filteredStations}
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
 				/>
@@ -133,13 +162,12 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		paddingTop: 16
 	},
-	chips: {
-		marginVertical: 16
+	filter: {
+		marginBottom: 16,
 	},
-	chip: {
-		marginRight: 12,
-		borderRadius: 24,
-		backgroundColor: '#F5F7FA'
+	filterText: {
+		marginBottom: 4,
+		color: '#F5F7FA'
 	},
 	sectionsList: {
 		paddingHorizontal: 16,
