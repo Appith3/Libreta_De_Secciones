@@ -16,28 +16,38 @@ const HomePage = ({ navigation }) => {
 	const isLoading = useStore((state) => state.isLoading);
 	const getProjectsFromFirestore = useStore((state) => state.getProjectsFromFirestore);
 	const projects = useStore((state) => state.projects);
-	
+
 	useEffect(() => {
 		getProjectsFromFirestore();
 	}, []);
+
+	const filterProjects = (searchText) => {
+		if (!searchText) {
+			return projects;
+		}
+
+		return projects.filter((project) =>
+			project.name.toLowerCase().includes(searchText.toLowerCase())
+		);
+	};
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
-	const renderItem = ({item}) => {
+	const renderItem = ({ item }) => {
 		return (
-			<ProjectItem 
-				projectName={item.name} 
+			<ProjectItem
+				projectName={item.name}
 				projectId={item.id} />
 		);
 	};
 
-	if(isLoading) {
+	if (isLoading) {
 		// TODO: add gif/image to loading state
 		return (
 			<View style={styles.loadingContainer}>
-				<ActivityIndicator size={'large'}/>
+				<ActivityIndicator size={'large'} />
 			</View>
 		);
 	}
@@ -53,7 +63,7 @@ const HomePage = ({ navigation }) => {
 					onChangeText={searchText => setSearchText(searchText)}
 					right={<TextInput.Icon icon='magnify' />} />
 				<FlatList
-					data={projects}
+					data={filterProjects(searchText)}
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
 				/>
