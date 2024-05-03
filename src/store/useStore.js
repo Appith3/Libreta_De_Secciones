@@ -12,6 +12,7 @@ import {
 	updateDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
+import { FIRESTORE_ROOT_COLLECTION } from '../utils/constants';
 
 export const useStore = create((set) => ({
 
@@ -80,7 +81,7 @@ export const useStore = create((set) => ({
 	// Creates a new project in the Firestore database.
 	createProject: async (project) => {
 		try {
-			const newProjectDocRef = await addDoc(collection(db, 'example_projects'), {
+			const newProjectDocRef = await addDoc(collection(db, FIRESTORE_ROOT_COLLECTION), {
 				creation_date: Timestamp.fromMillis(Date.now()),
 				name: project.project_name
 			});
@@ -95,7 +96,7 @@ export const useStore = create((set) => ({
 	// Fetches projects from the Firestore database and sets them in the store state.
 	getProjectsFromFirestore: async () => {
 		try {
-			const projectsColRef = collection(db, 'example_projects');
+			const projectsColRef = collection(db, FIRESTORE_ROOT_COLLECTION);
 			const q = query(projectsColRef, orderBy('creation_date', 'desc'));
 			const projectSnapshot = await getDocs(q);
 
@@ -122,7 +123,7 @@ export const useStore = create((set) => ({
 		// TODO: implement deep deleting to delete sub collections
 
 		try {
-			await deleteDoc(doc(db, 'example_projects', project_id));
+			await deleteDoc(doc(db, FIRESTORE_ROOT_COLLECTION, project_id));
 			console.log(`proyecto con id ${project_id} borrado`);
 		} catch (error) {
 			console.log('error: ', error);
@@ -171,7 +172,6 @@ export const useStore = create((set) => ({
 	},
 
 	updateStationingIsComplete: () => {
-		console.log('updateStationingIsComplete');
 		set((state) => ({
 			stationing: {
 				...state.stationing,
@@ -207,7 +207,7 @@ export const useStore = create((set) => ({
 	 */
 	createStationing: async (currentProject, stationing) => {
 		try {
-			const newStationingDocRef = await addDoc(collection(db, `example_projects/${currentProject}/stationing`), {
+			const newStationingDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`), {
 				stationing_name: stationing.stationing_name,
 				code: stationing.code.trim(),
 				is_complete: false,
@@ -229,7 +229,7 @@ export const useStore = create((set) => ({
 	// Fetches stationing data for a specific project from the Firestore database.
 	getStationingFromFirestore: async (currentProject) => {
 		try {
-			const stationingColRef = collection(db, `example_projects/${currentProject}/stationing`);
+			const stationingColRef = collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`);
 			const q = query(stationingColRef, orderBy('stationing_name', 'asc'));
 			const stationingSnapshot = await getDocs(q);
 
@@ -254,7 +254,7 @@ export const useStore = create((set) => ({
 	// Fetches a single stationing entry by ID from the Firestore database.
 	getStationFromFirestore: async (currentProject, currentStation) => {
 		try {
-			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation}`);
+			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation}`);
 			const stationingDocSnap = await getDoc(stationingDocRef);
 
 			if (stationingDocSnap.exists()) {
@@ -286,7 +286,7 @@ export const useStore = create((set) => ({
 	 */
 	updateStationingFromFirestore: async (currentProject, currentStation) => {
 		try {
-			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation.id}`);
+			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
 
 			await updateDoc(stationingDocRef, {
 				stationing_name: currentStation.stationing_name,
@@ -305,7 +305,7 @@ export const useStore = create((set) => ({
 	updateStationingIsCompleteFromFirestore: async (currentProject, currentStation) => {
 		console.log('updateStationingIsCompleteFromFirestore currentStation: ', currentStation);
 		try {
-			const stationingDocRef = doc(db, `example_projects/${currentProject}/stationing/${currentStation.id}`);
+			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
 
 			await updateDoc(stationingDocRef, {
 				is_complete: true
@@ -322,7 +322,7 @@ export const useStore = create((set) => ({
 	// Deletes a stationing entry from the Firestore database.
 	deleteStation: async (currentProject, stationId) => {
 		try {
-			await deleteDoc(doc(db, `example_projects/${currentProject}/stationing`, stationId));
+			await deleteDoc(doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`, stationId));
 			console.log('documento borrado con id: ', stationId);
 		} catch (error) {
 			set(() => ({
@@ -382,7 +382,7 @@ export const useStore = create((set) => ({
 		let slope = currentStation.central_reading - Number(detail.reading);
 
 		try {
-			const newDetailDocRef = await addDoc(collection(db, `example_projects/${currentProject}/stationing/${currentStation.id}/details`), {
+			const newDetailDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}/details`), {
 				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
 				detail_name: detail.detail_name,
 				notes: detail.notes,
@@ -398,7 +398,7 @@ export const useStore = create((set) => ({
 
 	getSectionDetails: async (currentProject, currentStation) => {
 		try {
-			const detailsColRef = collection(db, `example_projects/${currentProject}/stationing/${currentStation}/details`);
+			const detailsColRef = collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation}/details`);
 			const q = query(detailsColRef, orderBy('distance', 'asc'));
 			const detailsDocs = await getDocs(q);
 	
@@ -431,8 +431,12 @@ export const useStore = create((set) => ({
 		}
 	},
 
-	updateDetailsInFirestore: async () => {},
+	updateDetailsInFirestore: async () => {
+		// TODO: Implement function
+	},
 
-	deleteDetailFromFirestore: async () => {},
+	deleteDetailFromFirestore: async () => {
+		// TODO: Implement function
+	},
 
 }));
