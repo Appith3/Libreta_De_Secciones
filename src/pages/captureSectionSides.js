@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput, Text, HelperText } from 'react-native-paper';
+import { Button, TextInput, HelperText } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
