@@ -2,8 +2,8 @@ import { Image, StyleSheet, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import FileInput from '../componets/FileInput';
 import PropTypes from 'prop-types';
-
 import { useStore } from '../store/useStore';
+import Topbar from '../componets/Topbar';
 
 const CreateProjectForm = (props) => {
 
@@ -37,6 +37,7 @@ const CreateProjectForm = (props) => {
 
 	return (
 		<View style={styles.container}>
+			<Topbar title='Nuevo proyecto' hasBackAction onBack={() => navigation.goBack()}/>
 			<View style={styles.main}>
 				<Image
 					// eslint-disable-next-line no-undef

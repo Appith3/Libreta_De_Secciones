@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
+import Topbar from '../componets/Topbar';
 
 const CaptureSection = ({ navigation }) => {
 
@@ -17,10 +18,6 @@ const CaptureSection = ({ navigation }) => {
 	useEffect(() => {
 		getStationFromFirestore(project.id, stationing.id,);
 	}, []);
-
-	useEffect(() => {
-		navigation.setOptions({ title: `${stationing.stationing_name === '' ? 'Nueva sección' : stationing.stationing_name} centro` });
-	}, [stationing.stationing_name]);
 
 	const onPressLeft = () => {
 		updateStationingFromFirestore(project.id, stationing);
@@ -38,6 +35,7 @@ const CaptureSection = ({ navigation }) => {
 	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
+			<Topbar title={`${stationing.stationing_name} centro`} hasBackAction onBack={() => navigation.goBack()}/>
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput
@@ -80,13 +78,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833',
-		padding: 16
 	},
 	main: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
-		gap: 32
+		gap: 32,
+		padding: 16
 	},
 	form: {
 		gap: 16

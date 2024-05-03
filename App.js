@@ -28,52 +28,51 @@ export default function App() {
 			<NavigationContainer>
 				<Stack.Navigator
 					initialRouteName='HomePage'
-					screenOptions={{
-						headerStyle: {
-							backgroundColor: '#38526c'
-						},
-						headerTintColor: '#F5F7FA'
-					}}
 				>
 					<Stack.Screen
 						name='homePage'
 						component={HomePage}
-						options={{ title: 'Proyectos' }}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='projectDetail'
 						component={ProjectDetail}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='createProject'
 						component={CreateProjectForm}
-						options={{ title: 'Crear Proyecto' }}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='captureSectionCentral'
 						component={CaptureSection}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='captureNewSectionCentral'
 						component={CaptureNewSection}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='captureSectionSides'
 						component={CaptureSectionSides}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='sectionDetail'
 						component={SectionDetail}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='importProject'
 						component={ImportProject}
-						options={{ title: 'Importar proyecto' }}
+						options={{headerShown: false}}
 					/>
 					<Stack.Screen
 						name='exportProject'
 						component={ExportProject}
-						options={{ title: 'Exportar proyecto' }}
+						options={{headerShown: false}}
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>

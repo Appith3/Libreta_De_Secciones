@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import ProjectItem from '../componets/ProjectItem';
 import { useStore } from '../store/useStore';
 import { StatusBar } from 'expo-status-bar';
+import Topbar from '../componets/Topbar';
 
 const HomePage = ({ navigation }) => {
 
@@ -54,6 +55,7 @@ const HomePage = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
+			<Topbar title='Proyectos'/>
 			<View style={styles.main}>
 				<TextInput
 					style={styles.searchInput}

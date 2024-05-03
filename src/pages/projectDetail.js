@@ -5,6 +5,7 @@ import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import { StatusBar } from 'expo-status-bar';
+import Topbar from '../componets/Topbar';
 
 const ProjectDetail = ({ navigation }) => {
 	// FIXME: Go Home on projectDetail after create project
@@ -22,7 +23,6 @@ const ProjectDetail = ({ navigation }) => {
 	const stations = useStore((state) => state.stations);
 	
 	useEffect(() => {
-		navigation.setOptions({ title: project.project_name });
 		getStationingFromFirestore(project.id);
 	}, []);
 	
@@ -69,6 +69,7 @@ const ProjectDetail = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
+			<Topbar title={project.project_name} hasBackAction onBack={() => navigation.popToTop()}/>
 			<View style={styles.header}>
 				<View style={styles.filter}>
 					<Text variant='labelLarge' style={styles.filterText}>Mostrar secciones</Text>
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
 	},
 	sectionsList: {
 		paddingHorizontal: 16,
-		height: '100%'
+		height: '78%'
 	}
 });
 

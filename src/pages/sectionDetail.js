@@ -4,6 +4,7 @@ import { Text, ActivityIndicator } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { StatusBar } from 'expo-status-bar';
 import { useStore } from '../store/useStore';
+import Topbar from '../componets/Topbar';
 
 const SectionDetail = ({ navigation }) => {
 
@@ -43,6 +44,7 @@ const SectionDetail = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
+			<Topbar title={`${stationing.stationing_name} ${stationing.code}`} hasBackAction onBack={() => navigation.goBack()}/>
 			<View style={styles.main}>
 				<Text variant='headlineSmall' style={styles.title}>Elevación central: {stationing.central_reading}</Text>
 				<View style={styles.table}>
@@ -79,13 +81,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833',
-		padding: 16
 	},
 	main: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
 		gap: 32,
+		padding: 16
 	},
 	table: {
 		borderColor: '#A8BED1',

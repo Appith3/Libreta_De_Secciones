@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
+import Topbar from '../componets/Topbar';
 
 const CaptureSectionSides = ({ navigation, route }) => {
 
@@ -46,6 +47,7 @@ const CaptureSectionSides = ({ navigation, route }) => {
 
 	return (
 		<View style={styles.container}>
+			<Topbar title={`${stationing.stationing_name} ${side}`} hasBackAction onBack={() => navigation.goBack()}/>
 			<View style={styles.main}>
 				<View style={styles.form}>
 					<TextInput
@@ -90,13 +92,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833',
-		padding: 16
 	},
 	main: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
-		gap: 32
+		gap: 32,
+		padding: 16
 	},
 	form: {
 		gap: 16
