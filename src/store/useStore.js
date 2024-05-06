@@ -394,10 +394,10 @@ export const useStore = create((set) => ({
 	clearDetailStore: () => {
 		set(() => ({
 			detail: {
-				distance: 0,
+				distance: '',
 				detail_name: '',
 				notes: '',
-				reading: 0
+				reading: ''
 			}
 		}));
 	},

@@ -46,7 +46,11 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	}, [side]);
 
 	const changeSide = () => {
+		let { id, central_reading } = stationing;
+
 		if (validateForm()) {
+			createSectionDetail(project.id, { id, central_reading }, detail, side);
+			clearDetailStore();
 			side === 'Izq' ? setSide('Der') : setSide('Izq');
 		}
 	};
