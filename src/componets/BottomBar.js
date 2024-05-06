@@ -22,7 +22,7 @@ const MyComponent = () => {
 			]}
 			safeAreaInsets={{ bottom }}
 		>
-			{/* FIXME: enviar currentSide como prop */}
+			{/* FIXME: pasar state para no perder información */}
 			<TouchableOpacity onPress={() => { navigation.navigate('captureSectionSides'); }} style={styles.tab}>
 				<Appbar.Action icon="note-edit" color='#F5F7FA' />
 				<Text type='info' style={{color: '#F5F7FA'}} variant='bodyLarge'>capturar detalles</Text>
