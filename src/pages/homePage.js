@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, FlatList } from 'react-native';
-import { AnimatedFAB, TextInput, ActivityIndicator } from 'react-native-paper';
+import { AnimatedFAB, ActivityIndicator, Searchbar } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import ProjectItem from '../componets/ProjectItem';
 import { useStore } from '../store/useStore';
@@ -60,13 +60,12 @@ const HomePage = ({ navigation }) => {
 		<View style={styles.container}>
 			<Topbar title='Proyectos' />
 			<View style={styles.main}>
-				<TextInput
+				<Searchbar
 					style={styles.searchInput}
-					mode='outlined'
 					placeholder='Buscar proyecto'
 					value={searchText}
 					onChangeText={searchText => setSearchText(searchText)}
-					right={<TextInput.Icon icon='magnify' />} />
+				/>
 				<FlatList
 					data={filterProjects(searchText)}
 					renderItem={renderItem}
