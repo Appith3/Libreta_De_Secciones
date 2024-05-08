@@ -4,7 +4,6 @@ import { Button, TextInput, HelperText } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
-import BottomBar from '../componets/BottomBar';
 
 const CaptureSectionSides = ({ navigation, route }) => {
 
@@ -120,7 +119,6 @@ const CaptureSectionSides = ({ navigation, route }) => {
 					<Button uppercase mode='outlined' textColor='#F5F7FA' onPress={() => goNextSection()}>Siguiente sección</Button>
 				</View>
 			</View>
-			<BottomBar />
 		</View>
 	);
 };

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { StatusBar } from 'expo-status-bar';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
-import BottomBar from '../componets/BottomBar';
 
 const SectionDetail = ({ navigation }) => {
 
@@ -73,7 +72,6 @@ const SectionDetail = ({ navigation }) => {
 					/>
 				</View>
 			</View>
-			<BottomBar />
 		</View>
 	);
 };
