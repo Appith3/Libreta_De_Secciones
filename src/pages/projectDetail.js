@@ -17,6 +17,8 @@ const ProjectDetail = ({ navigation }) => {
 	const getStationingFromFirestore = useStore((state) => state.getStationingFromFirestore);
 	const stations = useStore((state) => state.stations);
 	const resetProjectStore = useStore((state) => state.resetProjectStore);
+
+	const {project_name, id} = project;
 	
 	const handleOnBackPress = () => {
 		resetProjectStore();
@@ -24,7 +26,7 @@ const ProjectDetail = ({ navigation }) => {
 	};
  
 	useEffect(() => {
-		getStationingFromFirestore(project.id);
+		getStationingFromFirestore(id);
 	}, []);
 	
 	const filterStations = (stations) => {
@@ -70,7 +72,7 @@ const ProjectDetail = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Topbar title={project.project_name} hasBackAction onBack={handleOnBackPress}/>
+			<Topbar title={project_name} hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.header}>
 				<View style={styles.filter}>
 					<Text variant='labelLarge' style={styles.filterText}>Mostrar secciones</Text>
@@ -127,16 +129,16 @@ const ProjectDetail = ({ navigation }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('exportProject'),
+						onPress: () => navigation.navigate('exportProject', {projectId: id, projectName: project_name}),
 					},
-					{
-						icon: 'delete',
-						label: 'Borrar proyecto',
-						labelTextColor: '#F5F7FA',
-						color: '#F5F7FA',
-						style: { backgroundColor: '#E54343', borderRadius: 32 },
-						onPress: () => console.log('Borrar proyecto'),
-					},
+					// {
+					// 	icon: 'delete',
+					// 	label: 'Borrar proyecto',
+					// 	labelTextColor: '#F5F7FA',
+					// 	color: '#F5F7FA',
+					// 	style: { backgroundColor: '#E54343', borderRadius: 32 },
+					// 	onPress: () => console.log('Borrar proyecto'),
+					// },
 				]}
 				onStateChange={onStateChange}
 			/>
