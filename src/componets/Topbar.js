@@ -12,7 +12,7 @@ const Topbar = (props) => {
 		<Appbar.Header style={{backgroundColor: '#38526c'}} elevated>
 			{
 				hasBackAction
-					? <Appbar.BackAction onPress={onBack} />
+					? <Appbar.BackAction onPress={onBack} color='#F5F7FA'/>
 					: null
 			}
 			<Appbar.Content title={title} color='#F5F7FA'/>
