@@ -1,3 +1,5 @@
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { StyleSheet, View } from 'react-native';
 import { Button, HelperText, Text, TextInput, Snackbar } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -58,37 +60,75 @@ const ExportProject = ({ navigation, route }) => {
 	};
 
 	const handlePressDownloadFile = async () => {
-		// FIXME: bad implementation
 		setIsLoading(true);
+	
 		try {
-			let response = await fetch(`https://api-libreta-topografica.onrender.com/api/download-file/?id=${projectId}&filename=${fileName}`, {
-				method: 'GET',
-			});
-			
+			const response = await fetch(`https://api-libreta-topografica.onrender.com/api/download-file/?id=${projectId}&filename=${fileName}`);
+	
 			if (response.ok) {
 				const blob = await response.blob();
-				const link = document.createElement('a'); // [ReferenceError: Property 'document' doesn't exist]
-				link.href = URL.createObjectURL(blob);
-				link.download = `${fileName}.xlsx`;
-				link.click();
+	
+				// Download file using Expo's FileSystem API
+				const fileUri = await FileSystem.downloadAsync(
+					response.url, // Use the original API endpoint URL for download
+					`${FileSystem.documentDirectory}/${fileName}.xlsx` // Specify local file path
+				);
+	
+				if (fileUri.status === 200) {
+					console.log('File downloaded successfully in Expo!');
+					setSnackbarState({
+						showSnack: true,
+						snackMessage: 'Archivo descargado',
+					});
+				} else {
+					console.error('Error downloading file in Expo:', fileUri.status);
+					setSnackbarState({
+						showSnack: true,
+						snackMessage: 'Error al descargar el archivo',
+					});
+				}
+	
 				setIsLoading(false);
 			} else {
 				const error = await response.json();
 				console.log('try error status: ', error.status);
 				setSnackbarState({
 					showSnack: true,
-					snackMessage: 'Error al descargar el archivo'
+					snackMessage: 'Error al descargar el archivo',
 				});
 				setIsLoading(false);
 			}
-
 		} catch (error) {
 			console.error('catch error: ', error);
 			setIsLoading(false);
 		}
 	};
 
-	const handlePressShareFile = () => { /*TODO: implement function*/ };
+	const handlePressShareFile = async () => {
+		try {
+			const fileUri = await FileSystem.getUriAsync(`${FileSystem.documentDirectory}/${fileName}.xlsx`);
+	
+			if (fileUri) {
+				await Sharing.shareAsync({
+					uri: fileUri,
+					title: `${fileName}.xlsx`, // Set the title of the shared file
+					mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+				});
+			} else {
+				console.error('Error getting file URI for sharing');
+				setSnackbarState({
+					showSnack: true,
+					snackMessage: 'Error al obtener el archivo para compartir',
+				});
+			}
+		} catch (error) {
+			console.error('Error sharing file:', error);
+			setSnackbarState({
+				showSnack: true,
+				snackMessage: 'Error al compartir el archivo',
+			});
+		}
+	};
 
 	return (
 		<View style={styles.container}>
