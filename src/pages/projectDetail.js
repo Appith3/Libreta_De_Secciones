@@ -8,7 +8,8 @@ import { StatusBar } from 'expo-status-bar';
 import Topbar from '../componets/Topbar';
 
 const ProjectDetail = ({ navigation }) => {
-
+	
+	const [refreshing, setRefreshing] = useState(false);
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [filterValue, setFilterValue] = useState('all');
 
@@ -48,6 +49,12 @@ const ProjectDetail = ({ navigation }) => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
+	const handleRefresh = () => {
+		setRefreshing(true);
+		getStationingFromFirestore(id);
+		setRefreshing(false);
+	};
+
 	const renderItem = ({ item }) => {
 		return (
 			<SectionItem
@@ -69,6 +76,7 @@ const ProjectDetail = ({ navigation }) => {
 		);
 	}
 
+	// TODO: implement refreshing on FlatList component
 	return (
 		<View style={styles.container}>
 			<Topbar title={project_name} hasBackAction onBack={handleOnBackPress}/>
@@ -104,6 +112,8 @@ const ProjectDetail = ({ navigation }) => {
 					data={filterStations(stations)}
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
 				/>
 			</View>
 			<FAB.Group

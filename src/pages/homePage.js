@@ -9,7 +9,7 @@ import Topbar from '../componets/Topbar';
 
 const HomePage = ({ navigation }) => {
 
-
+	const [refreshing, setRefreshing] = useState(false);
 	const [isExtended, setIsExtended] = useState(true);
 	const [searchText, setSearchText] = useState();
 
@@ -29,6 +29,12 @@ const HomePage = ({ navigation }) => {
 		return projects.filter((project) =>
 			project.name.toLowerCase().includes(searchText.toLowerCase())
 		);
+	};
+
+	const handleRefresh = () => {
+		setRefreshing(true);
+		getProjectsFromFirestore();
+		setRefreshing(false);
 	};
 
 	const onScroll = ({ nativeEvent }) => {
@@ -71,6 +77,8 @@ const HomePage = ({ navigation }) => {
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
 					onScroll={onScroll}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
 				/>
 				<AnimatedFAB
 					icon={'plus'}
