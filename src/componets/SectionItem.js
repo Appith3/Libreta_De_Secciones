@@ -16,6 +16,7 @@ const SectionItem = (props) => {
 
 	const navigation = useNavigation();
 
+	// TODO: add modal to confirm delete
 	const deleteStation = useStore((state) => state.deleteStation);
 	const currentProject = useStore((state) => state.project);
 	const setCurrentStation = useStore((state) => state.setCurrentStation);
@@ -38,7 +39,11 @@ const SectionItem = (props) => {
 			}
 			right={() => (
 				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStation(currentProject.id, stationingId)} />
+					{
+						isComplete
+							? null
+							: <IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStation(currentProject.id, stationingId)} />
+					}
 					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => handlePressItem()} />
 				</>
 			)}
