@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput, HelperText } from 'react-native-paper';
+import { Button, TextInput, HelperText, Modal, Portal, Text, Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
@@ -15,9 +15,19 @@ const CaptureSection = ({ navigation }) => {
 	const updateStationingCode = useStore((state) => state.updateStationingCode);
 	const updateStationingName = useStore((state) => state.updateStationingName);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
+	const updateStationingNotes = useStore((state) => state.updateStationingNotes);
+	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
 	const resetStationingStore = useStore((state) => state.resetStationingStore);
+	const updateStationingNotesFromFirestore = useStore((state) => state.updateStationingNotesFromFirestore);
 
 	const [errors, setErrors] = useState({});
+	const [visible, setVisible] = useState(false);
+	const [leftChecked, setLeftChecked] = useState(false);
+	const [rightChecked, setRightChecked] = useState(false);
+	const [hasNotes, setHasNotes] = useState(false);
+
+	const showModal = () => setVisible(true);
+	const hideModal = () => setVisible(false);
 
 	const validateForm = () => {
 		let errors = {};
@@ -35,6 +45,16 @@ const CaptureSection = ({ navigation }) => {
 	const handleOnBackPress = () => {
 		resetStationingStore();
 		navigation.goBack();
+	};
+
+	const handlePressNextSection = () => {
+		if (validateForm) {
+			updateStationingIsComplete();
+			setTimeout(() => {
+				updateStationingNotesFromFirestore(project.id, stationing, stationing.notes);
+				navigation.navigate('projectDetail');
+			}, 1000);
+		}
 	};
 
 	const onPressLeft = () => {
@@ -80,6 +100,7 @@ const CaptureSection = ({ navigation }) => {
 		updateStationingName(formattedNumber);
 	};
 
+	// TODO: implement checkbox logic to save who side is equal and if had other notes save all notes
 	return (
 		<View style={styles.container}>
 			<Topbar
@@ -129,9 +150,54 @@ const CaptureSection = ({ navigation }) => {
 				<View style={styles.controls} >
 					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
 					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
-					<Button uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					<Button onPress={showModal} uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
 				</View>
 			</View>
+			<Portal>
+				<Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+					<Text variant='titleMedium'>¿De que lados es igual?</Text>
+
+					{
+						hasNotes
+							? <TextInput
+								mode='outlined'
+								multiline
+								label="Notas"
+								value={stationing.notes}
+								onChangeText={notes => updateStationingNotes(notes)}
+							/>
+							: <>
+								<Checkbox.Item
+									label="Igual izquierda"
+									status={leftChecked ? 'checked' : 'unchecked'}
+									onPress={() => {
+										updateStationingNotes('igual izquierda \n');
+										setLeftChecked(!leftChecked);
+									}}
+								/>
+								<Checkbox.Item
+									label="Igual derecha"
+									status={rightChecked ? 'checked' : 'unchecked'}
+									onPress={() => {
+										updateStationingNotes('igual derecha \n');
+										setRightChecked(!rightChecked);
+									}}
+								/>
+							</>
+					}
+
+					<View style={styles.modalControls}>
+						<Button mode='outlined' onPress={hideModal} icon='close' textColor='#F17878'>Cerrar</Button>
+						{
+							hasNotes
+								? <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='arrow-left'>Regresar</Button>
+								: <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='note-plus'>Agregar nota</Button>
+						}
+					</View>
+
+					<Button mode='contained' onPress={handlePressNextSection} icon='note-plus'>Terminar sección</Button>
+				</Modal>
+			</Portal>
 		</View>
 	);
 };
@@ -156,6 +222,19 @@ const styles = StyleSheet.create({
 	},
 	errorText: {
 		color: '#e54343',
+	},
+	modal: {
+		backgroundColor: '#F5F7FA',
+		padding: 18,
+		margin: 32,
+		borderRadius: 12,
+		gap: 16
+	},
+	modalControls: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		gap: 12,
+		marginTop: 8
 	}
 });
 

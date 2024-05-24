@@ -39,6 +39,7 @@ export const useStore = create((set) => ({
 		code: '',
 		is_complete: false,
 		stationing_name: '',
+		notes: ''
 	},
 
 	details: [],
@@ -46,10 +47,14 @@ export const useStore = create((set) => ({
 		id: '',
 		distance: '',
 		detail_name: '',
-		notes: '',
 		reading: '',
 	},
 
+	resetLoading: () => {
+		set(() => ({ isLoading: true }));
+	},
+	
+	//* Project store methods
 	resetProjectStore: () => {
 		set(() => ({
 			project: {
@@ -58,11 +63,7 @@ export const useStore = create((set) => ({
 			}
 		}));
 	},
-
-	resetLoading: () => {
-		set(() => ({ isLoading: true }));
-	},
-
+	
 	// Updates the project name in the store state.
 	updateProjectName: (project_name) =>
 		set((state) => ({
@@ -135,6 +136,7 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	//* Stationing store methods
 	resetStationingStore: () => {
 		set(() => ({
 			stationing: {
@@ -204,6 +206,15 @@ export const useStore = create((set) => ({
 		}));
 	},
 
+	updateStationingNotes: (value) => {
+		set((state) => ({
+			stationing: {
+				...state.stationing,
+				notes: value
+			}
+		}));
+	},
+
 	// Parses stationing data from a file and sets it in the store state.
 	getStationingFromFile: (stations) => {
 		let stationingArray = stations.split('\n');
@@ -235,7 +246,8 @@ export const useStore = create((set) => ({
 				stationing_name: stationing.stationing_name,
 				code: stationing.code.trim(),
 				is_complete: false,
-				central_reading: Number(stationing.central_reading) || ''
+				central_reading: Number(stationing.central_reading) || '',
+				notes: stationing.notes
 			});
 
 			set(() => ({
@@ -343,6 +355,23 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	updateStationingNotesFromFirestore: async (currentProject, currentStation, notes) => {
+		console.log('updateStationingIsCompleteFromFirestore currentStation: ', currentStation);
+		try {
+			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
+
+			await updateDoc(stationingDocRef, {
+				notes: notes
+			});
+
+			console.log(`estación con ID ${currentStation.id} actualizada`);
+			set((state) => ({ isLoading: state.isLoading }));
+		} catch (error) {
+			console.log('update station error: ', error);
+			set(() => ({ error: error }));
+		}
+	},
+
 	// Deletes a stationing entry from the Firestore database.
 	deleteStation: async (currentProject, stationId) => {
 		try {
@@ -355,6 +384,7 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	//* Details store methods
 	updateDistance: (value) => {
 		set((state) => ({
 			detail: {
@@ -382,21 +412,11 @@ export const useStore = create((set) => ({
 		}));
 	},
 
-	updateNotes: (value) => {
-		set((state) => ({
-			detail: {
-				...state.detail,
-				notes: value
-			}
-		}));
-	},
-
 	clearDetailStore: () => {
 		set(() => ({
 			detail: {
 				distance: '',
 				detail_name: '',
-				notes: '',
 				reading: ''
 			}
 		}));
@@ -409,7 +429,6 @@ export const useStore = create((set) => ({
 			const newDetailDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}/details`), {
 				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
 				detail_name: detail.detail_name,
-				notes: detail.notes,
 				reading: Number(detail.reading),
 				slope: Number(slope.toFixed(2))
 			});
