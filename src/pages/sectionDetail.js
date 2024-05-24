@@ -21,9 +21,7 @@ const SectionDetail = ({ navigation }) => {
 		getSectionDetails(project.id, stationing.id);
 	}, []);
 
-	// TODO: add a ScrollView to view the details table and chart
 	// TODO: add a chart to preview the section
-
 	const handleOnBackPress = () => {
 		resetStationingStore();
 		navigation.goBack();

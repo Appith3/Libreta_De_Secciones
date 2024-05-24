@@ -60,7 +60,6 @@ const ProjectDetail = ({ navigation }) => {
 		);
 	};
 
-	// TODO: add popup confirmation to delete
 	if (isLoading) {
 		// TODO: add gif/image to loading state
 		return (

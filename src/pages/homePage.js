@@ -55,7 +55,7 @@ const HomePage = ({ navigation }) => {
 		);
 	}
 
-	// TODO: Add FAB.Group instead of AnimatedFAB
+	// TODO: implement refreshing on FlatList component
 	return (
 		<View style={styles.container}>
 			<Topbar title='Proyectos' />
