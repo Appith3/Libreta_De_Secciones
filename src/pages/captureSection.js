@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, HelperText, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
@@ -20,28 +20,45 @@ const CaptureSection = ({ navigation }) => {
 		getStationFromFirestore(project.id, stationing.id,);
 	}, []);
 
+	const [errors, setErrors] = useState({});
+
+	const validateForm = () => {
+		let errors = {};
+
+		let {
+			central_reading
+		} = stationing;
+
+		if (!central_reading) errors.central_reading = 'La lectura central es requerida';
+		setErrors(errors);
+
+		return Object.keys(errors).length === 0;
+	};
+
 	const handleOnBackPress = () => {
 		resetStationingStore();
 		navigation.goBack();
 	};
 
 	const onPressLeft = () => {
-		updateStationingFromFirestore(project.id, stationing);
+		if (validateForm()) {
+			updateStationingFromFirestore(project.id, stationing);
 
-		navigation.navigate('captureSectionSides', { _side: 'Izq' });
-
+			navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		}
 	};
 
 	const onPressRight = () => {
-		updateStationingFromFirestore(project.id, stationing);
+		if (validateForm()) {
+			updateStationingFromFirestore(project.id, stationing);
 
-		navigation.navigate('captureSectionSides', { _side: 'Der' });
+			navigation.navigate('captureSectionSides', { _side: 'Der' });
+		}
 	};
 
-	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
-			<Topbar title={`${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress}/>
+			<Topbar title={`${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress} />
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput
@@ -68,6 +85,12 @@ const CaptureSection = ({ navigation }) => {
 						textAlign='left'
 						value={stationing.central_reading ? stationing.central_reading.toString() : ''}
 						onChangeText={(central_reading) => updateStationingCentralReading(central_reading)} />
+
+					{
+						errors.stationing_name
+							? <HelperText style={styles.errorText} type='error'>{errors.stationing_name}</HelperText>
+							: null
+					}
 				</View>
 
 				<View style={styles.controls} >
@@ -97,6 +120,9 @@ const styles = StyleSheet.create({
 	},
 	controls: {
 		gap: 16
+	},
+	errorText: {
+		color: '#e54343',
 	}
 });
 
