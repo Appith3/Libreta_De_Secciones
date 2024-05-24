@@ -80,10 +80,16 @@ const CaptureSection = ({ navigation }) => {
 		updateStationingName(formattedNumber);
 	};
 
-	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
-			<Topbar title={stationing.stationing_name === '' ? 'Nueva sección centro' : `${stationing.stationing_name} centro`} hasBackAction onBack={handleOnBackPress} />
+			<Topbar
+				title={
+					stationing.stationing_name === ''
+						? 'Nueva sección centro'
+						: `${stationing.stationing_name} centro`
+				}
+				hasBackAction
+				onBack={handleOnBackPress} />
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput
@@ -103,7 +109,11 @@ const CaptureSection = ({ navigation }) => {
 							onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
 							right={<TextInput.Icon icon='map-marker' />} />
 
-						{errors.stationing_name ? <HelperText style={styles.errorText} type='error'>{errors.stationing_name}</HelperText> : null}
+						{
+							errors.stationing_name
+								? <HelperText style={styles.errorText} type='error'>{errors.stationing_name}</HelperText>
+								: null
+						}
 					</View>
 
 					<TextInput
