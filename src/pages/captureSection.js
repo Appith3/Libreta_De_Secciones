@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, HelperText, TextInput } from 'react-native-paper';
+import { Button, Checkbox, HelperText, Modal, TextInput, Text, Portal } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import Topbar from '../componets/Topbar';
@@ -14,6 +14,9 @@ const CaptureSection = ({ navigation }) => {
 	const getStationFromFirestore = useStore((state) => state.getStationFromFirestore);
 	const updateStationingFromFirestore = useStore((state) => state.updateStationingFromFirestore);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
+	const updateStationingNotes = useStore((state) => state.updateStationingNotes);
+	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
+	const updateStationingNotesFromFirestore = useStore((state) => state.updateStationingNotesFromFirestore);
 	const resetStationingStore = useStore((state) => state.resetStationingStore);
 
 	useEffect(() => {
@@ -21,6 +24,14 @@ const CaptureSection = ({ navigation }) => {
 	}, []);
 
 	const [errors, setErrors] = useState({});
+	const [visible, setVisible] = useState(false);
+	const [leftChecked, setLeftChecked] = useState(false);
+	const [rightChecked, setRightChecked] = useState(false);
+	const [hasNotes, setHasNotes] = useState(false);
+	const [note, setNote] = useState('');
+
+	const showModal = () => setVisible(true);
+	const hideModal = () => setVisible(false);
 
 	const validateForm = () => {
 		let errors = {};
@@ -40,6 +51,16 @@ const CaptureSection = ({ navigation }) => {
 		navigation.goBack();
 	};
 
+	const handlePressFinishSection = () => {
+		if (validateForm) {
+			updateStationingIsComplete();
+			setTimeout(() => {
+				updateStationingNotesFromFirestore(project.id, stationing, stationing.notes);
+				navigation.navigate('projectDetail');
+			}, 1000);
+		}
+	};
+
 	const onPressLeft = () => {
 		if (validateForm()) {
 			updateStationingFromFirestore(project.id, stationing);
@@ -54,6 +75,19 @@ const CaptureSection = ({ navigation }) => {
 
 			navigation.navigate('captureSectionSides', { _side: 'Der' });
 		}
+	};
+
+	const saveNotes = (note) => {
+		let notes = [];
+
+		if (leftChecked) notes.push('Izquierda igual');
+		if (rightChecked) notes.push('Derecha igual');
+		if (note) notes.push(note);
+
+		console.log('notes: ', notes.toString());
+
+		updateStationingNotes(notes);
+		hideModal();
 	};
 
 	return (
@@ -94,11 +128,66 @@ const CaptureSection = ({ navigation }) => {
 				</View>
 
 				<View style={styles.controls} >
-					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
-					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
-					<Button uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					{
+						!rightChecked
+							? <Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
+							: null
+					}
+					{
+						!leftChecked
+							? <Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
+							: null
+					}
+					{
+						leftChecked && rightChecked
+							? <Button onPress={handlePressFinishSection} uppercase mode='contained' textColor='#F5F7FA' loading={loading}>Terminar sección</Button>
+							: <Button onPress={showModal} uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					}
 				</View>
 			</View>
+			<Portal>
+				<Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+					<Text variant='titleMedium'>¿De que lados es igual?</Text>
+
+					{
+						hasNotes
+							? <TextInput
+								mode='outlined'
+								multiline
+								label="Notas"
+								value={note}
+								onChangeText={note => setNote(note)}
+							/>
+							: <>
+								<Checkbox.Item
+									label="Igual izquierda"
+									status={leftChecked ? 'checked' : 'unchecked'}
+									onPress={() => {
+										setLeftChecked(!leftChecked);
+									}}
+								/>
+								<Checkbox.Item
+									label="Igual derecha"
+									status={rightChecked ? 'checked' : 'unchecked'}
+									onPress={() => {
+										setRightChecked(!rightChecked);
+									}}
+								/>
+							</>
+					}
+
+					<View style={styles.modalControls}>
+						<Button mode='outlined' onPress={hideModal} icon='close' textColor='#F17878'>Cerrar</Button>
+						{
+							hasNotes
+								? <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='arrow-left'>Regresar</Button>
+								: <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='note-plus'>Agregar nota</Button>
+						}
+					</View>
+
+					<Button mode='contained' onPress={() => saveNotes(note)} icon='note-plus'>Continuar</Button>
+				</Modal>
+			</Portal>
 		</View>
 	);
 };
@@ -123,6 +212,19 @@ const styles = StyleSheet.create({
 	},
 	errorText: {
 		color: '#e54343',
+	},
+	modal: {
+		backgroundColor: '#F5F7FA',
+		padding: 18,
+		margin: 32,
+		borderRadius: 12,
+		gap: 16
+	},
+	modalControls: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		gap: 12,
+		marginTop: 8
 	}
 });
 

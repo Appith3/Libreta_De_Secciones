@@ -262,6 +262,28 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	createStationingWhitNote: async (currentProject, stationing) => {
+		try {
+			const newStationingDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`), {
+				stationing_name: stationing.stationing_name,
+				code: stationing.code.trim(),
+				is_complete: true,
+				central_reading: Number(stationing.central_reading) || '',
+				notes: stationing.notes
+			});
+
+			set(() => ({
+				stationing: {
+					...stationing,
+					id: newStationingDocRef.id
+				},
+			}));
+			console.log('estación creada con el ID: ', newStationingDocRef.id);
+		} catch (error) {
+			console.log('create error: ', error);
+		}
+	},
+
 	// Fetches stationing data for a specific project from the Firestore database.
 	getStationingFromFirestore: async (currentProject) => {
 		try {

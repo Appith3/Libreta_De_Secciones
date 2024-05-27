@@ -12,19 +12,20 @@ const CaptureSection = ({ navigation }) => {
 	const project = useStore((state) => state.project);
 	const stationing = useStore((state) => state.stationing);
 	const createStationing = useStore((state) => state.createStationing);
+	const createStationingWhitNote = useStore((state) => state.createStationingWhitNote);
 	const updateStationingCode = useStore((state) => state.updateStationingCode);
 	const updateStationingName = useStore((state) => state.updateStationingName);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
 	const updateStationingNotes = useStore((state) => state.updateStationingNotes);
 	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
 	const resetStationingStore = useStore((state) => state.resetStationingStore);
-	const updateStationingNotesFromFirestore = useStore((state) => state.updateStationingNotesFromFirestore);
 
 	const [errors, setErrors] = useState({});
 	const [visible, setVisible] = useState(false);
 	const [leftChecked, setLeftChecked] = useState(false);
 	const [rightChecked, setRightChecked] = useState(false);
 	const [hasNotes, setHasNotes] = useState(false);
+	const [note, setNote] = useState('');
 
 	const showModal = () => setVisible(true);
 	const hideModal = () => setVisible(false);
@@ -47,11 +48,11 @@ const CaptureSection = ({ navigation }) => {
 		navigation.goBack();
 	};
 
-	const handlePressNextSection = () => {
+	const handlePressFinishSection = () => {
 		if (validateForm) {
 			updateStationingIsComplete();
 			setTimeout(() => {
-				updateStationingNotesFromFirestore(project.id, stationing, stationing.notes);
+				createStationingWhitNote(project.id, stationing);
 				navigation.navigate('projectDetail');
 			}, 1000);
 		}
@@ -71,6 +72,19 @@ const CaptureSection = ({ navigation }) => {
 			createStationing(project.id, stationing);
 			navigation.navigate('captureSectionSides', { _side: 'Der' });
 		}
+	};
+
+	const saveNotes = (note) => {
+		let notes = [];
+
+		if (leftChecked) notes.push('Izquierda igual');
+		if (rightChecked) notes.push('Derecha igual');
+		if (note) notes.push(note);
+
+		console.log('notes: ', notes.toString());
+
+		updateStationingNotes(notes);
+		hideModal();
 	};
 
 	// formateamos el valor del cadenamiento de 0 a 0+000.00
@@ -148,9 +162,21 @@ const CaptureSection = ({ navigation }) => {
 				</View>
 
 				<View style={styles.controls} >
-					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
-					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
-					<Button onPress={showModal} uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					{
+						!rightChecked
+							? <Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
+							: null
+					}
+					{
+						!leftChecked
+							? <Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
+							: null
+					}
+					{
+						leftChecked && rightChecked
+							? <Button onPress={handlePressFinishSection} uppercase mode='contained' textColor='#F5F7FA' loading={loading}>Terminar sección</Button>
+							: <Button onPress={showModal} uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					}
 				</View>
 			</View>
 			<Portal>
@@ -163,15 +189,14 @@ const CaptureSection = ({ navigation }) => {
 								mode='outlined'
 								multiline
 								label="Notas"
-								value={stationing.notes}
-								onChangeText={notes => updateStationingNotes(notes)}
+								value={note}
+								onChangeText={note => setNote(note)}
 							/>
 							: <>
 								<Checkbox.Item
 									label="Igual izquierda"
 									status={leftChecked ? 'checked' : 'unchecked'}
 									onPress={() => {
-										updateStationingNotes('igual izquierda \n');
 										setLeftChecked(!leftChecked);
 									}}
 								/>
@@ -179,7 +204,6 @@ const CaptureSection = ({ navigation }) => {
 									label="Igual derecha"
 									status={rightChecked ? 'checked' : 'unchecked'}
 									onPress={() => {
-										updateStationingNotes('igual derecha \n');
 										setRightChecked(!rightChecked);
 									}}
 								/>
@@ -195,7 +219,7 @@ const CaptureSection = ({ navigation }) => {
 						}
 					</View>
 
-					<Button mode='contained' onPress={handlePressNextSection} icon='note-plus'>Terminar sección</Button>
+					<Button mode='contained' onPress={() => saveNotes(note)} icon='note-plus'>Continuar</Button>
 				</Modal>
 			</Portal>
 		</View>
