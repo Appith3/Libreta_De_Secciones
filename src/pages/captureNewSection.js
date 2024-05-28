@@ -114,7 +114,6 @@ const CaptureSection = ({ navigation }) => {
 		updateStationingName(formattedNumber);
 	};
 
-	// TODO: implement checkbox logic to save who side is equal and if had other notes save all notes
 	return (
 		<View style={styles.container}>
 			<Topbar

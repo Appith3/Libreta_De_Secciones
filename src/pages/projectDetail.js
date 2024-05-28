@@ -76,7 +76,6 @@ const ProjectDetail = ({ navigation }) => {
 		);
 	}
 
-	// TODO: implement refreshing on FlatList component
 	return (
 		<View style={styles.container}>
 			<Topbar title={project_name} hasBackAction onBack={handleOnBackPress}/>
