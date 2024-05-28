@@ -64,7 +64,6 @@ export const useStore = create((set) => ({
 		}));
 	},
 	
-	// Updates the project name in the store state.
 	updateProjectName: (project_name) =>
 		set((state) => ({
 			project: {
@@ -73,7 +72,6 @@ export const useStore = create((set) => ({
 			}
 		})),
 
-	// Sets the currently selected project in the store state.
 	setCurrentProject: (project) => {
 		set(() => ({
 			project: {
@@ -84,7 +82,6 @@ export const useStore = create((set) => ({
 		}));
 	},
 
-	// Creates a new project in the Firestore database.
 	createProject: async (project) => {
 		try {
 			const newProjectDocRef = await addDoc(collection(db, FIRESTORE_ROOT_COLLECTION), {
@@ -93,13 +90,11 @@ export const useStore = create((set) => ({
 			});
 
 			project.id = newProjectDocRef.id;
-			console.log('proyecto creado con el ID: ', newProjectDocRef.id);
 		} catch (error) {
-			console.log('create project error: ', error);
+			console.error('create project error: ', error);
 		}
 	},
 
-	// Fetches projects from the Firestore database and sets them in the store state.
 	getProjectsFromFirestore: async () => {
 		try {
 			const projectsColRef = collection(db, FIRESTORE_ROOT_COLLECTION);
@@ -114,9 +109,8 @@ export const useStore = create((set) => ({
 				isLoading: false
 			}));
 
-			console.log('Proyectos leídos: ', projectSnapshot.docs.length);
 		} catch (error) {
-			console.log('error getting projects: ', error);
+			console.error('error getting projects: ', error);
 			set(() => ({
 				error: error,
 				isLoading: false
@@ -124,15 +118,11 @@ export const useStore = create((set) => ({
 		}
 	},
 
-	// Deletes a project from the Firestore database.
 	deleteProject: async (project_id) => {
-		// TODO: implement deep deleting to delete sub collections
-
 		try {
 			await deleteDoc(doc(db, FIRESTORE_ROOT_COLLECTION, project_id));
-			console.log(`proyecto con id ${project_id} borrado`);
 		} catch (error) {
-			console.log('error: ', error);
+			console.error('delete project error: ', error);
 		}
 	},
 
@@ -160,7 +150,6 @@ export const useStore = create((set) => ({
 		}));
 	},
 
-	// Updates the stationing file information in the store state.
 	updateStationingFile: (stationingFile) =>
 		set(() => ({
 			stationingFile: {
@@ -215,7 +204,6 @@ export const useStore = create((set) => ({
 		}));
 	},
 
-	// Parses stationing data from a file and sets it in the store state.
 	getStationingFromFile: (stations) => {
 		let stationingArray = stations.split('\n');
 
@@ -234,12 +222,6 @@ export const useStore = create((set) => ({
 		}));
 	},
 
-	/**
-	 * Creates a new stationing entry in the Firestore database for a specific project.
-	 * 
-	 * @param currentProject project id 
-	 * @param stationing stationing object
-	 */
 	createStationing: async (currentProject, stationing) => {
 		try {
 			const newStationingDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`), {
@@ -256,9 +238,8 @@ export const useStore = create((set) => ({
 					id: newStationingDocRef.id
 				},
 			}));
-			console.log('estación creada con el ID: ', newStationingDocRef.id);
 		} catch (error) {
-			console.log('create error: ', error);
+			console.error('create station error: ', error);
 		}
 	},
 
@@ -278,13 +259,11 @@ export const useStore = create((set) => ({
 					id: newStationingDocRef.id
 				},
 			}));
-			console.log('estación creada con el ID: ', newStationingDocRef.id);
 		} catch (error) {
-			console.log('create error: ', error);
+			console.error('create station whit notes error: ', error);
 		}
 	},
 
-	// Fetches stationing data for a specific project from the Firestore database.
 	getStationingFromFirestore: async (currentProject) => {
 		try {
 			const stationingColRef = collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`);
@@ -299,9 +278,8 @@ export const useStore = create((set) => ({
 				isLoading: false
 			}));
 
-			console.log('Estaciones leídas: ', stationingSnapshot.docs.length);
 		} catch (error) {
-			console.log('get stationing error: ', error);
+			console.error('get stationing error: ', error);
 			set(() => ({
 				error: error,
 				isLoading: false
@@ -309,7 +287,6 @@ export const useStore = create((set) => ({
 		}
 	},
 
-	// Fetches a single stationing entry by ID from the Firestore database.
 	getStationFromFirestore: async (currentProject, currentStation) => {
 		try {
 			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation}`);
@@ -327,21 +304,13 @@ export const useStore = create((set) => ({
 					},
 				}));
 
-			} else {
-				console.log('El documento no existe');
 			}
 		} catch (error) {
-			console.log('get station error: ', error);
+			console.error('get station error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
 
-	/**
-	 * Updates an existing stationing entry in the Firestore database.
-	 * 
-	 * @param currentProject project id 
-	 * @param currentStation stationing object
-	 */
 	updateStationingFromFirestore: async (currentProject, currentStation) => {
 		try {
 			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
@@ -352,16 +321,14 @@ export const useStore = create((set) => ({
 				central_reading: Number(currentStation.central_reading)
 			});
 
-			console.log(`estación con ID ${currentStation.id} actualizada`);
 			set((state) => ({ isLoading: state.isLoading }));
 		} catch (error) {
-			console.log('update station error: ', error);
+			console.error('update station error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
 
 	updateStationingIsCompleteFromFirestore: async (currentProject, currentStation) => {
-		console.log('updateStationingIsCompleteFromFirestore currentStation: ', currentStation);
 		try {
 			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
 
@@ -369,16 +336,14 @@ export const useStore = create((set) => ({
 				is_complete: true
 			});
 
-			console.log(`estación con ID ${currentStation.id} actualizada`);
 			set((state) => ({ isLoading: state.isLoading }));
 		} catch (error) {
-			console.log('update station error: ', error);
+			console.error('update station error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
 
 	updateStationingNotesFromFirestore: async (currentProject, currentStation, notes) => {
-		console.log('updateStationingIsCompleteFromFirestore currentStation: ', currentStation);
 		try {
 			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
 
@@ -386,20 +351,18 @@ export const useStore = create((set) => ({
 				notes: notes
 			});
 
-			console.log(`estación con ID ${currentStation.id} actualizada`);
 			set((state) => ({ isLoading: state.isLoading }));
 		} catch (error) {
-			console.log('update station error: ', error);
+			console.error('update station error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
 
-	// Deletes a stationing entry from the Firestore database.
 	deleteStationOnFirestore: async (currentProject, stationId) => {
 		try {
 			await deleteDoc(doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject.id}/stationing`, stationId));
-			console.log('documento borrado con id: ', stationId);
 		} catch (error) {
+			console.error('delete station error: ', error);
 			set(() => ({
 				error: error
 			}));
@@ -454,15 +417,14 @@ export const useStore = create((set) => ({
 		let slope = currentStation.central_reading - Number(detail.reading);
 
 		try {
-			const newDetailDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}/details`), {
+			await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}/details`), {
 				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
 				detail_name: detail.detail_name,
 				reading: Number(detail.reading),
 				slope: Number(slope.toFixed(2))
 			});
-			console.log('detalle creado con el ID: ', newDetailDocRef.id);
 		} catch (error) {
-			console.log('create detail error: ', error);
+			console.error('create detail error: ', error);
 			set(() => ({ error: error }));
 		}
 	},
@@ -474,7 +436,6 @@ export const useStore = create((set) => ({
 			const detailsDocs = await getDocs(q);
 	
 			if (detailsDocs.empty) {
-				console.log('No details found');
 				set(() => ({
 					details: [],
 					isLoading: false,
@@ -492,22 +453,12 @@ export const useStore = create((set) => ({
 				isLoading: false,
 			}));
 	
-			console.log('detalles leídos: ', processedDetails.length);
 		} catch (error) {
-			console.log('getSectionDetail error: ', error);
+			console.error('getSectionDetail error: ', error);
 			set(() => ({
 				error: error,
 				isLoading: false,
 			}));
 		}
-	},
-
-	updateDetailsInFirestore: async () => {
-		// TODO: Implement function
-	},
-
-	deleteDetailFromFirestore: async () => {
-		// TODO: Implement function
-	},
-
+	}
 }));

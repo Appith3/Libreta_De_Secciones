@@ -68,7 +68,6 @@ const ProjectDetail = ({ navigation }) => {
 	};
 
 	if (isLoading) {
-		// TODO: add gif/image to loading state
 		return (
 			<View style={styles.loadingContainer}>
 				<ActivityIndicator size={'large'} />
@@ -139,14 +138,6 @@ const ProjectDetail = ({ navigation }) => {
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
 						onPress: () => navigation.navigate('exportProject', {projectId: id, projectName: project_name}),
 					},
-					// {
-					// 	icon: 'delete',
-					// 	label: 'Borrar proyecto',
-					// 	labelTextColor: '#F5F7FA',
-					// 	color: '#F5F7FA',
-					// 	style: { backgroundColor: '#E54343', borderRadius: 32 },
-					// 	onPress: () => console.log('Borrar proyecto'),
-					// },
 				]}
 				onStateChange={onStateChange}
 			/>

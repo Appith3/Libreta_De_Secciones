@@ -45,8 +45,6 @@ const ExportProject = ({ navigation, route }) => {
 				setIsLoading(false);
 				setCreatedFile(true);
 			} else {
-				let error = await response;
-				console.log('try error status: ', error.status);
 				setSnackbarState({
 					showSnack: true,
 					snackMessage: '😵 Error al crear el archivo 😵'
@@ -68,8 +66,7 @@ const ExportProject = ({ navigation, route }) => {
 				apiUrl,
 				`${FileSystem.documentDirectory}/${fileName}.xlsx`
 			);
-			console.log(result);
-	
+				
 			if (result.status !== 200) {
 				setSnackbarState({
 					showSnack: true,
@@ -118,7 +115,6 @@ const ExportProject = ({ navigation, route }) => {
 					<HelperText type='info' style={styles.helperText}>Puedes cambiar el nombre del archivo</HelperText>
 				</View>
 			</View>
-
 			{
 				!createdFile
 					? <Button

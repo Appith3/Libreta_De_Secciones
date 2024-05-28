@@ -21,7 +21,6 @@ const SectionDetail = ({ navigation }) => {
 		getSectionDetails(project.id, stationing.id);
 	}, []);
 
-	// TODO: add a chart to preview the section
 	const handleOnBackPress = () => {
 		resetStationingStore();
 		navigation.goBack();
@@ -38,7 +37,6 @@ const SectionDetail = ({ navigation }) => {
 	};
 
 	if (isLoading) {
-		// TODO: add gif/image to loading state
 		return (
 			<View style={styles.loadingContainer}>
 				<ActivityIndicator size={'large'} />

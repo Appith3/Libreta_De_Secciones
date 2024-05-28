@@ -53,7 +53,6 @@ const HomePage = ({ navigation }) => {
 	};
 
 	if (isLoading) {
-		// TODO: add gif/image to loading state
 		return (
 			<View style={styles.loadingContainer}>
 				<ActivityIndicator size={'large'} />

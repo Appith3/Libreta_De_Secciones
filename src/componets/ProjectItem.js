@@ -14,24 +14,24 @@ const ProjectItem = (props) => {
 
 	const navigation = useNavigation();
 
-	// const deleteProject = useStore((state) => state.deleteProject);
-	const setCurrentProject  = useStore((state) => state.setCurrentProject);
+	const setCurrentProject = useStore((state) => state.setCurrentProject);
 	const resetLoading = useStore((state) => state.resetLoading);
 
 	return (
 		<List.Item
 			title={projectName}
-			right={() => (
-				<>
-					{/* <IconButton icon='delete' iconColor='#F17878' onPress={() => deleteProject(projectId)} /> */}
-					<IconButton icon='share' iconColor='#F5F7FA' onPress={() => navigation.navigate('exportProject', {projectName, projectId})} />
-				</>
-			)}
+			right={
+				<IconButton
+					icon='share'
+					iconColor='#F5F7FA'
+					onPress={() => navigation.navigate('exportProject', { projectName, projectId })} 
+				/>
+			}
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
 			onPress={() => {
 				resetLoading();
-				setCurrentProject({projectId, projectName});
+				setCurrentProject({ projectId, projectName });
 				navigation.navigate('projectDetail');
 			}}
 		/>

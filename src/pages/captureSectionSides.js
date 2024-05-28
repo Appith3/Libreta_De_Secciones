@@ -64,7 +64,6 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	};
 
 	const goNextSection = () => {
-
 		if (validateForm) {
 			updateStationingIsComplete();
 			setTimeout(() => {
@@ -96,7 +95,11 @@ const CaptureSectionSides = ({ navigation, route }) => {
 							onChangeText={reading => updateReading(reading)}
 							right={<TextInput.Icon icon='ruler' />}
 						/>
-						{errors.reading ? <HelperText style={styles.errorText} type='error'>{errors.reading}</HelperText> : null}
+						{
+							errors.reading
+								? <HelperText style={styles.errorText} type='error'>{errors.reading}</HelperText>
+								: null
+						}
 					</View>
 
 					<View>
@@ -110,7 +113,11 @@ const CaptureSectionSides = ({ navigation, route }) => {
 							onChangeText={distance => updateDistance(distance)}
 							right={<TextInput.Icon icon='map-marker-distance' />}
 						/>
-						{errors.distance ? <HelperText style={styles.errorText} type='error'>{errors.distance}</HelperText> : null}
+						{
+							errors.distance
+								? <HelperText style={styles.errorText} type='error'>{errors.distance}</HelperText>
+								: null
+						}
 					</View>
 				</View>
 				<View style={styles.controls}>

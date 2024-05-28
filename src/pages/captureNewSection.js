@@ -81,8 +81,6 @@ const CaptureSection = ({ navigation }) => {
 		if (rightChecked) notes.push('Derecha igual');
 		if (note) notes.push(note);
 
-		console.log('notes: ', notes.toString());
-
 		updateStationingNotes(notes);
 		hideModal();
 	};
@@ -181,7 +179,6 @@ const CaptureSection = ({ navigation }) => {
 			<Portal>
 				<Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
 					<Text variant='titleMedium'>¿De que lados es igual?</Text>
-
 					{
 						hasNotes
 							? <TextInput
@@ -208,7 +205,6 @@ const CaptureSection = ({ navigation }) => {
 								/>
 							</>
 					}
-
 					<View style={styles.modalControls}>
 						<Button mode='outlined' onPress={hideModal} icon='close' textColor='#F17878'>Cerrar</Button>
 						{

@@ -9,7 +9,6 @@ import CaptureSectionSides from './src/pages/captureSectionSides';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SectionDetail from './src/pages/sectionDetail';
-import ImportProject from './src/pages/importProject';
 import ExportProject from './src/pages/exportProject';
 
 const theme = {
@@ -62,11 +61,6 @@ export default function App() {
 					<Stack.Screen
 						name='sectionDetail'
 						component={SectionDetail}
-						options={{headerShown: false}}
-					/>
-					<Stack.Screen
-						name='importProject'
-						component={ImportProject}
 						options={{headerShown: false}}
 					/>
 					<Stack.Screen
