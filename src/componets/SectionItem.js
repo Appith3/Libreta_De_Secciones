@@ -1,8 +1,9 @@
-import { StyleSheet } from 'react-native';
-import { List, IconButton } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { List, IconButton, Portal, Modal, Text, Icon, Button } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { useStore } from '../store/useStore';
+import { useState } from 'react';
 
 const SectionItem = (props) => {
 
@@ -16,9 +17,14 @@ const SectionItem = (props) => {
 
 	const navigation = useNavigation();
 
-	const deleteStation = useStore((state) => state.deleteStation);
+	const deleteStationOnFirestore = useStore((state) => state.deleteStationOnFirestore);
 	const currentProject = useStore((state) => state.project);
 	const setCurrentStation = useStore((state) => state.setCurrentStation);
+	const deleteStation = useStore((state) => state.deleteStation);
+
+	const [visible, setVisible] = useState(false);
+	const showModal = () => setVisible(true);
+	const hideModal = () => setVisible(false);
 
 	const handlePressItem = () => {
 		setCurrentStation({ stationingId, stationingName, centralReading, code });
@@ -28,29 +34,55 @@ const SectionItem = (props) => {
 			: navigation.navigate('captureSectionCentral');
 	};
 
+	const handlePressDeleteStationing = () => {
+		deleteStation(stationingId);
+		deleteStationOnFirestore(currentProject, stationingId);
+		hideModal();
+	};
+
 	return (
-		<List.Item
-			title={`${stationingName} ${code}`}
-			description={
-				isComplete
-					? 'Completa'
-					: null
-			}
-			right={() => (
-				<>
-					<IconButton icon='delete' iconColor='#F17878' onPress={() => deleteStation(currentProject.id, stationingId)} />
-					<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => handlePressItem()} />
-				</>
-			)}
-			style={
-				isComplete
-					? [styles.listItem, styles.borderCompleted]
-					: styles.listItem
-			}
-			titleStyle={styles.title}
-			descriptionStyle={styles.description}
-			onPress={() => handlePressItem()}
-		/>
+		<>
+			<List.Item
+				title={`${stationingName} ${code}`}
+				description={
+					isComplete
+						? 'Completa'
+						: null
+				}
+				right={() => (
+					<>
+						{
+							isComplete
+								? null
+								: <IconButton icon='delete' iconColor='#F17878' onPress={showModal} />
+						}
+						<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => handlePressItem()} />
+					</>
+				)}
+				style={
+					isComplete
+						? [styles.listItem, styles.borderCompleted]
+						: styles.listItem
+				}
+				titleStyle={styles.title}
+				descriptionStyle={styles.description}
+				onPress={() => handlePressItem()}
+			/>
+			<Portal>
+				<Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+					<Icon
+						source='delete'
+						size={48}
+						color='#F17878'
+					/>
+					<Text variant='titleMedium'>¿Estas seguro que quieres borrar este cadenamiento?</Text>
+					<View style={styles.modalControls}>
+						<Button mode='outlined' onPress={hideModal}>No, cancelar</Button>
+						<Button mode='contained' buttonColor='#F17878' onPress={handlePressDeleteStationing}>Si, borrar</Button>
+					</View>
+				</Modal>
+			</Portal>
+		</>
 	);
 };
 
@@ -65,19 +97,27 @@ const styles = StyleSheet.create({
 		borderStyle: 'solid',
 		borderWidth: 2
 	},
-	chip: {
-		borderRadius: 24,
-		backgroundColor: '#369361',
-		height: 32,
-		alignSelf: 'center'
-	},
 	title: {
 		color: '#F5F7FA'
 	},
 	description: {
 		color: '#DAF1E0',
 		textDecorationLine: 'underline'
-	}
+	},
+	modal: {
+		backgroundColor: '#F5F7FA',
+		padding: 18,
+		margin: 32,
+		borderRadius: 12,
+		gap: 16,
+		alignItems: 'center'
+	},
+	modalControls: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		gap: 12,
+		marginTop: 8
+	},
 });
 
 SectionItem.propTypes = {

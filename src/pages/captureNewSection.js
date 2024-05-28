@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, HelperText, Modal, Portal, Text, Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
+import Topbar from '../componets/Topbar';
+import { useState } from 'react';
 
 const CaptureSection = ({ navigation }) => {
 
@@ -11,24 +12,79 @@ const CaptureSection = ({ navigation }) => {
 	const project = useStore((state) => state.project);
 	const stationing = useStore((state) => state.stationing);
 	const createStationing = useStore((state) => state.createStationing);
+	const createStationingWhitNote = useStore((state) => state.createStationingWhitNote);
 	const updateStationingCode = useStore((state) => state.updateStationingCode);
 	const updateStationingName = useStore((state) => state.updateStationingName);
 	const updateStationingCentralReading = useStore((state) => state.updateStationingCentralReading);
+	const updateStationingNotes = useStore((state) => state.updateStationingNotes);
+	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
+	const resetStationingStore = useStore((state) => state.resetStationingStore);
 
-	useEffect(() => {
-		navigation.setOptions({ title: `${stationing.stationing_name === '' ? 'Nueva sección' : stationing.stationing_name} centro` });
-	}, [stationing.stationing_name]);
+	const [errors, setErrors] = useState({});
+	const [visible, setVisible] = useState(false);
+	const [leftChecked, setLeftChecked] = useState(false);
+	const [rightChecked, setRightChecked] = useState(false);
+	const [hasNotes, setHasNotes] = useState(false);
+	const [note, setNote] = useState('');
+
+	const showModal = () => setVisible(true);
+	const hideModal = () => setVisible(false);
+
+	const validateForm = () => {
+		let errors = {};
+
+		let {
+			stationing_name
+		} = stationing;
+
+		if (!stationing_name) errors.stationing_name = 'El cadenamiento es requerido';
+		setErrors(errors);
+
+		return Object.keys(errors).length === 0;
+	};
+
+	const handleOnBackPress = () => {
+		resetStationingStore();
+		navigation.goBack();
+	};
+
+	const handlePressFinishSection = () => {
+		if (validateForm) {
+			updateStationingIsComplete();
+			setTimeout(() => {
+				createStationingWhitNote(project.id, stationing);
+				navigation.navigate('projectDetail');
+			}, 1000);
+		}
+	};
 
 	const onPressLeft = () => {
-		createStationing(project.id, stationing);
-
-		navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		if (validateForm()) {
+			setErrors({});
+			createStationing(project.id, stationing);
+			navigation.navigate('captureSectionSides', { _side: 'Izq' });
+		}
 	};
 
 	const onPressRight = () => {
-		createStationing(project.id, stationing);
+		if (validateForm()) {
+			setErrors({});
+			createStationing(project.id, stationing);
+			navigation.navigate('captureSectionSides', { _side: 'Der' });
+		}
+	};
 
-		navigation.navigate('captureSectionSides', { _side: 'Der' });
+	const saveNotes = (note) => {
+		let notes = [];
+
+		if (leftChecked) notes.push('Izquierda igual');
+		if (rightChecked) notes.push('Derecha igual');
+		if (note) notes.push(note);
+
+		console.log('notes: ', notes.toString());
+
+		updateStationingNotes(notes);
+		hideModal();
 	};
 
 	// formateamos el valor del cadenamiento de 0 a 0+000.00
@@ -58,9 +114,16 @@ const CaptureSection = ({ navigation }) => {
 		updateStationingName(formattedNumber);
 	};
 
-	// TODO: add some error indicator
 	return (
 		<View style={styles.container}>
+			<Topbar
+				title={
+					stationing.stationing_name === ''
+						? 'Nueva sección centro'
+						: `${stationing.stationing_name} centro`
+				}
+				hasBackAction
+				onBack={handleOnBackPress} />
 			<View style={styles.main} >
 				<View style={styles.form} >
 					<TextInput
@@ -70,15 +133,22 @@ const CaptureSection = ({ navigation }) => {
 						onChangeText={(code) => updateStationingCode(code.toUpperCase())}
 						right={<TextInput.Icon icon='tag' />} />
 
-					<TextInput
-						mode='outlined'
-						placeholder='Cadenamiento'
-						keyboardType='number-pad'
-						value={stationing.stationing_name}
-						onChangeText={(stationing_name) => updateStationingName(stationing_name)}
-						onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
-						right={<TextInput.Icon icon='map-marker' />}
-					/>
+					<View>
+						<TextInput
+							mode='outlined'
+							placeholder='Cadenamiento'
+							keyboardType='number-pad'
+							value={stationing.stationing_name}
+							onChangeText={(stationing_name) => updateStationingName(stationing_name)}
+							onEndEditing={() => number2stationingFormat(Number(stationing.stationing_name))}
+							right={<TextInput.Icon icon='map-marker' />} />
+
+						{
+							errors.stationing_name
+								? <HelperText style={styles.errorText} type='error'>{errors.stationing_name}</HelperText>
+								: null
+						}
+					</View>
 
 					<TextInput
 						mode='outlined'
@@ -91,11 +161,66 @@ const CaptureSection = ({ navigation }) => {
 				</View>
 
 				<View style={styles.controls} >
-					<Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
-					<Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
-					<Button uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					{
+						!rightChecked
+							? <Button icon='chevron-right' onPress={onPressRight} uppercase mode='contained' loading={loading}>Capturar derecha</Button>
+							: null
+					}
+					{
+						!leftChecked
+							? <Button icon='chevron-left' onPress={onPressLeft} uppercase mode='contained' loading={loading}>Capturar izquierda</Button>
+							: null
+					}
+					{
+						leftChecked && rightChecked
+							? <Button onPress={handlePressFinishSection} uppercase mode='contained' textColor='#F5F7FA' loading={loading}>Terminar sección</Button>
+							: <Button onPress={showModal} uppercase mode='outlined' textColor='#F5F7FA' loading={loading}>Igual a la anterior</Button>
+					}
 				</View>
 			</View>
+			<Portal>
+				<Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+					<Text variant='titleMedium'>¿De que lados es igual?</Text>
+
+					{
+						hasNotes
+							? <TextInput
+								mode='outlined'
+								multiline
+								label="Notas"
+								value={note}
+								onChangeText={note => setNote(note)}
+							/>
+							: <>
+								<Checkbox.Item
+									label="Igual izquierda"
+									status={leftChecked ? 'checked' : 'unchecked'}
+									onPress={() => {
+										setLeftChecked(!leftChecked);
+									}}
+								/>
+								<Checkbox.Item
+									label="Igual derecha"
+									status={rightChecked ? 'checked' : 'unchecked'}
+									onPress={() => {
+										setRightChecked(!rightChecked);
+									}}
+								/>
+							</>
+					}
+
+					<View style={styles.modalControls}>
+						<Button mode='outlined' onPress={hideModal} icon='close' textColor='#F17878'>Cerrar</Button>
+						{
+							hasNotes
+								? <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='arrow-left'>Regresar</Button>
+								: <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='note-plus'>Agregar nota</Button>
+						}
+					</View>
+
+					<Button mode='contained' onPress={() => saveNotes(note)} icon='note-plus'>Continuar</Button>
+				</Modal>
+			</Portal>
 		</View>
 	);
 };
@@ -104,19 +229,35 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: '#1e2833',
-		padding: 16
 	},
 	main: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
-		gap: 32
+		gap: 32,
+		padding: 16
 	},
 	form: {
 		gap: 16
 	},
 	controls: {
 		gap: 16
+	},
+	errorText: {
+		color: '#e54343',
+	},
+	modal: {
+		backgroundColor: '#F5F7FA',
+		padding: 18,
+		margin: 32,
+		borderRadius: 12,
+		gap: 16
+	},
+	modalControls: {
+		flexDirection: 'row',
+		justifyContent: 'space-around',
+		gap: 12,
+		marginTop: 8
 	}
 });
 

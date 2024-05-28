@@ -1,11 +1,14 @@
 import { StyleSheet, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, HelperText, Text } from 'react-native-paper';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
+import PropTypes from 'prop-types';
 
 import { useStore } from '../store/useStore';
 
-const FileInput = () => {
+const FileInput = (props) => {
+
+	const { error } = props;
 
 	const stationingFile = useStore((state) => state.stationingFile);
 	const updateStationingFile = useStore((state) => state.updateStationingFile);
@@ -44,7 +47,6 @@ const FileInput = () => {
 				getStationingFromFile(content);
 				return content;
 			} else {
-				console.alert('Error', 'No se puede leer el contenido del archivo');
 				return;
 			}
 		} catch (err) {
@@ -70,7 +72,11 @@ const FileInput = () => {
 					Cargar trazo
 				</Button>
 			</View>
-			<Text variant='labelSmall' style={styles.caption}>{stationingFile.file_name}</Text>
+			{
+				error
+					? <HelperText type='error' style={styles.errorText}>{error}</HelperText>
+					: <HelperText type='info'  style={styles.caption}>{stationingFile.file_name}</HelperText>
+			}
 		</View>
 	);
 };
@@ -90,9 +96,14 @@ const styles = StyleSheet.create({
 	},
 	caption: {
 		color: '#A8BED1',
-		paddingHorizontal: 12,
-		paddingVertical: 4
+	},
+	errorText: {
+		color: '#e54343',
 	}
 });
+
+FileInput.propTypes = {
+	error: PropTypes.string
+};
 
 export default FileInput;

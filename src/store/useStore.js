@@ -39,6 +39,7 @@ export const useStore = create((set) => ({
 		code: '',
 		is_complete: false,
 		stationing_name: '',
+		notes: ''
 	},
 
 	details: [],
@@ -46,18 +47,23 @@ export const useStore = create((set) => ({
 		id: '',
 		distance: '',
 		detail_name: '',
-		notes: '',
 		reading: '',
-	},
-
-	resetProjectStore: () => {
-		// TODO: reset store when go back from determined screen
 	},
 
 	resetLoading: () => {
 		set(() => ({ isLoading: true }));
 	},
-
+	
+	//* Project store methods
+	resetProjectStore: () => {
+		set(() => ({
+			project: {
+				id: '',
+				project_name: ''
+			}
+		}));
+	},
+	
 	// Updates the project name in the store state.
 	updateProjectName: (project_name) =>
 		set((state) => ({
@@ -130,8 +136,28 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	//* Stationing store methods
 	resetStationingStore: () => {
-		// TODO: reset store when go back from determined screen
+		set(() => ({
+			stationing: {
+				id: '',
+				central_reading: '',
+				code: '',
+				is_complete: false,
+				stationing_name: '',
+			},
+			details: [],
+		}));
+	},
+
+	resetStationingFileStore: () => {
+		set(() => ({
+			stationingFile: {
+				mime_type: '',
+				file_name: 'Nombre del archivo',
+				uri: '',
+			}
+		}));
 	},
 
 	// Updates the stationing file information in the store state.
@@ -180,6 +206,15 @@ export const useStore = create((set) => ({
 		}));
 	},
 
+	updateStationingNotes: (value) => {
+		set((state) => ({
+			stationing: {
+				...state.stationing,
+				notes: value
+			}
+		}));
+	},
+
 	// Parses stationing data from a file and sets it in the store state.
 	getStationingFromFile: (stations) => {
 		let stationingArray = stations.split('\n');
@@ -211,7 +246,30 @@ export const useStore = create((set) => ({
 				stationing_name: stationing.stationing_name,
 				code: stationing.code.trim(),
 				is_complete: false,
-				central_reading: Number(stationing.central_reading) || ''
+				central_reading: Number(stationing.central_reading) || '',
+				notes: stationing.notes
+			});
+
+			set(() => ({
+				stationing: {
+					...stationing,
+					id: newStationingDocRef.id
+				},
+			}));
+			console.log('estación creada con el ID: ', newStationingDocRef.id);
+		} catch (error) {
+			console.log('create error: ', error);
+		}
+	},
+
+	createStationingWhitNote: async (currentProject, stationing) => {
+		try {
+			const newStationingDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`), {
+				stationing_name: stationing.stationing_name,
+				code: stationing.code.trim(),
+				is_complete: true,
+				central_reading: Number(stationing.central_reading) || '',
+				notes: stationing.notes
 			});
 
 			set(() => ({
@@ -319,10 +377,27 @@ export const useStore = create((set) => ({
 		}
 	},
 
-	// Deletes a stationing entry from the Firestore database.
-	deleteStation: async (currentProject, stationId) => {
+	updateStationingNotesFromFirestore: async (currentProject, currentStation, notes) => {
+		console.log('updateStationingIsCompleteFromFirestore currentStation: ', currentStation);
 		try {
-			await deleteDoc(doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`, stationId));
+			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
+
+			await updateDoc(stationingDocRef, {
+				notes: notes
+			});
+
+			console.log(`estación con ID ${currentStation.id} actualizada`);
+			set((state) => ({ isLoading: state.isLoading }));
+		} catch (error) {
+			console.log('update station error: ', error);
+			set(() => ({ error: error }));
+		}
+	},
+
+	// Deletes a stationing entry from the Firestore database.
+	deleteStationOnFirestore: async (currentProject, stationId) => {
+		try {
+			await deleteDoc(doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject.id}/stationing`, stationId));
 			console.log('documento borrado con id: ', stationId);
 		} catch (error) {
 			set(() => ({
@@ -331,6 +406,13 @@ export const useStore = create((set) => ({
 		}
 	},
 
+	deleteStation: (stationId) => {
+		set((state) => ({
+			stations: state.stations.filter((station) => station.id !== stationId),
+		}));
+	},
+
+	//* Details store methods
 	updateDistance: (value) => {
 		set((state) => ({
 			detail: {
@@ -358,22 +440,12 @@ export const useStore = create((set) => ({
 		}));
 	},
 
-	updateNotes: (value) => {
-		set((state) => ({
-			detail: {
-				...state.detail,
-				notes: value
-			}
-		}));
-	},
-
 	clearDetailStore: () => {
 		set(() => ({
 			detail: {
-				distance: 0,
+				distance: '',
 				detail_name: '',
-				notes: '',
-				reading: 0
+				reading: ''
 			}
 		}));
 	},
@@ -385,7 +457,6 @@ export const useStore = create((set) => ({
 			const newDetailDocRef = await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}/details`), {
 				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
 				detail_name: detail.detail_name,
-				notes: detail.notes,
 				reading: Number(detail.reading),
 				slope: Number(slope.toFixed(2))
 			});

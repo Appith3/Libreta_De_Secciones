@@ -2,8 +2,9 @@ import { Image, StyleSheet, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import FileInput from '../componets/FileInput';
 import PropTypes from 'prop-types';
-
 import { useStore } from '../store/useStore';
+import Topbar from '../componets/Topbar';
+import { useState } from 'react';
 
 const CreateProjectForm = (props) => {
 
@@ -16,27 +17,54 @@ const CreateProjectForm = (props) => {
 	const createProject = useStore((state) => state.createProject);
 	const stationingFile = useStore((state) => state.stationingFile);
 	const stations = useStore((state) => state.stations);
+	const resetProjectStore = useStore((state) => state.resetProjectStore);
 	const createStationing = useStore((state) => state.createStationing);
+	const resetStationingFileStore = useStore((state) => state.resetStationingFileStore);
+
+	const [errors, setErrors] = useState({});
+
+	const validateForm = () => {
+		let errors = {};
+
+		let {
+			name
+		} = project;
+
+		if (!name) errors.name = 'El nombre es requerido';
+		if (stations.length === 0) errors.stations = 'Carga el trazo para continuar';
+		setErrors(errors);
+
+		return Object.keys(errors).length === 0;
+	};
+
+	const handleOnBackPress = () => {
+		resetProjectStore();
+		resetStationingFileStore();
+		navigation.goBack();
+	};
 
 	const handleCreateProjectTap = () => {
-		const { id } = project;		
-		const { mime_type } = stationingFile;
+		if (validateForm()) {
+			const { id } = project;
+			const { mime_type } = stationingFile;
 
-		stations?.map((s) => {
-			const station = mime_type === 'txt'
-				? s.split('\t')
-				: s.split(',');
+			stations?.map((s) => {
+				const station = mime_type === 'txt'
+					? s.split('\t')
+					: s.split(',');
 
-			const [, , , , stationing_name, code] = station;
+				const [, , , , stationing_name, code] = station;
 
-			createStationing(id, {stationing_name, code});
-		});
+				createStationing(id, { stationing_name, code });
+			});
 
-		navigation.navigate('projectDetail');
+			navigation.navigate('projectDetail');
+		}
 	};
 
 	return (
 		<View style={styles.container}>
+			<Topbar title='Nuevo proyecto' hasBackAction onBack={handleOnBackPress} />
 			<View style={styles.main}>
 				<Image
 					// eslint-disable-next-line no-undef
@@ -53,11 +81,13 @@ const CreateProjectForm = (props) => {
 							onEndEditing={() => createProject(project)}
 							right={<TextInput.Icon icon='map' />}
 						/>
-						<HelperText type='info' style={styles.helperText}>
-							¿Como se llama el lugar donde se va seccionar?
-						</HelperText>
+						{
+							errors
+								? <HelperText type='error' style={styles.errorText}>{errors.name}</HelperText>
+								: null
+						}
 					</View>
-					<FileInput />
+					<FileInput error={errors.stations}/>
 					<Button icon='plus' mode='contained' style={{ marginTop: 96 }} onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
 				</View>
 			</View>
@@ -88,6 +118,9 @@ const styles = StyleSheet.create({
 	},
 	helperText: {
 		color: '#A8BED1'
+	},
+	errorText: {
+		color: '#e54343',
 	}
 });
 

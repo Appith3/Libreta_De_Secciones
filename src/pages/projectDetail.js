@@ -1,38 +1,63 @@
 import { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
-import { Chip, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { FAB, ActivityIndicator, SegmentedButtons, Text } from 'react-native-paper';
 import SectionItem from '../componets/SectionItem';
 import PropTypes from 'prop-types';
 import { useStore } from '../store/useStore';
 import { StatusBar } from 'expo-status-bar';
+import Topbar from '../componets/Topbar';
 
 const ProjectDetail = ({ navigation }) => {
-	// FIXME: Go Home on projectDetail after create project
-	// TODO: Clean store when go back to home page
-	/* 
-		At the moment after create project, the screen change to project Detail the problem is when want to go back the screen change to create Project Form instead of that change to homePage
-	*/
-
+	
+	const [refreshing, setRefreshing] = useState(false);
 	const [openFAB, setOpenFAB] = useState({ open: false });
-	const [searchText, setSearchText] = useState('');
+	const [filterValue, setFilterValue] = useState('all');
 
 	const isLoading = useStore((state) => state.isLoading);
 	const project = useStore((state) => state.project);
 	const getStationingFromFirestore = useStore((state) => state.getStationingFromFirestore);
 	const stations = useStore((state) => state.stations);
+	const resetProjectStore = useStore((state) => state.resetProjectStore);
 
+	const {project_name, id} = project;
+	
+	const handleOnBackPress = () => {
+		resetProjectStore();
+		navigation.popToTop();
+	};
+ 
 	useEffect(() => {
-		navigation.setOptions({ title: project.project_name });
-		getStationingFromFirestore(project.id);
+		getStationingFromFirestore(id);
 	}, []);
+	
+	const filterStations = (stations) => {
+		return stations.filter((station) => {
+			switch (filterValue) {
+			case 'all':
+				return true; // Show all stations
+			case 'done':
+				return station.is_complete; // Show only stations marked as complete
+			case 'todo':
+				return !station.is_complete; // Show only stations not marked as complete
+			default:
+				return true; // Default to showing all stations if filterValue is unexpected
+			}
+		});
+	};
 
 	const onStateChange = () => {
 		openFAB.open ? setOpenFAB({ open: false }) : setOpenFAB({ open: true });
 	};
 
-	const renderItem = ({item}) => {
+	const handleRefresh = () => {
+		setRefreshing(true);
+		getStationingFromFirestore(id);
+		setRefreshing(false);
+	};
+
+	const renderItem = ({ item }) => {
 		return (
-			<SectionItem 
+			<SectionItem
 				stationingName={item.stationing_name}
 				stationingId={item.id}
 				isComplete={item.is_complete}
@@ -42,39 +67,52 @@ const ProjectDetail = ({ navigation }) => {
 		);
 	};
 
-	// TODO: add popup confirmation to delete
-	if(isLoading) {
+	if (isLoading) {
 		// TODO: add gif/image to loading state
 		return (
 			<View style={styles.loadingContainer}>
-				<ActivityIndicator size={'large'}/>
+				<ActivityIndicator size={'large'} />
 			</View>
 		);
 	}
 
 	return (
 		<View style={styles.container}>
+			<Topbar title={project_name} hasBackAction onBack={handleOnBackPress}/>
 			<View style={styles.header}>
-				<TextInput
-					placeholder='Buscar sección'
-					value={searchText}
-					onChangeText={searchText => setSearchText(searchText)}
-					mode='outlined'
-				/>
-				<View style={styles.chips}>
-					<ScrollView horizontal>
-						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Todo')}>Todo</Chip>
-						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Secciones completas')}>Secciones completas</Chip>
-						<Chip mode='outlined' style={styles.chip} selectedColor='#5D84A6' onPress={() => console.log('Secciones vacías')}>Secciones vacías</Chip>
-					</ScrollView>
+				<View style={styles.filter}>
+					<Text variant='labelLarge' style={styles.filterText}>Mostrar secciones</Text>
+					<SegmentedButtons
+						value={filterValue}
+						onValueChange={setFilterValue}
+						buttons={[
+							{
+								value: 'all',
+								label: 'Todas',
+								uncheckedColor: '#F5F7FA'
+							},
+							{
+								value: 'done',
+								label: 'Completas',
+								uncheckedColor: '#F5F7FA'
+							},
+							{
+								value: 'todo',
+								label: 'Vacías',
+								uncheckedColor: '#F5F7FA'
+							},
+						]}
+					/>
 				</View>
 			</View>
 			<View>
 				<FlatList
 					style={styles.sectionsList}
-					data={stations}
+					data={filterStations(stations)}
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
 				/>
 			</View>
 			<FAB.Group
@@ -99,16 +137,16 @@ const ProjectDetail = ({ navigation }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('exportProject'),
+						onPress: () => navigation.navigate('exportProject', {projectId: id, projectName: project_name}),
 					},
-					{
-						icon: 'delete',
-						label: 'Borrar proyecto',
-						labelTextColor: '#F5F7FA',
-						color: '#F5F7FA',
-						style: { backgroundColor: '#E54343', borderRadius: 32 },
-						onPress: () => console.log('Borrar proyecto'),
-					},
+					// {
+					// 	icon: 'delete',
+					// 	label: 'Borrar proyecto',
+					// 	labelTextColor: '#F5F7FA',
+					// 	color: '#F5F7FA',
+					// 	style: { backgroundColor: '#E54343', borderRadius: 32 },
+					// 	onPress: () => console.log('Borrar proyecto'),
+					// },
 				]}
 				onStateChange={onStateChange}
 			/>
@@ -133,17 +171,16 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 16,
 		paddingTop: 16
 	},
-	chips: {
-		marginVertical: 16
+	filter: {
+		marginBottom: 16,
 	},
-	chip: {
-		marginRight: 12,
-		borderRadius: 24,
-		backgroundColor: '#F5F7FA'
+	filterText: {
+		marginBottom: 4,
+		color: '#F5F7FA'
 	},
 	sectionsList: {
 		paddingHorizontal: 16,
-		height: '70%'
+		height: '78%'
 	}
 });
 
