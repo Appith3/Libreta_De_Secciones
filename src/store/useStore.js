@@ -395,15 +395,21 @@ export const useStore = create((set) => ({
 	},
 
 	// Deletes a stationing entry from the Firestore database.
-	deleteStation: async (currentProject, stationId) => {
+	deleteStationOnFirestore: async (currentProject, stationId) => {
 		try {
-			await deleteDoc(doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing`, stationId));
+			await deleteDoc(doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject.id}/stationing`, stationId));
 			console.log('documento borrado con id: ', stationId);
 		} catch (error) {
 			set(() => ({
 				error: error
 			}));
 		}
+	},
+
+	deleteStation: (stationId) => {
+		set((state) => ({
+			stations: state.stations.filter((station) => station.id !== stationId),
+		}));
 	},
 
 	//* Details store methods
