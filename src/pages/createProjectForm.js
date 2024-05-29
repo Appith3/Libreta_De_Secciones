@@ -27,10 +27,10 @@ const CreateProjectForm = (props) => {
 		let errors = {};
 
 		let {
-			name
+			project_name
 		} = project;
 
-		if (!name) errors.name = 'El nombre es requerido';
+		if (!project_name) errors.name = 'El nombre es requerido';
 		if (stations.length === 0) errors.stations = 'Carga el trazo para continuar';
 		setErrors(errors);
 
