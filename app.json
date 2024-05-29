@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Topografía Digital",
-    "slug": "Topografía_Digital",
+    "slug": "topografia_digital",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.appithe.topografia_digital"
     },
     "plugins": [
       [
@@ -30,6 +31,12 @@
           "iCloudContainerEnvironment": "Production"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "897b6b5b-210b-47b8-a076-d227d674ab34"
+      }
+    },
+    "owner": "appithe"
   }
 }
