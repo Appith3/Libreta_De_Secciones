@@ -77,8 +77,8 @@ const SectionItem = (props) => {
 					/>
 					<Text variant='titleMedium'>¿Estas seguro que quieres borrar este cadenamiento?</Text>
 					<View style={styles.modalControls}>
-						<Button mode='outlined' onPress={hideModal}>No, cancelar</Button>
-						<Button mode='contained' buttonColor='#F17878' onPress={handlePressDeleteStationing}>Si, borrar</Button>
+						<Button mode='outlined' onPress={hideModal}>Cancelar</Button>
+						<Button mode='contained' buttonColor='#F17878' onPress={handlePressDeleteStationing}>Borrar</Button>
 					</View>
 				</Modal>
 			</Portal>
