@@ -20,12 +20,10 @@ const ProjectItem = (props) => {
 	return (
 		<List.Item
 			title={projectName}
-			right={
-				<IconButton
-					icon='share'
-					iconColor='#F5F7FA'
-					onPress={() => navigation.navigate('exportProject', { projectName, projectId })} 
-				/>
+			right={() => <IconButton
+				icon='share'
+				iconColor='#F5F7FA'
+				onPress={() => navigation.navigate('exportProject', { projectName, projectId })} />
 			}
 			style={styles.listItem}
 			titleStyle={{ color: '#F5F7FA' }}
