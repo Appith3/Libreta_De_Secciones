@@ -229,7 +229,6 @@ export const useStore = create((set) => ({
 				code: stationing.code.trim(),
 				is_complete: false,
 				central_reading: Number(stationing.central_reading) || '',
-				notes: stationing.notes
 			});
 
 			set(() => ({
@@ -348,6 +347,7 @@ export const useStore = create((set) => ({
 			const stationingDocRef = doc(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}`);
 
 			await updateDoc(stationingDocRef, {
+				is_complete: true,
 				notes: notes
 			});
 
