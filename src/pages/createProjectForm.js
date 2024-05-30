@@ -43,19 +43,21 @@ const CreateProjectForm = (props) => {
 		navigation.goBack();
 	};
 
-	const handleCreateProjectTap = () => {
+	const handleCreateProjectTap = async () => {
+		await createProject(project);
+
 		if (validateForm()) {
 			const { id } = project;
 			const { mime_type } = stationingFile;
 
-			stations?.map((s) => {
+			stations?.map(async (s) => {
 				const station = mime_type === 'txt'
 					? s.split('\t')
 					: s.split(',');
 
 				const [, , , , stationing_name, code] = station;
 
-				createStationing(id, { stationing_name, code });
+				await createStationing(id, { stationing_name, code });
 			});
 
 			navigation.navigate('projectDetail');
@@ -78,7 +80,6 @@ const CreateProjectForm = (props) => {
 							placeholder='Nombre del proyecto'
 							value={project.project_name}
 							onChangeText={(e) => updateProjectName(e)}
-							onEndEditing={() => createProject(project)}
 							right={<TextInput.Icon icon='map' />}
 						/>
 						{
@@ -87,8 +88,12 @@ const CreateProjectForm = (props) => {
 								: null
 						}
 					</View>
-					<FileInput error={errors.stations}/>
-					<Button icon='plus' mode='contained' style={{ marginTop: 96 }} onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
+
+					<FileInput error={errors.stations} />
+
+					<View style={styles.controls}>
+						<Button icon='plus' mode='contained' onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
+					</View>
 				</View>
 			</View>
 		</View>
@@ -121,6 +126,12 @@ const styles = StyleSheet.create({
 	},
 	errorText: {
 		color: '#e54343',
+	},
+	controls: {
+		position: 'absolute', 
+		bottom: 18,
+		width: '100%',
+		zIndex: -1
 	}
 });
 

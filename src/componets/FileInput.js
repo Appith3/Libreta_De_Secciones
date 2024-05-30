@@ -44,8 +44,7 @@ const FileInput = (props) => {
 			if (file.exists && !file.isDirectory) {
 				const content = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.UTF8 });
 
-				getStationingFromFile(content);
-				return content;
+				getStationingFromFile(content.trimEnd());
 			} else {
 				return;
 			}
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
 		borderRadius: 4
 	},
 	placeholder: {
-		maxWidth: '65%'
+		maxWidth: '60%',
 	},
 	caption: {
 		color: '#A8BED1',
