@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useStore } from '../store/useStore';
 import { useState } from 'react';
 
-const SectionItem = (props) => {
+const SectionItem = (props) => { 
 
 	const {
 		stationingName,
@@ -17,6 +17,7 @@ const SectionItem = (props) => {
 
 	const navigation = useNavigation();
 
+	// TODO: implement multiple selection to delete items
 	const deleteStationOnFirestore = useStore((state) => state.deleteStationOnFirestore);
 	const currentProject = useStore((state) => state.project);
 	const setCurrentStation = useStore((state) => state.setCurrentStation);
