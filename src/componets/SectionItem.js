@@ -1,11 +1,11 @@
 import { StyleSheet, View } from 'react-native';
-import { List, IconButton, Portal, Modal, Text, Icon, Button } from 'react-native-paper';
+import { List, IconButton, Portal, Modal, Text, Icon, Button, Checkbox } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { useStore } from '../store/useStore';
 import { useState } from 'react';
 
-const SectionItem = (props) => { 
+const SectionItem = (props) => {
 
 	const {
 		stationingName,
@@ -22,10 +22,38 @@ const SectionItem = (props) => {
 	const currentProject = useStore((state) => state.project);
 	const setCurrentStation = useStore((state) => state.setCurrentStation);
 	const deleteStation = useStore((state) => state.deleteStation);
+	const stationsToDelete = useStore((state) => state.stationsToDelete);
+	const setStationsToDelete = useStore((state) => state.setStationsToDelete);
+	const updateStationsToDelete = useStore((state) => state.updateStationsToDelete);
+	const resetStationsToDelete = useStore((state) => state.resetStationsToDelete);
 
-	const [visible, setVisible] = useState(false);
-	const showModal = () => setVisible(true);
-	const hideModal = () => setVisible(false);
+	const [isSelected, setIsSelected] = useState(false);
+	const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
+	const showModalDelete = () => setModalDeleteVisible(true);
+	const hideModalDelete = () => setModalDeleteVisible(false);
+
+	const onSelectItem = (itemId) => {
+		setIsSelected(!isSelected);
+
+		isSelected
+			? updateStationsToDelete(itemId)
+			: setStationsToDelete(itemId);
+
+		console.log('stationsToDelete: ', stationsToDelete);
+	};
+
+	const deleteItem = () => {
+		deleteStation(stationingId);
+		deleteStationOnFirestore(currentProject, stationingId);
+	};
+
+	const deleteSelectedItems = () => {
+		stationsToDelete.map((station) => {
+			deleteStation(station);
+			deleteStationOnFirestore(currentProject, station);
+		});
+		resetStationsToDelete();
+	};
 
 	const handlePressItem = () => {
 		setCurrentStation({ stationingId, stationingName, centralReading, code });
@@ -35,15 +63,28 @@ const SectionItem = (props) => {
 			: navigation.navigate('captureSectionCentral');
 	};
 
-	const handlePressDeleteStationing = () => {
-		deleteStation(stationingId);
-		deleteStationOnFirestore(currentProject, stationingId);
-		hideModal();
+	const handleDeletePress = () => {
+
+		stationsToDelete.length < 1
+			? deleteItem()
+			: deleteSelectedItems();
+
+		hideModalDelete();
 	};
 
 	return (
 		<>
 			<List.Item
+				left={() => (
+					isSelected
+						? <Checkbox.Item
+							status={isSelected ? 'checked' : 'unchecked'}
+							onPress={() => onSelectItem(stationingId)}
+							color='#F5F7FA'
+
+						/>
+						: null
+				)}
 				title={`${stationingName} ${code}`}
 				description={
 					isComplete
@@ -55,31 +96,36 @@ const SectionItem = (props) => {
 						{
 							isComplete
 								? null
-								: <IconButton icon='delete' iconColor='#EC5F5F' onPress={showModal} />
+								: <IconButton icon='delete' iconColor='#EC5F5F' onPress={showModalDelete} />
 						}
 						<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => handlePressItem()} />
 					</>
 				)}
 				style={
-					isComplete
+					isComplete || isSelected
 						? [styles.listItem, styles.borderCompleted]
 						: styles.listItem
 				}
 				titleStyle={styles.title}
 				descriptionStyle={styles.description}
-				onPress={() => handlePressItem()}
+				onPress={() => isSelected ? onSelectItem(stationingId) : handlePressItem()}
+				onLongPress={() => !isComplete ? onSelectItem(stationingId) : null}
 			/>
 			<Portal>
-				<Modal visible={visible} onDismiss={hideModal} contentContainerStyle={styles.modal}>
+				<Modal visible={modalDeleteVisible} onDismiss={hideModalDelete} contentContainerStyle={styles.modal}>
 					<Icon
 						source='delete'
 						size={48}
-						color='#EC5F5F'
+						color='#F17878'
 					/>
-					<Text variant='titleMedium'>¿Estas seguro que quieres borrar este cadenamiento?</Text>
+					{
+						stationsToDelete.length < 1
+							? <Text variant='titleMedium'>¿Estas seguro que quieres borrar este cadenamiento?</Text>
+							: <Text variant='titleMedium'>¿Estas seguro que quieres borrar {stationsToDelete.length} cadenamientos?</Text>
+					}
 					<View style={styles.modalControls}>
-						<Button mode='outlined' onPress={hideModal}>Cancelar</Button>
-						<Button mode='contained' buttonColor='#EC5F5F' onPress={handlePressDeleteStationing}>Borrar</Button>
+						<Button mode='outlined' onPress={hideModalDelete}>Cancelar</Button>
+						<Button mode='contained' buttonColor='#F17878' onPress={handleDeletePress}>Borrar</Button>
 					</View>
 				</Modal>
 			</Portal>

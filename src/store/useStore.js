@@ -32,6 +32,7 @@ export const useStore = create((set) => ({
 	},
 
 	stations: [],
+	stationsToDelete: [],
 
 	stationing: {
 		id: '',
@@ -53,7 +54,7 @@ export const useStore = create((set) => ({
 	resetLoading: () => {
 		set(() => ({ isLoading: true }));
 	},
-	
+
 	//* Project store methods
 	resetProjectStore: () => {
 		set(() => ({
@@ -63,7 +64,7 @@ export const useStore = create((set) => ({
 			}
 		}));
 	},
-	
+
 	updateProjectName: (project_name) =>
 		set((state) => ({
 			project: {
@@ -375,6 +376,24 @@ export const useStore = create((set) => ({
 		}));
 	},
 
+	setStationsToDelete: (itemId) => {
+		set((state) => ({
+			stationsToDelete: [...state.stationsToDelete, itemId]
+		}));
+	},
+
+	updateStationsToDelete: (itemId) => {
+		set((state) => ({
+			stationsToDelete: state.stationsToDelete.filter((item) => item !== itemId)
+		}));
+	},
+
+	resetStationsToDelete: () => {
+		set(() => ({
+			stationsToDelete: []
+		}));
+	},
+
 	//* Details store methods
 	updateDistance: (value) => {
 		set((state) => ({
@@ -434,7 +453,7 @@ export const useStore = create((set) => ({
 			const detailsColRef = collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation}/details`);
 			const q = query(detailsColRef, orderBy('distance', 'asc'));
 			const detailsDocs = await getDocs(q);
-	
+
 			if (detailsDocs.empty) {
 				set(() => ({
 					details: [],
@@ -442,17 +461,17 @@ export const useStore = create((set) => ({
 				}));
 				return;
 			}
-	
+
 			const processedDetails = detailsDocs.docs.map((doc) => ({
 				id: doc.id,
 				...doc.data(),
 			}));
-	
+
 			set(() => ({
 				details: processedDetails,
 				isLoading: false,
 			}));
-	
+
 		} catch (error) {
 			console.error('getSectionDetail error: ', error);
 			set(() => ({
