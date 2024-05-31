@@ -71,6 +71,7 @@ const HomePage = ({ navigation }) => {
 					onChangeText={searchText => setSearchText(searchText)}
 				/>
 				<FlatList
+					style={styles.flatList}
 					data={filterProjects(searchText)}
 					renderItem={renderItem}
 					keyExtractor={item => item.id}
@@ -117,6 +118,9 @@ const styles = StyleSheet.create({
 		right: 16,
 		position: 'absolute',
 	},
+	flatList: {
+		marginBottom: 200
+	}
 });
 
 HomePage.propTypes = {

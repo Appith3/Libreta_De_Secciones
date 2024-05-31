@@ -8,7 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import Topbar from '../componets/Topbar';
 
 const ProjectDetail = ({ navigation }) => {
-	
+
 	const [refreshing, setRefreshing] = useState(false);
 	const [openFAB, setOpenFAB] = useState({ open: false });
 	const [filterValue, setFilterValue] = useState('all');
@@ -19,17 +19,17 @@ const ProjectDetail = ({ navigation }) => {
 	const stations = useStore((state) => state.stations);
 	const resetProjectStore = useStore((state) => state.resetProjectStore);
 
-	const {project_name, id} = project;
-	
+	const { project_name, id } = project;
+
 	const handleOnBackPress = () => {
 		resetProjectStore();
 		navigation.popToTop();
 	};
- 
+
 	useEffect(() => {
 		getStationingFromFirestore(id);
 	}, []);
-	
+
 	const filterStations = (stations) => {
 		return stations.filter((station) => {
 			switch (filterValue) {
@@ -77,7 +77,7 @@ const ProjectDetail = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Topbar title={project_name} hasBackAction onBack={handleOnBackPress}/>
+			<Topbar title={project_name} hasBackAction onBack={handleOnBackPress} />
 			<View style={styles.header}>
 				<View style={styles.filter}>
 					<Text variant='labelLarge' style={styles.filterText}>Mostrar secciones</Text>
@@ -136,7 +136,7 @@ const ProjectDetail = ({ navigation }) => {
 						labelTextColor: '#F5F7FA',
 						color: '#F5F7FA',
 						style: { backgroundColor: '#799AB7', borderRadius: 32 },
-						onPress: () => navigation.navigate('exportProject', {projectId: id, projectName: project_name}),
+						onPress: () => navigation.navigate('exportProject', { projectId: id, projectName: project_name }),
 					},
 				]}
 				onStateChange={onStateChange}
@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
 		color: '#F5F7FA'
 	},
 	sectionsList: {
-		paddingHorizontal: 16,
-		height: '78%'
+		marginHorizontal: 16,
+		marginBottom: 200
 	}
 });
 
