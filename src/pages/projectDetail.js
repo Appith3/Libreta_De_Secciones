@@ -33,14 +33,14 @@ const ProjectDetail = ({ navigation }) => {
 	const filterStations = (stations) => {
 		return stations.filter((station) => {
 			switch (filterValue) {
-				case 'all':
-					return true; // Show all stations
-				case 'done':
-					return station.is_complete; // Show only stations marked as complete
-				case 'todo':
-					return !station.is_complete; // Show only stations not marked as complete
-				default:
-					return true; // Default to showing all stations if filterValue is unexpected
+			case 'all':
+				return true; // Show all stations
+			case 'done':
+				return station.is_complete; // Show only stations marked as complete
+			case 'todo':
+				return !station.is_complete; // Show only stations not marked as complete
+			default:
+				return true; // Default to showing all stations if filterValue is unexpected
 			}
 		});
 	};
