@@ -22,6 +22,7 @@ const CreateProjectForm = (props) => {
 	const resetStationingFileStore = useStore((state) => state.resetStationingFileStore);
 
 	const [errors, setErrors] = useState({});
+	const [projectCreated, setProjectCreated] = useState(false);
 
 	const validateForm = () => {
 		let errors = {};
@@ -44,6 +45,7 @@ const CreateProjectForm = (props) => {
 	};
 
 	const handleCreateProjectTap = async () => {
+		setProjectCreated(true);
 		await createProject(project);
 
 		if (validateForm()) {
@@ -60,6 +62,7 @@ const CreateProjectForm = (props) => {
 				await createStationing(id, { stationing_name, code });
 			});
 
+			setProjectCreated(false);
 			navigation.navigate('projectDetail');
 		}
 	};
@@ -92,7 +95,7 @@ const CreateProjectForm = (props) => {
 					<FileInput error={errors.stations} />
 
 					<View style={styles.controls}>
-						<Button icon='plus' mode='contained' onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
+						<Button loading={projectCreated} icon='plus' mode='contained' onPress={() => handleCreateProjectTap()}>Crear proyecto</Button>
 					</View>
 				</View>
 			</View>
