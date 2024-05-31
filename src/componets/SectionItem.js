@@ -38,8 +38,6 @@ const SectionItem = (props) => {
 		isSelected
 			? updateStationsToDelete(itemId)
 			: setStationsToDelete(itemId);
-
-		console.log('stationsToDelete: ', stationsToDelete);
 	};
 
 	const deleteItem = () => {
