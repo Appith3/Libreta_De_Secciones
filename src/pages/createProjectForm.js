@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
 		color: '#A8BED1'
 	},
 	errorText: {
-		color: '#e54343',
+		color: '#EC5F5F',
 	},
 	controls: {
 		position: 'absolute', 

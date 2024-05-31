@@ -172,7 +172,7 @@ const CaptureSection = ({ navigation }) => {
 							</>
 					}
 					<View style={styles.modalControls}>
-						<Button mode='outlined' onPress={hideModal} icon='close' textColor='#F17878'>Cerrar</Button>
+						<Button mode='outlined' onPress={hideModal} icon='close' textColor='#EC5F5F'>Cerrar</Button>
 						{
 							hasNotes
 								? <Button mode='outlined' onPress={() => setHasNotes(!hasNotes)} icon='arrow-left'>Regresar</Button>
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
 		gap: 16
 	},
 	errorText: {
-		color: '#e54343',
+		color: '#EC5F5F',
 	},
 	modal: {
 		backgroundColor: '#F5F7FA',

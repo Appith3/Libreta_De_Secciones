@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
 		gap: 16
 	},
 	errorText: {
-		color: '#e54343',
+		color: '#EC5F5F',
 	}
 });
 

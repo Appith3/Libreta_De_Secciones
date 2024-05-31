@@ -55,7 +55,7 @@ const SectionItem = (props) => {
 						{
 							isComplete
 								? null
-								: <IconButton icon='delete' iconColor='#F17878' onPress={showModal} />
+								: <IconButton icon='delete' iconColor='#EC5F5F' onPress={showModal} />
 						}
 						<IconButton icon='chevron-right' iconColor='#F5F7FA' onPress={() => handlePressItem()} />
 					</>
@@ -74,12 +74,12 @@ const SectionItem = (props) => {
 					<Icon
 						source='delete'
 						size={48}
-						color='#F17878'
+						color='#EC5F5F'
 					/>
 					<Text variant='titleMedium'>¿Estas seguro que quieres borrar este cadenamiento?</Text>
 					<View style={styles.modalControls}>
 						<Button mode='outlined' onPress={hideModal}>Cancelar</Button>
-						<Button mode='contained' buttonColor='#F17878' onPress={handlePressDeleteStationing}>Borrar</Button>
+						<Button mode='contained' buttonColor='#EC5F5F' onPress={handlePressDeleteStationing}>Borrar</Button>
 					</View>
 				</Modal>
 			</Portal>
