@@ -1,1 +1,1 @@
-export const FIRESTORE_ROOT_COLLECTION = 'example_projects';
+export const FIRESTORE_ROOT_COLLECTION = 'projects';
