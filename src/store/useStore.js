@@ -395,51 +395,15 @@ export const useStore = create((set) => ({
 	},
 
 	//* Details store methods
-	updateDistance: (value) => {
-		set((state) => ({
-			detail: {
-				...state.detail,
-				distance: value
-			}
-		}));
-	},
-
-	updateDetailName: (value) => {
-		set((state) => ({
-			detail: {
-				...state.detail,
-				detail_name: value
-			}
-		}));
-	},
-
-	updateReading: (value) => {
-		set((state) => ({
-			detail: {
-				...state.detail,
-				reading: value
-			}
-		}));
-	},
-
-	clearDetailStore: () => {
-		set(() => ({
-			detail: {
-				distance: '',
-				detail_name: '',
-				reading: ''
-			}
-		}));
-	},
-
 	createSectionDetail: async (currentProject, currentStation, detail, side) => {
 		let slope = currentStation.central_reading - Number(detail.reading);
+		const { detailName, reading, distance } = detail;
 
 		try {
 			await addDoc(collection(db, `${FIRESTORE_ROOT_COLLECTION}/${currentProject}/stationing/${currentStation.id}/details`), {
-				distance: side === 'Izq' ? Number(detail.distance) * -1 : Number(detail.distance),
-				detail_name: detail.detail_name,
-				reading: Number(detail.reading),
+				distance: side === 'Izq' ? Number(distance) * -1 : Number(distance),
+				detail_name: detailName,
+				reading: Number(reading),
 				slope: Number(slope.toFixed(2))
 			});
 		} catch (error) {

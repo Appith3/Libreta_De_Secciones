@@ -15,23 +15,16 @@ const CaptureSectionSides = ({ navigation, route }) => {
 	const stationing = useStore((state) => state.stationing);
 	const updateStationingIsComplete = useStore((state) => state.updateStationingIsComplete);
 	const updateStationingIsCompleteFromFirestore = useStore((state) => state.updateStationingIsCompleteFromFirestore);
-	const detail = useStore((state) => state.detail);
-	const clearDetailStore = useStore((state) => state.clearDetailStore);
 	const createSectionDetail = useStore((state) => state.createSectionDetail);
-	const updateDetailName = useStore((state) => state.updateDetailName);
-	const updateReading = useStore((state) => state.updateReading);
-	const updateDistance = useStore((state) => state.updateDistance);
 
 	const [side, setSide] = useState(_side);
 	const [errors, setErrors] = useState({});
+	const [distance, setDistance] = useState('');
+	const [detailName, setDetailName] = useState('');
+	const [reading, setReading] = useState('');
 
 	const validateForm = () => {
 		let errors = {};
-
-		let {
-			distance,
-			reading,
-		} = detail;
 
 		if (!distance) errors.distance = 'La distancia es requerida';
 		if (!reading) errors.reading = 'La lectura es requerida';
@@ -44,22 +37,30 @@ const CaptureSectionSides = ({ navigation, route }) => {
 		navigation.setOptions({ title: `${stationing.stationing_name} ${side}` });
 	}, [side]);
 
+	const clearForm = () => {
+		setDetailName('');
+		setReading('');
+		setDistance('');
+	};
+
 	const changeSide = () => {
 		let { id, central_reading } = stationing;
+		let detail = { distance, detailName, reading };
 
 		if (validateForm()) {
 			createSectionDetail(project.id, { id, central_reading }, detail, side);
-			clearDetailStore();
+			clearForm();
 			side === 'Izq' ? setSide('Der') : setSide('Izq');
 		}
 	};
 
 	const handlePressNextDetails = () => {
 		let { id, central_reading } = stationing;
+		let detail = { distance, detailName, reading };
 
 		if (validateForm()) {
 			createSectionDetail(project.id, { id, central_reading }, detail, side);
-			clearDetailStore();
+			clearForm();
 		}
 	};
 
@@ -81,9 +82,10 @@ const CaptureSectionSides = ({ navigation, route }) => {
 					<TextInput
 						mode='outlined'
 						placeholder='Nombre del detalle'
-						value={detail.detail_name}
-						onChangeText={detail_name => updateDetailName(detail_name.toUpperCase())}
-						right={<TextInput.Icon icon='tag' />} />
+						value={detailName}
+						onChangeText={value => setDetailName(value)}
+						right={<TextInput.Icon icon='tag' />} 
+						autoCapitalize='characters'/>
 
 					<View>
 						<TextInput
@@ -91,8 +93,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 							placeholder='Lectura'
 							keyboardType='number-pad'
 							inputMode='decimal'
-							value={detail.reading.toString()}
-							onChangeText={reading => updateReading(reading)}
+							value={reading?.toString()}
+							onChangeText={value => setReading(value)}
 							right={<TextInput.Icon icon='ruler' />}
 						/>
 						{
@@ -109,8 +111,8 @@ const CaptureSectionSides = ({ navigation, route }) => {
 							keyboardType='number-pad'
 							inputMode='decimal'
 							textAlign='left'
-							value={detail.distance.toString()}
-							onChangeText={distance => updateDistance(distance)}
+							value={distance?.toString()}
+							onChangeText={value => setDistance(value)}
 							right={<TextInput.Icon icon='map-marker-distance' />}
 						/>
 						{
