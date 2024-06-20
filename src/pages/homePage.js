@@ -84,7 +84,7 @@ const HomePage = ({ navigation }) => {
 					label={'Crear proyecto'}
 					extended={isExtended}
 					onPress={() => navigation.navigate('createProject')}
-					animateFrom={'right'}
+					animateFrom={'left'}
 					iconMode={'static'}
 					style={styles.fabStyle}
 				/>
