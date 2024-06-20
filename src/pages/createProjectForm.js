@@ -32,7 +32,6 @@ const CreateProjectForm = (props) => {
 		} = project;
 
 		if (!project_name) errors.name = 'El nombre es requerido';
-		if (stations.length === 0) errors.stations = 'Carga el trazo para continuar';
 		setErrors(errors);
 
 		return Object.keys(errors).length === 0;
@@ -58,6 +57,7 @@ const CreateProjectForm = (props) => {
 					: s.split(',');
 
 				const [, , , , stationing_name, code] = station;
+				console.log('stationing_name: ', stationing_name);
 
 				await createStationing(id, { stationing_name, code });
 			});
